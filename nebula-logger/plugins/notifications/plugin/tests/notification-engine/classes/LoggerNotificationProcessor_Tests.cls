@@ -23,7 +23,7 @@ private class LoggerNotificationProcessor_Tests {
   @IsTest
   static void it_should_short_circuit_when_records_are_null_or_empty() {
     System.Assert.areEqual(0, mockNotifierThrownCount, 'Test has started under the wrong conditions');
-    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationRule__c], 'Test has started under the wrong conditions');
+    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationRule__c WITH SYSTEM_MODE], 'Test has started under the wrong conditions');
 
     System.Test.startTest();
     LoggerNotificationProcessor processor = new LoggerNotificationProcessor();
@@ -31,13 +31,13 @@ private class LoggerNotificationProcessor_Tests {
     processor.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>());
     processor.sendNotifications(null, new List<SObject>{ new LogEntry__c() });
     System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'One async dispatcher job should have been enqueued');
-    System.Assert.areEqual(0, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName() WITH SYSTEM_MODE]);
     System.Test.stopTest();
 
     System.Assert.areEqual(0, mockNotifierInvocationCount);
     System.Assert.areEqual(0, mockNotifierThrownCount);
     System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'One async dispatcher job should have been enqueued');
-    System.Assert.areEqual(0, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName() WITH SYSTEM_MODE]);
   }
 
   @IsTest
@@ -133,6 +133,7 @@ private class LoggerNotificationProcessor_Tests {
       SELECT Id, LogEntry__c, MatchedRecordId__c
       FROM LoggerNotificationMatch__c
       WHERE LoggerNotificationRule__c = :rule.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(1, matches.size(), 'Only 1 notification match should have been created');
     System.Assert.areEqual(logEntry.Id, matches.get(0).LogEntry__c);
@@ -141,6 +142,7 @@ private class LoggerNotificationProcessor_Tests {
       SELECT Id, LoggerNotificationRecipient__c
       FROM LoggerNotificationDelivery__c
       WHERE LoggerNotificationMatch__c = :matches.get(0).Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(1, deliveries.size(), 'Only 1 notification delivery should have been created');
     System.Assert.areEqual(validRecipient.Id, deliveries.get(0).LoggerNotificationRecipient__c);
@@ -268,12 +270,14 @@ private class LoggerNotificationProcessor_Tests {
         SELECT COUNT()
         FROM LoggerNotificationMatch__c
         WHERE LoggerNotificationRule__c = :rule.Id
+        WITH SYSTEM_MODE
       ]
     );
     List<LoggerNotificationDelivery__c> deliveries = [
       SELECT ErrorMessage__c, Status__c
       FROM LoggerNotificationDelivery__c
       WHERE LoggerNotificationRecipient__r.LoggerNotificationService__c = :serviceWithBadClass.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(1, deliveries.size());
     System.Assert.areEqual('Could not instantiate notifier class ' + serviceWithBadClass.NotifierApexClassName__c, deliveries.get(0).ErrorMessage__c);
@@ -307,6 +311,7 @@ private class LoggerNotificationProcessor_Tests {
       SELECT Id, LogEntry__c, LoggerNotificationRule__c, MatchedRecordId__c, MatchedSObjectType__c
       FROM LoggerNotificationMatch__c
       WHERE LoggerNotificationRule__c = :rule.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(1, matches.size(), 'Only the ERROR entry should be recorded as a match');
     System.Assert.areEqual(matchingEntry.Id, matches.get(0).LogEntry__c);
@@ -320,6 +325,7 @@ private class LoggerNotificationProcessor_Tests {
         SELECT COUNT()
         FROM LoggerNotificationDelivery__c
         WHERE LoggerNotificationRecipient__r.LoggerNotificationService__c = :service.Id
+        WITH SYSTEM_MODE
       ]
     );
   }
@@ -355,8 +361,8 @@ private class LoggerNotificationProcessor_Tests {
 
   //   System.Assert.areEqual(0, mockNotifierInvocationCount, 'Threshold of 5 with only 1 match should suppress dispatch');
   //   // TODO confirm if LoggerNotificationMatch__c should be created even when match threshold isn't met
-  //   System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = rule.Id]);
-  //   List<LoggerNotificationDelivery__c> deliveries = [SELECT COUNT() FROM LoggerNotificationDelivery__c WHERE LoggerNotificationRecipient__c = ;recipient.Id];
+  //   System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = rule.Id WITH SYSTEM_MODE]);
+  //   List<LoggerNotificationDelivery__c> deliveries = [SELECT COUNT() FROM LoggerNotificationDelivery__c WHERE LoggerNotificationRecipient__c = ;recipient.Id  WITH SYSTEM_MODE];
   //   System.Assert.areEqual(
   //     1,
   //     deliveries.size()
@@ -393,7 +399,7 @@ private class LoggerNotificationProcessor_Tests {
     System.Test.stopTest();
 
     System.Assert.areEqual(0, mockNotifierInvocationCount, 'Threshold of 10 with 2 matches should suppress dispatch');
-    List<LoggerNotificationMatch__c> matches = [SELECT Id FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id];
+    List<LoggerNotificationMatch__c> matches = [SELECT Id FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(2, matches.size(), 'Both matches should still be recorded for threshold accounting');
     List<LoggerNotificationDelivery__c> deliveries = [
       SELECT
@@ -407,6 +413,7 @@ private class LoggerNotificationProcessor_Tests {
         CompletedTimestamp__c
       FROM LoggerNotificationDelivery__c
       WHERE LoggerNotificationMatch__c IN :matches
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(2, deliveries.size(), 'A suppressed-by-threshold delivery record should still be recorded per (match, recipient) tuple');
     for (LoggerNotificationDelivery__c delivery : deliveries) {
@@ -469,6 +476,7 @@ private class LoggerNotificationProcessor_Tests {
       SELECT Id, Status__c, LoggerNotificationRecipient__c
       FROM LoggerNotificationDelivery__c
       WHERE LoggerNotificationMatch__r.LoggerNotificationRule__c = :rule.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(1, deliveries.size(), 'Only the enabled + valid-origin recipient should get a suppressed delivery record');
     System.Assert.areEqual(enabledRecipient.Id, deliveries.get(0).LoggerNotificationRecipient__c);
@@ -502,9 +510,9 @@ private class LoggerNotificationProcessor_Tests {
   //   new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
   //   System.Test.stopTest();
 
-  //   Integer matchCount = [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id];
+  //   Integer matchCount = [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id  WITH SYSTEM_MODE];
   //   System.Assert.areEqual(0, matchCount, 'Match records should not be persisted when IsMatchHistoryEnabled__c is false');
-  //   Integer deliveryCount = [SELECT COUNT() FROM LoggerNotificationDelivery__c WHERE LoggerNotificationRecipient__c = :recipient.Id];
+  //   Integer deliveryCount = [SELECT COUNT() FROM LoggerNotificationDelivery__c WHERE LoggerNotificationRecipient__c = :recipient.Id  WITH SYSTEM_MODE];
   //   System.Assert.areEqual(
   //     0,
   //     deliveryCount,
@@ -542,7 +550,7 @@ private class LoggerNotificationProcessor_Tests {
 
     System.Assert.areEqual(
       0,
-      [SELECT COUNT() FROM LoggerNotificationDelivery__c WHERE LoggerNotificationMatch__r.LoggerNotificationRule__c = :rule.Id],
+      [SELECT COUNT() FROM LoggerNotificationDelivery__c WHERE LoggerNotificationMatch__r.LoggerNotificationRule__c = :rule.Id WITH SYSTEM_MODE],
       'Delivery records should not be recorded when IsDeliveryHistoryEnabled__c is false, even for suppressed-by-threshold outcomes'
     );
   }
@@ -572,16 +580,16 @@ private class LoggerNotificationProcessor_Tests {
     // asserts inside (and outside) of System.Test.startTest() & System.Test.stopTest()
     System.Test.startTest();
     System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'One async dispatcher job should have been enqueued');
-    System.Assert.areEqual(0, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName() WITH SYSTEM_MODE]);
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingLogEntry });
     System.Assert.areEqual(0, mockNotifierInvocationCount, 'Notifier should not fire synchronously - it should be queued');
     System.Assert.areEqual(1, System.Limits.getQueueableJobs(), 'One async dispatcher job should have been enqueued');
-    System.Assert.areEqual(1, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName() WITH SYSTEM_MODE]);
     System.Test.stopTest();
 
     System.Assert.areEqual(1, mockNotifierInvocationCount, 'Notifier should have fired synchronously');
     System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'No async dispatcher job should have been enqueued after System.Test.stopTest()');
-    System.Assert.areEqual(1, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName() WITH SYSTEM_MODE]);
   }
 
   @IsTest
@@ -611,16 +619,16 @@ private class LoggerNotificationProcessor_Tests {
     // asserts inside (and outside) of System.Test.startTest() & System.Test.stopTest()
     System.Test.startTest();
     System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'One async dispatcher job should have been enqueued');
-    System.Assert.areEqual(0, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName() WITH SYSTEM_MODE]);
     new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
     System.Assert.areEqual(0, mockNotifierInvocationCount, 'Notifier should not fire synchronously - it should be queued');
     System.Assert.areEqual(1, System.Limits.getQueueableJobs(), 'One async dispatcher job should have been enqueued');
-    System.Assert.areEqual(1, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName() WITH SYSTEM_MODE]);
     System.Test.stopTest();
 
     System.Assert.areEqual(2, mockNotifierInvocationCount, 'Notifiers should have fired for 2 recipients');
     System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'No async dispatcher job should have been enqueued after System.Test.stopTest()');
-    System.Assert.areEqual(1, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName()]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :LoggerNotificationAsyncDispatcher.class.getName() WITH SYSTEM_MODE]);
   }
 
   @IsTest
@@ -838,12 +846,14 @@ private class LoggerNotificationProcessor_Tests {
       SELECT Id
       FROM LoggerNotificationMatch__c
       WHERE LoggerNotificationRule__c = :rule.Id AND LogEntry__c IN :logEntries
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(3, matches.size());
     List<LoggerNotificationDelivery__c> deliveries = [
       SELECT LoggerNotificationMatch__r.LogEntry__c, Status__c
       FROM LoggerNotificationDelivery__c
       WHERE LoggerNotificationMatch__c IN :matches
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(3, deliveries.size());
     // TODO revisit these asserts
@@ -887,6 +897,7 @@ private class LoggerNotificationProcessor_Tests {
       SELECT Id, MatchedRecordId__c
       FROM LoggerNotificationMatch__c
       WHERE LoggerNotificationRule__c = :rule.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(1, matches.size(), 'Match records are now one-per-matched-record (not per recipient)');
     System.Assert.areEqual(String.valueOf(matchingEntry.Id), matches.get(0).MatchedRecordId__c);
@@ -894,6 +905,7 @@ private class LoggerNotificationProcessor_Tests {
       SELECT LoggerNotificationMatch__c, LoggerNotificationRecipient__c, LoggerNotificationService__c
       FROM LoggerNotificationDelivery__c
       WHERE LoggerNotificationMatch__c = :matches.get(0).Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(2, deliveries.size(), 'One delivery record per recipient - two recipients means two delivery records for the one match');
     Set<Id> deliveryRecipientIds = new Set<Id>();
@@ -936,8 +948,8 @@ private class LoggerNotificationProcessor_Tests {
     System.Test.stopTest();
 
     System.Assert.areEqual(1, mockNotifierInvocationCount, 'Dispatch should still fire even when history storage is off');
-    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationMatch__c]);
-    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationDelivery__c]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationMatch__c WITH SYSTEM_MODE]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationDelivery__c WITH SYSTEM_MODE]);
   }
 
   @IsTest
@@ -965,8 +977,8 @@ private class LoggerNotificationProcessor_Tests {
     System.Test.stopTest();
 
     System.Assert.areEqual(1, mockNotifierInvocationCount, 'Dispatch should still fire when delivery history is off');
-    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationMatch__c]);
-    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationDelivery__c]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationMatch__c WITH SYSTEM_MODE]);
+    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationDelivery__c WITH SYSTEM_MODE]);
   }
 
   @IsTest
@@ -1013,13 +1025,14 @@ private class LoggerNotificationProcessor_Tests {
     // Prior match count = 1 (single priorLogEntry); current batch adds 1 more distinct record.
     // Total = 2, which meets the threshold of 2, so we DO dispatch to both recipients.
     System.Assert.areEqual(2, mockNotifierInvocationCount, 'Both recipients should have fired once the threshold was met');
-    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE Id != :priorMatch.Id]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE Id != :priorMatch.Id WITH SYSTEM_MODE]);
     System.Assert.areEqual(
       2,
       [
         SELECT COUNT()
         FROM LoggerNotificationDelivery__c
         WHERE LoggerNotificationMatch__c != :priorMatch.Id AND LoggerNotificationMatch__r.LogEntry__c = :currentLogEntry.Id
+        WITH SYSTEM_MODE
       ]
     );
   }
@@ -1050,7 +1063,7 @@ private class LoggerNotificationProcessor_Tests {
       );
     System.Assert.areEqual(
       0,
-      [SELECT COUNT() FROM LoggerNotificationRule__c WHERE TotalEnabledRecipients__c > 0],
+      [SELECT COUNT() FROM LoggerNotificationRule__c WHERE TotalEnabledRecipients__c > 0 WITH SYSTEM_MODE],
       'Test has started under the wrong conditions'
     );
 
@@ -1059,10 +1072,14 @@ private class LoggerNotificationProcessor_Tests {
     System.Assert.areEqual(0, mockNotifierInvocationCount, 'Dispatch should not fire for rules with zero enabled recipients');
     System.Assert.areEqual(
       0,
-      [SELECT COUNT() FROM LoggerNotificationMatch__c],
+      [SELECT COUNT() FROM LoggerNotificationMatch__c WITH SYSTEM_MODE],
       'Rules with zero enabled recipients should be skipped before any match records are inserted'
     );
-    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationDelivery__c], 'Rules with zero enabled recipients should not produce delivery records');
+    System.Assert.areEqual(
+      0,
+      [SELECT COUNT() FROM LoggerNotificationDelivery__c WITH SYSTEM_MODE],
+      'Rules with zero enabled recipients should not produce delivery records'
+    );
   }
 
   @IsTest
@@ -1091,6 +1108,7 @@ private class LoggerNotificationProcessor_Tests {
       SELECT LoggerNotificationRule__c
       FROM LoggerNotificationDelivery__c
       WHERE LoggerNotificationRecipient__c = :recipient.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(1, deliveries.size());
     System.Assert.areEqual(
@@ -1137,7 +1155,7 @@ private class LoggerNotificationProcessor_Tests {
     System.Assert.areEqual(2, mockNotifierLastRequest.matchingRecords.size(), 'Notifier should see the deduplicated matching records');
     System.Assert.areEqual(
       2,
-      [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id],
+      [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id WITH SYSTEM_MODE],
       'Two distinct Log__c values should collapse the four LogEntry__c matches into two LoggerNotificationMatch__c records'
     );
   }
@@ -1179,7 +1197,12 @@ private class LoggerNotificationProcessor_Tests {
     System.Assert.areEqual(1, mockNotifierLastRequest.matchingRecords.size());
     LogEntry__c keptLogEntry = (LogEntry__c) mockNotifierLastRequest.matchingRecords.get(0);
     System.Assert.areEqual(firstLogEntry.Id, keptLogEntry.Id, 'First-seen record per key wins - order should be preserved');
-    List<LoggerNotificationMatch__c> matches = [SELECT Id, LogEntry__c FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id];
+    List<LoggerNotificationMatch__c> matches = [
+      SELECT Id, LogEntry__c
+      FROM LoggerNotificationMatch__c
+      WHERE LoggerNotificationRule__c = :rule.Id
+      WITH SYSTEM_MODE
+    ];
     System.Assert.areEqual(1, matches.size(), 'Match record should only have been created for 1 LogEntry__c');
     System.Assert.areEqual(keptLogEntry.Id, matches.get(0).LogEntry__c);
   }
@@ -1211,7 +1234,10 @@ private class LoggerNotificationProcessor_Tests {
     System.Test.stopTest();
 
     System.Assert.areEqual(2, mockNotifierLastRequest.matchingRecords.size());
-    System.Assert.areEqual(2, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id AND LogEntry__c IN :logEntries]);
+    System.Assert.areEqual(
+      2,
+      [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id AND LogEntry__c IN :logEntries WITH SYSTEM_MODE]
+    );
   }
 
   @IsTest
@@ -1247,7 +1273,10 @@ private class LoggerNotificationProcessor_Tests {
       mockNotifierLastRequest.matchingRecords.size(),
       'Two null-deduplication-value records should collapse to one group keyed on the null sentinel'
     );
-    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id AND LogEntry__c IN :logEntries]);
+    System.Assert.areEqual(
+      1,
+      [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id AND LogEntry__c IN :logEntries WITH SYSTEM_MODE]
+    );
   }
 
   @IsTest
@@ -1285,7 +1314,10 @@ private class LoggerNotificationProcessor_Tests {
 
     System.Assert.areEqual(1, mockNotifierInvocationCount);
     System.Assert.areEqual(2, mockNotifierLastRequest.matchingRecords.size(), 'Unknown deduplication field should fall through without collapsing records');
-    System.Assert.areEqual(2, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id AND LogEntry__c IN :logEntries]);
+    System.Assert.areEqual(
+      2,
+      [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id AND LogEntry__c IN :logEntries WITH SYSTEM_MODE]
+    );
   }
 
   @IsTest
@@ -1322,6 +1354,7 @@ private class LoggerNotificationProcessor_Tests {
       SELECT Id, RetentionDate__c
       FROM LoggerNotificationMatch__c
       WHERE LoggerNotificationRule__c = :rule.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(1, matches.size());
     System.Assert.areEqual(
@@ -1333,6 +1366,7 @@ private class LoggerNotificationProcessor_Tests {
       SELECT Id, RetentionDate__c
       FROM LoggerNotificationDelivery__c
       WHERE LoggerNotificationRecipient__c = :recipient.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(1, deliveries.size());
     System.Assert.areEqual(
@@ -1373,12 +1407,14 @@ private class LoggerNotificationProcessor_Tests {
       SELECT Id, RetentionDate__c
       FROM LoggerNotificationMatch__c
       WHERE LoggerNotificationRule__c = :rule.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.isNull(match.RetentionDate__c, 'Null NumberOfDaysToRetainMatches__c should leave the match record\'s retention date as null');
     LoggerNotificationDelivery__c delivery = [
       SELECT Id, RetentionDate__c
       FROM LoggerNotificationDelivery__c
       WHERE LoggerNotificationRecipient__c = :recipient.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.isNull(delivery.RetentionDate__c, 'Null NumberOfDaysToRetainDeliveries__c should leave the delivery record\'s retention date as null');
   }

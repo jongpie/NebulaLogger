@@ -27,6 +27,7 @@ private class LoggerNotificationRuleHandler_Tests {
       SELECT Id, OriginOrganizationId__c, IsOriginOrganizationIdValid__c
       FROM LoggerNotificationRule__c
       WHERE Id = :notificationRule.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(System.UserInfo.getOrganizationId(), requeriedNotification.OriginOrganizationId__c);
     System.Assert.isTrue(requeriedNotification.IsOriginOrganizationIdValid__c, 'IsOriginOrganizationIdValid__c should be true after insert in the current org');
@@ -40,7 +41,12 @@ private class LoggerNotificationRuleHandler_Tests {
 
     LoggerDataStore.getDatabase().insertRecord(notificationRule);
 
-    LoggerNotificationRule__c requeriedNotification = [SELECT Id, OriginOrganizationId__c FROM LoggerNotificationRule__c WHERE Id = :notificationRule.Id];
+    LoggerNotificationRule__c requeriedNotification = [
+      SELECT Id, OriginOrganizationId__c
+      FROM LoggerNotificationRule__c
+      WHERE Id = :notificationRule.Id
+      WITH SYSTEM_MODE
+    ];
     System.Assert.areEqual(
       System.UserInfo.getOrganizationId(),
       requeriedNotification.OriginOrganizationId__c,
@@ -100,7 +106,7 @@ private class LoggerNotificationRuleHandler_Tests {
 
     LoggerDataStore.getDatabase().insertRecord(notificationRule);
 
-    LoggerNotificationRule__c requeried = [SELECT Id, SourceSObjectFilter__c FROM LoggerNotificationRule__c WHERE Id = :notificationRule.Id];
+    LoggerNotificationRule__c requeried = [SELECT Id, SourceSObjectFilter__c FROM LoggerNotificationRule__c WHERE Id = :notificationRule.Id WITH SYSTEM_MODE];
     System.Assert.areEqual('ISPICKVAL(LoggingLevel__c, \'ERROR\')', requeried.SourceSObjectFilter__c);
   }
 
@@ -112,7 +118,7 @@ private class LoggerNotificationRuleHandler_Tests {
 
     LoggerDataStore.getDatabase().insertRecord(notificationRule);
 
-    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationRule__c WHERE Id = :notificationRule.Id]);
+    System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerNotificationRule__c WHERE Id = :notificationRule.Id WITH SYSTEM_MODE]);
   }
 
   @IsTest
@@ -146,7 +152,7 @@ private class LoggerNotificationRuleHandler_Tests {
     notificationRule.Comments__c = 'unrelated tweak';
     LoggerDataStore.getDatabase().updateRecord(notificationRule);
 
-    System.Assert.areEqual('unrelated tweak', [SELECT Comments__c FROM LoggerNotificationRule__c WHERE Id = :notificationRule.Id].Comments__c);
+    System.Assert.areEqual('unrelated tweak', [SELECT Comments__c FROM LoggerNotificationRule__c WHERE Id = :notificationRule.Id WITH SYSTEM_MODE].Comments__c);
   }
 
   @IsTest
@@ -179,7 +185,12 @@ private class LoggerNotificationRuleHandler_Tests {
 
     LoggerDataStore.getDatabase().insertRecord(notificationRule);
 
-    LoggerNotificationRule__c requeried = [SELECT Id, DeduplicationSourceField__c FROM LoggerNotificationRule__c WHERE Id = :notificationRule.Id];
+    LoggerNotificationRule__c requeried = [
+      SELECT Id, DeduplicationSourceField__c
+      FROM LoggerNotificationRule__c
+      WHERE Id = :notificationRule.Id
+      WITH SYSTEM_MODE
+    ];
     System.Assert.areEqual('Log__c', requeried.DeduplicationSourceField__c);
   }
 
@@ -192,7 +203,12 @@ private class LoggerNotificationRuleHandler_Tests {
 
     LoggerDataStore.getDatabase().insertRecord(notificationRule);
 
-    LoggerNotificationRule__c requeried = [SELECT Id, DeduplicationSourceField__c FROM LoggerNotificationRule__c WHERE Id = :notificationRule.Id];
+    LoggerNotificationRule__c requeried = [
+      SELECT Id, DeduplicationSourceField__c
+      FROM LoggerNotificationRule__c
+      WHERE Id = :notificationRule.Id
+      WITH SYSTEM_MODE
+    ];
     System.Assert.isNull(requeried.DeduplicationSourceField__c);
   }
 
@@ -217,6 +233,7 @@ private class LoggerNotificationRuleHandler_Tests {
       SELECT Id, OriginOrganizationId__c, IsOriginOrganizationIdValid__c
       FROM LoggerNotificationRule__c
       WHERE Id = :notificationRule.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(foreignOrgId, afterUpdate.OriginOrganizationId__c, 'Update should not have re-stamped the origin org id');
     System.Assert.isFalse(afterUpdate.IsOriginOrganizationIdValid__c, 'Formula should still evaluate to false against the foreign org id');
@@ -262,6 +279,7 @@ private class LoggerNotificationRuleHandler_Tests {
       SELECT Id, NumberOfDaysToRetainMatches__c, NumberOfDaysToRetainDeliveries__c
       FROM LoggerNotificationRule__c
       WHERE Id = :notificationRule.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(14, requeried.NumberOfDaysToRetainMatches__c);
     System.Assert.areEqual(14, requeried.NumberOfDaysToRetainDeliveries__c);
