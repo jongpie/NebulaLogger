@@ -1119,6 +1119,88 @@ private class LoggerNotificationProcessor_Tests {
   }
 
   @IsTest
+  static void it_should_fire_every_matching_rule_when_multiple_rules_have_overlapping_criteria() {
+    /* 🪵 Logging data setup */
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c matchingEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecord(matchingEntry);
+    /* 🔔 Notification data setup */
+    // Two rules whose filters both evaluate to TRUE against the same LogEntry__c - one narrow (ERROR only),
+    // one broader (ERROR or WARN). Neither rule should short-circuit the other; each should produce its own
+    // match record, its own delivery record, and its own notifier invocation.
+    LoggerNotificationRule__c errorOnlyRule = buildRule(Schema.LogEntry__c.SObjectType, LOG_ENTRY_SAMPLE_FILTER);
+    errorOnlyRule.Name = 'ERROR Only Rule';
+    LoggerNotificationRule__c errorAndWarnRule = buildRule(
+      Schema.LogEntry__c.SObjectType,
+      'OR(ISPICKVAL(LoggingLevel__c, \'ERROR\'), ISPICKVAL(LoggingLevel__c, \'WARN\'))'
+    );
+    errorAndWarnRule.Name = 'ERROR and WARN Rule';
+    LoggerDataStore.getDatabase().insertRecords(new List<LoggerNotificationRule__c>{ errorOnlyRule, errorAndWarnRule });
+    LoggerNotificationService__c service = buildService(MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c errorOnlyRecipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = errorOnlyRule.Id,
+      LoggerNotificationService__c = service.Id
+    );
+    LoggerNotificationRecipient__c errorAndWarnRecipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = errorAndWarnRule.Id,
+      LoggerNotificationService__c = service.Id
+    );
+    LoggerDataStore.getDatabase().insertRecords(new List<LoggerNotificationRecipient__c>{ errorOnlyRecipient, errorAndWarnRecipient });
+
+    System.Test.startTest();
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingEntry });
+    System.Test.stopTest();
+
+    System.Assert.areEqual(2, mockNotifierInvocationCount, 'Each overlapping rule should independently dispatch to its own recipient');
+    Map<Id, LoggerNotificationMatch__c> matchesByRule = new Map<Id, LoggerNotificationMatch__c>();
+    for (LoggerNotificationMatch__c match : [
+      SELECT Id, LoggerNotificationRule__c, LoggerNotificationRule__r.Name, MatchedRecordId__c
+      FROM LoggerNotificationMatch__c
+      WITH SYSTEM_MODE
+    ]) {
+      if (matchesByRule.containsKey(match.LoggerNotificationRule__c)) {
+        throw new System.IllegalArgumentException(
+          'Expected exactly one match record per rule for this test, but rule ' + match.LoggerNotificationRule__r.Name + ' has more than one'
+        );
+      }
+      matchesByRule.put(match.LoggerNotificationRule__c, match);
+    }
+    System.Assert.areEqual(
+      new Set<Id>{ errorOnlyRule.Id, errorAndWarnRule.Id },
+      matchesByRule.keySet(),
+      'One match record should be inserted for each rule that matched the same source record'
+    );
+    System.Assert.areEqual(String.valueOf(matchingEntry.Id), matchesByRule.get(errorOnlyRule.Id).MatchedRecordId__c);
+    System.Assert.areEqual(String.valueOf(matchingEntry.Id), matchesByRule.get(errorAndWarnRule.Id).MatchedRecordId__c);
+    Map<Id, LoggerNotificationDelivery__c> deliveriesByRule = new Map<Id, LoggerNotificationDelivery__c>();
+    for (LoggerNotificationDelivery__c delivery : [
+      SELECT LoggerNotificationRecipient__c, LoggerNotificationRule__c, LoggerNotificationRule__r.Name
+      FROM LoggerNotificationDelivery__c
+      WITH SYSTEM_MODE
+    ]) {
+      if (deliveriesByRule.containsKey(delivery.LoggerNotificationRule__c)) {
+        throw new System.IllegalArgumentException(
+          'Expected exactly one delivery record per rule for this test, but rule ' + delivery.LoggerNotificationRule__r.Name + ' has more than one'
+        );
+      }
+      deliveriesByRule.put(delivery.LoggerNotificationRule__c, delivery);
+    }
+    System.Assert.areEqual(2, deliveriesByRule.size(), 'Each rule should produce its own delivery record');
+    System.Assert.areEqual(
+      errorOnlyRecipient.Id,
+      deliveriesByRule.get(errorOnlyRule.Id).LoggerNotificationRecipient__c,
+      'The ERROR-only rule\'s delivery should be for its own recipient'
+    );
+    System.Assert.areEqual(
+      errorAndWarnRecipient.Id,
+      deliveriesByRule.get(errorAndWarnRule.Id).LoggerNotificationRecipient__c,
+      'The any-severity rule\'s delivery should be for its own recipient'
+    );
+  }
+
+  @IsTest
   static void it_should_deduplicate_matching_records_by_the_rule_deduplication_source_field() {
     /* 🪵 Logging data setup */
     Log__c logA = new Log__c(TransactionId__c = 'log-a');
