@@ -13,6 +13,10 @@
             <property name="message" type="String" label="Message" description="Alert body. Supports HTML markup (bold, links, lists, etc.)." required="true" />
             <property name="variant" type="String" label="Variant" description="Visual style of the alert." default="warning" datasource="base,warning,error,offline" />
             <property name="iconName" type="String" label="Icon Name" description="Optional utility icon override (e.g. utility:info). Defaults to a sensible icon per variant." />
+            <supportedFormFactors>
+                <supportedFormFactor type="Large" />
+                <supportedFormFactor type="Small" />
+            </supportedFormFactors>
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
