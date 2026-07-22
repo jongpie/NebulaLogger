@@ -69,23 +69,24 @@ public virtual without sharing class LoggerNotificationProcessor {
     List<RuleEvaluation> evaluations = new List<RuleEvaluation>();
     for (LoggerNotificationRule__c rule : applicableRules) {
       List<SObject> matchingRecords = this.filterEvaluator.evaluate(sobjectType, rule.SourceSObjectFilter__c, records);
+
       if (matchingRecords.isEmpty()) {
         continue;
       }
+
       matchingRecords = deduplicateMatchingRecords(matchingRecords, rule.DeduplicationSourceField__c);
       RuleEvaluation evaluation = new RuleEvaluation();
       evaluation.rule = rule;
       evaluation.matchingRecords = matchingRecords;
       evaluation.shouldDispatch = this.shouldSuppressForThreshold(rule, matchingRecords.size()) == false;
-      // Only persist match records for rules that were loaded from the database. Rules that were hydrated
-      // in memory (e.g. tests using LoggerNotificationProcessor.setCachedRules with a non-inserted rule) still get
-      // dispatched, but skip DML because the required master-detail parent isn't set.
-      if (rule.Id != null && rule.IsMatchHistoryEnabled__c == true) {
+
+      if (rule.IsMatchHistoryEnabled__c == true) {
         evaluation.matches = new List<LoggerNotificationMatch__c>();
         for (SObject match : matchingRecords) {
           evaluation.matches.add(this.buildMatchRecord(rule, sobjectType, match));
         }
       }
+
       evaluations.add(evaluation);
     }
     return evaluations;
@@ -159,17 +160,12 @@ public virtual without sharing class LoggerNotificationProcessor {
   }
 
   private void buildSuppressedDeliveries(RuleEvaluation evaluation, List<LoggerNotificationDelivery__c> deliveriesToInsert) {
-    if (evaluation.rule.LoggerNotificationRecipients__r == null || evaluation.rule.LoggerNotificationRecipients__r.isEmpty()) {
+    if (evaluation.rule.IsDeliveryHistoryEnabled__c == false || evaluation.rule.LoggerNotificationRecipients__r == null || evaluation.matches == null) {
       return;
     }
-    if (evaluation.matches == null || evaluation.rule.IsDeliveryHistoryEnabled__c == false) {
-      return;
-    }
+
     Date retentionDate = computeRetentionDate(evaluation.rule.NumberOfDaysToRetainDeliveries__c);
     for (LoggerNotificationRecipient__c recipient : evaluation.rule.LoggerNotificationRecipients__r) {
-      if (recipient.Id == null) {
-        continue;
-      }
       for (LoggerNotificationMatch__c match : evaluation.matches) {
         LoggerNotificationDelivery__c delivery = new LoggerNotificationDelivery__c(
           AttemptCount__c = 0,
@@ -396,11 +392,6 @@ public virtual without sharing class LoggerNotificationProcessor {
       bucketed.get(sobjectApiName).add(rule);
     }
     return bucketed;
-  }
-
-  @TestVisible
-  private static void setCachedRules(List<LoggerNotificationRule__c> rules) {
-    cachedRulesBySObjectTypeName = bucketBySObjectTypeName(rules);
   }
 
   private class RuleEvaluation {
