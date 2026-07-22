@@ -22,7 +22,7 @@ private class LoggerNotificationRecipientHandler_Tests {
 
     LoggerDataStore.getDatabase().insertRecord(recipient);
 
-    LoggerNotificationRecipient__c requeried = [SELECT Id, ConfigurationJson__c FROM LoggerNotificationRecipient__c WHERE Id = :recipient.Id];
+    LoggerNotificationRecipient__c requeried = [SELECT Id, ConfigurationJson__c FROM LoggerNotificationRecipient__c WHERE Id = :recipient.Id WITH SYSTEM_MODE];
     System.Assert.isNull(requeried.ConfigurationJson__c);
   }
 
@@ -33,7 +33,7 @@ private class LoggerNotificationRecipientHandler_Tests {
 
     LoggerDataStore.getDatabase().insertRecord(recipient);
 
-    LoggerNotificationRecipient__c requeried = [SELECT Id FROM LoggerNotificationRecipient__c WHERE Id = :recipient.Id];
+    LoggerNotificationRecipient__c requeried = [SELECT Id FROM LoggerNotificationRecipient__c WHERE Id = :recipient.Id WITH SYSTEM_MODE];
     System.Assert.isNotNull(requeried.Id, 'A whitespace-only config JSON should be treated as empty and pass validation');
   }
 
@@ -44,7 +44,7 @@ private class LoggerNotificationRecipientHandler_Tests {
 
     LoggerDataStore.getDatabase().insertRecord(recipient);
 
-    LoggerNotificationRecipient__c requeried = [SELECT Id, ConfigurationJson__c FROM LoggerNotificationRecipient__c WHERE Id = :recipient.Id];
+    LoggerNotificationRecipient__c requeried = [SELECT Id, ConfigurationJson__c FROM LoggerNotificationRecipient__c WHERE Id = :recipient.Id WITH SYSTEM_MODE];
     System.Assert.areEqual('{"foo":"bar","count":3,"nested":{"a":1}}', requeried.ConfigurationJson__c);
   }
 
@@ -130,7 +130,7 @@ private class LoggerNotificationRecipientHandler_Tests {
     recipient.ConfigurationJson__c = '{"baz":42,"qux":true}';
     LoggerDataStore.getDatabase().updateRecord(recipient);
 
-    LoggerNotificationRecipient__c requeried = [SELECT Id, ConfigurationJson__c FROM LoggerNotificationRecipient__c WHERE Id = :recipient.Id];
+    LoggerNotificationRecipient__c requeried = [SELECT Id, ConfigurationJson__c FROM LoggerNotificationRecipient__c WHERE Id = :recipient.Id WITH SYSTEM_MODE];
     System.Assert.areEqual('{"baz":42,"qux":true}', requeried.ConfigurationJson__c);
   }
 
@@ -165,7 +165,7 @@ private class LoggerNotificationRecipientHandler_Tests {
     recipient.IsEnabled__c = !recipient.IsEnabled__c;
     LoggerDataStore.getDatabase().updateRecord(recipient);
 
-    LoggerNotificationRecipient__c requeried = [SELECT Id, IsEnabled__c FROM LoggerNotificationRecipient__c WHERE Id = :recipient.Id];
+    LoggerNotificationRecipient__c requeried = [SELECT Id, IsEnabled__c FROM LoggerNotificationRecipient__c WHERE Id = :recipient.Id WITH SYSTEM_MODE];
     System.Assert.areEqual(recipient.IsEnabled__c, requeried.IsEnabled__c);
   }
 

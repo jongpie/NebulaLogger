@@ -106,6 +106,7 @@ private class LoggerNotificationFormController_Tests {
       SELECT Id, LoggerNotificationRule__c, LoggerNotificationService__c
       FROM LoggerNotificationRecipient__c
       WHERE Id = :recipient.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(ruleId, requeriedRecipient.LoggerNotificationRule__c, 'Recipient parent Id should be stamped to the new rule');
     System.Assert.areEqual(service.Id, requeriedRecipient.LoggerNotificationService__c);
@@ -277,7 +278,7 @@ private class LoggerNotificationFormController_Tests {
     Id returnedId = LoggerNotificationFormController.updateRuleWithRecipients(rule, null, null, null);
 
     System.Assert.areEqual(rule.Id, returnedId);
-    LoggerNotificationRule__c requeriedRule = [SELECT Name, Comments__c FROM LoggerNotificationRule__c WHERE Id = :rule.Id];
+    LoggerNotificationRule__c requeriedRule = [SELECT Name, Comments__c FROM LoggerNotificationRule__c WHERE Id = :rule.Id WITH SYSTEM_MODE];
     System.Assert.areEqual('Rule Renamed', requeriedRule.Name);
     System.Assert.areEqual('New comment', requeriedRule.Comments__c);
   }
@@ -302,6 +303,7 @@ private class LoggerNotificationFormController_Tests {
       SELECT Id, ChannelIdentifier__c
       FROM LoggerNotificationRecipient__c
       WHERE LoggerNotificationRule__c = :rule.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(1, recipients.size());
     System.Assert.areEqual('#new-channel', recipients.get(0).ChannelIdentifier__c);
@@ -327,7 +329,12 @@ private class LoggerNotificationFormController_Tests {
     recipient.IsEnabled__c = false;
     LoggerNotificationFormController.updateRuleWithRecipients(rule, null, new List<LoggerNotificationRecipient__c>{ recipient }, null);
 
-    LoggerNotificationRecipient__c requeried = [SELECT ChannelIdentifier__c, IsEnabled__c FROM LoggerNotificationRecipient__c WHERE Id = :recipient.Id];
+    LoggerNotificationRecipient__c requeried = [
+      SELECT ChannelIdentifier__c, IsEnabled__c
+      FROM LoggerNotificationRecipient__c
+      WHERE Id = :recipient.Id
+      WITH SYSTEM_MODE
+    ];
     System.Assert.areEqual('#renamed', requeried.ChannelIdentifier__c);
     System.Assert.areEqual(false, requeried.IsEnabled__c);
   }
@@ -356,7 +363,12 @@ private class LoggerNotificationFormController_Tests {
 
     LoggerNotificationFormController.updateRuleWithRecipients(rule, null, null, new List<Id>{ toDelete.Id });
 
-    List<LoggerNotificationRecipient__c> remaining = [SELECT Id FROM LoggerNotificationRecipient__c WHERE LoggerNotificationRule__c = :rule.Id];
+    List<LoggerNotificationRecipient__c> remaining = [
+      SELECT Id
+      FROM LoggerNotificationRecipient__c
+      WHERE LoggerNotificationRule__c = :rule.Id
+      WITH SYSTEM_MODE
+    ];
     System.Assert.areEqual(1, remaining.size(), 'Only the kept recipient should remain');
     System.Assert.areEqual(toKeep.Id, remaining.get(0).Id);
   }
@@ -398,12 +410,13 @@ private class LoggerNotificationFormController_Tests {
       new List<Id>{ existingToDelete.Id }
     );
 
-    LoggerNotificationRule__c requeriedRule = [SELECT Name FROM LoggerNotificationRule__c WHERE Id = :rule.Id];
+    LoggerNotificationRule__c requeriedRule = [SELECT Name FROM LoggerNotificationRule__c WHERE Id = :rule.Id WITH SYSTEM_MODE];
     System.Assert.areEqual('Mixed Diff Rule Renamed', requeriedRule.Name);
     List<LoggerNotificationRecipient__c> recipients = [
       SELECT Id, ChannelIdentifier__c
       FROM LoggerNotificationRecipient__c
       WHERE LoggerNotificationRule__c = :rule.Id
+      WITH SYSTEM_MODE
       ORDER BY ChannelIdentifier__c ASC
     ];
     System.Assert.areEqual(2, recipients.size(), 'One deleted, one updated, one inserted -> 2 remain');
@@ -435,7 +448,7 @@ private class LoggerNotificationFormController_Tests {
     }
 
     System.Assert.isNotNull(thrown, 'Recipient insert failure should have thrown System.AuraHandledException');
-    LoggerNotificationRule__c requeriedRule = [SELECT Name FROM LoggerNotificationRule__c WHERE Id = :rule.Id];
+    LoggerNotificationRule__c requeriedRule = [SELECT Name FROM LoggerNotificationRule__c WHERE Id = :rule.Id WITH SYSTEM_MODE];
     System.Assert.areEqual('Rule That Should Not Change', requeriedRule.Name, 'Rule rename should have been rolled back');
   }
 

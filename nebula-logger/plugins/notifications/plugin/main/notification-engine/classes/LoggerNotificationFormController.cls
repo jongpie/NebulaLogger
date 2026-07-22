@@ -176,7 +176,8 @@ public with sharing class LoggerNotificationFormController {
       SELECT Id, IsEnabled__c, Name, NotifierApexClassName__c
       FROM LoggerNotificationService__c
       WHERE IsEnabled__c = TRUE
-      WITH USER_MODE
+      // TODO revisit to make sure SYSTEM_MODE is fine
+      WITH SYSTEM_MODE
       ORDER BY Name ASC
     ];
   }
@@ -249,7 +250,7 @@ public with sharing class LoggerNotificationFormController {
         SourceSObjectType__c
       FROM LoggerNotificationRule__c
       WHERE Id = :ruleId
-      WITH USER_MODE
+      WITH SYSTEM_MODE
       LIMIT 1
     ];
     if (rules.isEmpty()) {
@@ -259,7 +260,7 @@ public with sharing class LoggerNotificationFormController {
       SELECT ChannelIdentifier__c, ConfigurationJson__c, EmailAddress__c, Id, IsEnabled__c, LoggerNotificationRule__c, LoggerNotificationService__c, User__c
       FROM LoggerNotificationRecipient__c
       WHERE LoggerNotificationRule__c = :ruleId
-      WITH USER_MODE
+      WITH SYSTEM_MODE
       ORDER BY CreatedDate ASC
     ];
     RuleWithRecipients result = new RuleWithRecipients();
@@ -342,7 +343,7 @@ public with sharing class LoggerNotificationFormController {
           SELECT Id
           FROM LoggerNotificationRecipient__c
           WHERE Id IN :recipientIdsToDelete AND LoggerNotificationRule__c = :rule.Id
-          WITH USER_MODE
+          WITH SYSTEM_MODE
         ];
         LoggerDataStore.getDatabase().deleteRecords(toDelete);
       }

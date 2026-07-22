@@ -27,6 +27,7 @@ private class LoggerNotificationServiceHandler_Tests {
       SELECT Id, OriginOrganizationId__c, IsOriginOrganizationIdValid__c
       FROM LoggerNotificationService__c
       WHERE Id = :service.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(System.UserInfo.getOrganizationId(), requeriedService.OriginOrganizationId__c);
     System.Assert.isTrue(requeriedService.IsOriginOrganizationIdValid__c, 'IsOriginOrganizationIdValid__c should be true after insert in the current org');
@@ -40,7 +41,12 @@ private class LoggerNotificationServiceHandler_Tests {
 
     LoggerDataStore.getDatabase().insertRecord(service);
 
-    LoggerNotificationService__c requeriedService = [SELECT Id, OriginOrganizationId__c FROM LoggerNotificationService__c WHERE Id = :service.Id];
+    LoggerNotificationService__c requeriedService = [
+      SELECT Id, OriginOrganizationId__c
+      FROM LoggerNotificationService__c
+      WHERE Id = :service.Id
+      WITH SYSTEM_MODE
+    ];
     System.Assert.areEqual(
       System.UserInfo.getOrganizationId(),
       requeriedService.OriginOrganizationId__c,
@@ -68,6 +74,7 @@ private class LoggerNotificationServiceHandler_Tests {
       SELECT Id, OriginOrganizationId__c, IsOriginOrganizationIdValid__c
       FROM LoggerNotificationService__c
       WHERE Id = :service.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(foreignOrgId, afterUpdate.OriginOrganizationId__c, 'Update should not have re-stamped the origin org id');
     System.Assert.isFalse(afterUpdate.IsOriginOrganizationIdValid__c, 'Formula should still evaluate to false against the foreign org id');
@@ -116,7 +123,12 @@ private class LoggerNotificationServiceHandler_Tests {
 
     LoggerDataStore.getDatabase().insertRecord(service);
 
-    LoggerNotificationService__c requeried = [SELECT Id, NotifierApexClassName__c FROM LoggerNotificationService__c WHERE Id = :service.Id];
+    LoggerNotificationService__c requeried = [
+      SELECT Id, NotifierApexClassName__c
+      FROM LoggerNotificationService__c
+      WHERE Id = :service.Id
+      WITH SYSTEM_MODE
+    ];
     System.Assert.areEqual('SlackLoggerNotifier', requeried.NotifierApexClassName__c);
   }
 
@@ -129,7 +141,7 @@ private class LoggerNotificationServiceHandler_Tests {
     service.Description__c = 'unrelated tweak';
     LoggerDataStore.getDatabase().updateRecord(service);
 
-    System.Assert.areEqual('unrelated tweak', [SELECT Description__c FROM LoggerNotificationService__c WHERE Id = :service.Id].Description__c);
+    System.Assert.areEqual('unrelated tweak', [SELECT Description__c FROM LoggerNotificationService__c WHERE Id = :service.Id WITH SYSTEM_MODE].Description__c);
   }
 
   @IsTest
@@ -181,6 +193,7 @@ private class LoggerNotificationServiceHandler_Tests {
       SELECT Id, NamedCredentialDeveloperName__c, WebhookUrl__c, OriginOrganizationId__c
       FROM LoggerNotificationService__c
       WHERE Id = :service.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.isNull(requeried.NamedCredentialDeveloperName__c, 'Named credential should have been wiped when OriginOrganizationId__c changed');
     System.Assert.isNull(requeried.WebhookUrl__c, 'Webhook URL should have been wiped when OriginOrganizationId__c changed');
@@ -200,6 +213,7 @@ private class LoggerNotificationServiceHandler_Tests {
       SELECT Id, NamedCredentialDeveloperName__c, WebhookUrl__c
       FROM LoggerNotificationService__c
       WHERE Id = :service.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.isNull(requeried.WebhookUrl__c, 'Webhook URL should have been wiped when OriginOrganizationId__c changed');
     System.Assert.isNull(requeried.NamedCredentialDeveloperName__c, 'Named credential should stay null');
@@ -218,6 +232,7 @@ private class LoggerNotificationServiceHandler_Tests {
       SELECT Id, NamedCredentialDeveloperName__c, Description__c
       FROM LoggerNotificationService__c
       WHERE Id = :service.Id
+      WITH SYSTEM_MODE
     ];
     System.Assert.areEqual(
       'SlackWebApi',
