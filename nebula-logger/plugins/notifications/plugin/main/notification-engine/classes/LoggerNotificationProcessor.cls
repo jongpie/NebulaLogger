@@ -267,6 +267,7 @@ public virtual without sharing class LoggerNotificationProcessor {
       return;
     }
     // TODO uhhhh reenqueue, don't return
+    // TODO Pre-inserted PENDING delivery records are permanently orphaned when the queueable governor limit is already at max
     if (System.Limits.getQueueableJobs() >= System.Limits.getLimitQueueableJobs()) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('Nebula Logger Notifications - queueable limit reached, skipping ' + dispatches.size() + ' async notifier dispatch(es)');
