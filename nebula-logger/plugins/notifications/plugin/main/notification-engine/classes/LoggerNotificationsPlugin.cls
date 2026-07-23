@@ -36,17 +36,19 @@ public without sharing class LoggerNotificationsPlugin implements LoggerPlugin.T
    * @param input The trigger request provided by the core framework.
    */
   public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
-    if (input == null || input.triggerNew == null || input.triggerNew.isEmpty()) {
+    if (input == null || input.triggerNew == null || input.triggerNew.isEmpty() || SUPPORTED_SOURCE_TYPES.contains(input.sobjectType) == false) {
       return;
     }
-    // TODO revisit this, we need to support after update too for rollup fields to be recalculated
-    // (without sending duplicate notifications in the same transaction for the same source record)
-    if (input.triggerOperationType != System.TriggerOperation.AFTER_INSERT) {
+
+    // AFTER_UPDATE is accepted so that Log__c rollup fields (TotalERRORLogEntries__c, TotalLogEntries__c,
+    // etc.) - which Salesforce recalculates when child LogEntry__c records insert - can drive rule
+    // matching. The rollup value on Trigger.new for AFTER_UPDATE reflects the post-recalculation value,
+    // so no re-query is needed. Per-(rule, record) deduplication in `LoggerNotificationProcessor` keeps
+    // the AFTER_INSERT + AFTER_UPDATE pair from producing duplicate notifications for the same record.
+    if (input.triggerOperationType != System.TriggerOperation.AFTER_INSERT && input.triggerOperationType != System.TriggerOperation.AFTER_UPDATE) {
       return;
     }
-    if (SUPPORTED_SOURCE_TYPES.contains(input.sobjectType) == false) {
-      return;
-    }
+
     LoggerNotificationProcessor notifier = notifierOverride ?? new LoggerNotificationProcessor();
     notifier.sendNotifications(input.sobjectType, input.triggerNew);
   }
