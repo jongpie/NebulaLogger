@@ -26,6 +26,10 @@
  */
 public virtual without sharing class LoggerNotificationProcessor {
   private static Map<String, List<LoggerNotificationRule__c>> cachedRulesBySObjectTypeName;
+  // Tracks (rule, record) pairs already matched in this transaction, keyed as `<ruleId>:<recordId>`.
+  // Prevents an AFTER_UPDATE pass (fired when child inserts recalculate a parent Log__c rollup) from
+  // re-notifying for a record that already matched at AFTER_INSERT under the same rule.
+  private static Set<String> dispatchedRuleRecordKeys = new Set<String>();
 
   private final RuleFilterEvaluator filterEvaluator = new RuleFilterEvaluator();
 
@@ -78,10 +82,17 @@ public virtual without sharing class LoggerNotificationProcessor {
     for (LoggerNotificationRule__c rule : applicableRules) {
       List<SObject> matchingRecords = this.filterEvaluator.evaluate(sobjectType, rule.SourceSObjectFilter__c, requeriedRecords);
 
+      matchingRecords = filterOutPreviouslyDispatchedRecords(rule.Id, matchingRecords);
+
       if (matchingRecords.isEmpty()) {
         continue;
       }
 
+      // Mark every filter-matched record as dispatched for this rule BEFORE the field-value dedup
+      // collapse. Otherwise records dropped by `deduplicateMatchingRecords` would never get marked,
+      // and a subsequent AFTER_UPDATE pass could re-dispatch them once a different record in their
+      // dedup group is out of the way.
+      markDispatched(rule.Id, matchingRecords);
       matchingRecords = deduplicateMatchingRecords(matchingRecords, rule.DeduplicationSourceField__c);
       RuleEvaluation evaluation = new RuleEvaluation();
       evaluation.rule = rule;
@@ -98,6 +109,37 @@ public virtual without sharing class LoggerNotificationProcessor {
       evaluations.add(evaluation);
     }
     return evaluations;
+  }
+
+  private static List<SObject> filterOutPreviouslyDispatchedRecords(Id ruleId, List<SObject> matchingRecords) {
+    if (matchingRecords == null || matchingRecords.isEmpty() || ruleId == null) {
+      return matchingRecords;
+    }
+    List<SObject> remaining = new List<SObject>();
+    for (SObject record : matchingRecords) {
+      Id recordId = (Id) record.get('Id');
+      if (recordId == null || dispatchedRuleRecordKeys.contains(ruleId + ':' + recordId) == false) {
+        remaining.add(record);
+      }
+    }
+    return remaining;
+  }
+
+  private static void markDispatched(Id ruleId, List<SObject> matchingRecords) {
+    if (matchingRecords == null || matchingRecords.isEmpty() || ruleId == null) {
+      return;
+    }
+    for (SObject record : matchingRecords) {
+      Id recordId = (Id) record.get('Id');
+      if (recordId != null) {
+        dispatchedRuleRecordKeys.add(ruleId + ':' + recordId);
+      }
+    }
+  }
+
+  @TestVisible
+  private static void resetDispatchedRuleRecordKeys() {
+    dispatchedRuleRecordKeys = new Set<String>();
   }
 
   /**

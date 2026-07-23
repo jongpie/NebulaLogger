@@ -16,6 +16,7 @@ private class LoggerNotificationProcessor_Tests {
   private static Boolean mockNotifierShouldThrowNext = false;
 
   static {
+    // Don't use the org's actual custom metadata records when running tests
     LoggerConfigurationSelector.useMocks();
     // TODO add mock CMDT records for notification plugin??
   }
@@ -1537,6 +1538,117 @@ private class LoggerNotificationProcessor_Tests {
       WITH SYSTEM_MODE
     ];
     System.Assert.isNull(delivery.RetentionDate__c, 'Null NumberOfDaysToRetainDeliveries__c should leave the delivery record\'s retention date as null');
+  }
+
+  @IsTest
+  static void it_should_dispatch_a_matched_record_only_once_per_rule_across_multiple_sendNotifications_calls_in_the_same_transaction() {
+    // The processor tracks (rule, record) pairs already dispatched in the current transaction. This
+    // exists so that AFTER_INSERT followed by AFTER_UPDATE on the same source record (which happens
+    // whenever a Logger.saveLog transaction inserts child LogEntry__c records that recalculate a rollup
+    // on the parent Log__c) does not fire the same notifier twice for the same record under the same
+    // rule. The two calls below simulate exactly that pair.
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+    LoggerNotificationRule__c rule = buildRule(Schema.LogEntry__c.SObjectType, LOG_ENTRY_SAMPLE_FILTER);
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerDataStore.getDatabase()
+      .insertRecord(new LoggerNotificationRecipient__c(LoggerNotificationRule__c = rule.Id, LoggerNotificationService__c = service.Id));
+
+    System.Test.startTest();
+    LoggerNotificationProcessor processor = new LoggerNotificationProcessor();
+    processor.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
+    processor.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
+    System.Test.stopTest();
+
+    System.Assert.areEqual(
+      1,
+      mockNotifierInvocationCount,
+      'The same (rule, record) pair should notify exactly once per transaction, even across multiple sendNotifications calls'
+    );
+    System.Assert.areEqual(
+      1,
+      [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id WITH SYSTEM_MODE],
+      'Only one match record should be persisted for the deduped (rule, record) pair'
+    );
+  }
+
+  @IsTest
+  static void it_should_dispatch_the_same_record_under_two_different_rules_because_dedup_is_per_rule_and_record() {
+    // The dedup key is `<ruleId>:<recordId>`, not just record Id. Two rules can each match the same
+    // record and each should get its own notifier dispatch. This is important when admins layer a
+    // narrow rule (e.g. `LoggingLevel__c = 'ERROR' AND ExceptionType__c = 'System.NullPointerException'`)
+    // on top of a broad rule (e.g. `LoggingLevel__c = 'ERROR'`) - both should fire for a record that
+    // satisfies both.
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+    LoggerNotificationRule__c broadRule = buildRule(Schema.LogEntry__c.SObjectType, LOG_ENTRY_SAMPLE_FILTER);
+    broadRule.Name = 'Broad rule';
+    LoggerNotificationRule__c narrowRule = buildRule(Schema.LogEntry__c.SObjectType, LOG_ENTRY_SAMPLE_FILTER);
+    narrowRule.Name = 'Narrow rule';
+    LoggerDataStore.getDatabase().insertRecords(new List<LoggerNotificationRule__c>{ broadRule, narrowRule });
+    LoggerNotificationService__c service = buildService(MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerDataStore.getDatabase()
+      .insertRecords(
+        new List<LoggerNotificationRecipient__c>{
+          new LoggerNotificationRecipient__c(LoggerNotificationRule__c = broadRule.Id, LoggerNotificationService__c = service.Id),
+          new LoggerNotificationRecipient__c(LoggerNotificationRule__c = narrowRule.Id, LoggerNotificationService__c = service.Id)
+        }
+      );
+
+    System.Test.startTest();
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
+    System.Test.stopTest();
+
+    System.Assert.areEqual(2, mockNotifierInvocationCount, 'Two rules matching the same record should each dispatch once - the dedup key includes ruleId');
+    System.Assert.areEqual(
+      1,
+      [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :broadRule.Id WITH SYSTEM_MODE],
+      'The broad rule should record one match for the record'
+    );
+    System.Assert.areEqual(
+      1,
+      [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :narrowRule.Id WITH SYSTEM_MODE],
+      'The narrow rule should record one match for the same record'
+    );
+  }
+
+  @IsTest
+  static void it_should_dispatch_again_after_resetDispatchedRuleRecordKeys_clears_the_transaction_dedup_state() {
+    // The dedup set lives on a static field so it survives multiple sendNotifications calls within a
+    // single transaction. Tests that want to exercise the "record matches this rule for the first time"
+    // path across multiple calls need a way to reset the state without spinning up a new class loader.
+    // `resetDispatchedRuleRecordKeys` is that hook.
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+    LoggerNotificationRule__c rule = buildRule(Schema.LogEntry__c.SObjectType, LOG_ENTRY_SAMPLE_FILTER);
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerDataStore.getDatabase()
+      .insertRecord(new LoggerNotificationRecipient__c(LoggerNotificationRule__c = rule.Id, LoggerNotificationService__c = service.Id));
+
+    System.Test.startTest();
+    LoggerNotificationProcessor processor = new LoggerNotificationProcessor();
+    processor.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
+    LoggerNotificationProcessor.resetDispatchedRuleRecordKeys();
+    processor.sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ logEntry });
+    System.Test.stopTest();
+
+    System.Assert.areEqual(2, mockNotifierInvocationCount, 'Resetting the dedup state should let the same (rule, record) pair dispatch again');
+    System.Assert.areEqual(
+      2,
+      [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id WITH SYSTEM_MODE],
+      'Both dispatches after the reset should have persisted a match record'
+    );
   }
 
   // Test helpers

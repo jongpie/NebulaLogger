@@ -6,6 +6,16 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerNotificationsPlugin_Tests {
+  private static final String MOCK_NOTIFIER_CLASS = MockNotifier.class.getName();
+  private static final String LOG_ROLLUP_FILTER = 'TotalERRORLogEntries__c >= 1';
+
+  private static Integer mockNotifierInvocationCount = 0;
+  private static LoggerNotifierRequest mockNotifierLastRequest;
+
+  static {
+    LoggerConfigurationSelector.useMocks();
+  }
+
   @IsTest
   static void it_should_short_circuit_when_input_is_null() {
     RecordingNotifier notifier = installRecordingNotifier();
@@ -183,10 +193,163 @@ private class LoggerNotificationsPlugin_Tests {
     );
   }
 
+  @IsTest
+  static void it_should_not_match_a_log_source_rule_on_a_rollup_field_at_after_insert_because_the_in_memory_rollup_is_still_zero() {
+    // When a Logger.saveLog transaction inserts a Log__c and then inserts child LogEntry__c records,
+    // the parent's AFTER_INSERT trigger fires with TotalERRORLogEntries__c = 0 on the in-memory
+    // Trigger.new record - the rollup has not been recalculated yet. The plugin evaluates against the
+    // in-memory record (no re-query), so a filter of `TotalERRORLogEntries__c >= 1` correctly evaluates
+    // FALSE at insert time. The AFTER_UPDATE pass that Salesforce fires once the rollup recalculates
+    // is the one that carries the satisfying value.
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    Log__c freshLog = [SELECT Id, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
+    System.Assert.areEqual(
+      0,
+      freshLog.TotalERRORLogEntries__c,
+      'Test precondition: a Log__c with no child LogEntry__c records has TotalERRORLogEntries__c = 0'
+    );
+    LoggerNotificationRule__c rule = buildRule(Schema.Log__c.SObjectType, LOG_ROLLUP_FILTER);
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = service.Id
+    );
+    LoggerDataStore.getDatabase().insertRecord(recipient);
+
+    System.Test.startTest();
+    new LoggerNotificationsPlugin()
+      .execute(
+        new LoggerPlugin__mdt(),
+        new LoggerTriggerableContext(Schema.Log__c.SObjectType, System.TriggerOperation.AFTER_INSERT, new List<SObject>{ log })
+      );
+    System.Test.stopTest();
+
+    System.Assert.areEqual(0, mockNotifierInvocationCount, 'AFTER_INSERT with rollup still 0 should not match a rollup >= 1 filter');
+    System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id WITH SYSTEM_MODE]);
+  }
+
+  @IsTest
+  static void it_should_match_a_log_source_rule_on_a_rollup_field_at_after_update_when_a_child_insert_bumped_the_rollup_into_range() {
+    // Child LogEntry__c inserts force Salesforce to recalculate the parent Log__c rollup, which flows
+    // through the Log__c AFTER_UPDATE trigger with the new rollup value visible directly on the
+    // Trigger.new record - no re-query needed. The plugin should treat this update as an opportunity
+    // to evaluate rules whose filters reference rollup fields.
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    LoggerDataStore.getDatabase().insertRecord(log);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecord(logEntry);
+    Log__c updatedLog = [SELECT Id, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
+    System.Assert.areEqual(
+      1,
+      updatedLog.TotalERRORLogEntries__c,
+      'Test precondition: the child ERROR LogEntry__c should have rolled up into the parent Log__c'
+    );
+    LoggerNotificationRule__c rule = buildRule(Schema.Log__c.SObjectType, LOG_ROLLUP_FILTER);
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = service.Id
+    );
+    LoggerDataStore.getDatabase().insertRecord(recipient);
+
+    System.Test.startTest();
+    new LoggerNotificationsPlugin()
+      .execute(
+        new LoggerPlugin__mdt(),
+        new LoggerTriggerableContext(Schema.Log__c.SObjectType, System.TriggerOperation.AFTER_UPDATE, new List<SObject>{ updatedLog })
+      );
+    System.Test.stopTest();
+
+    System.Assert.areEqual(
+      1,
+      mockNotifierInvocationCount,
+      'AFTER_UPDATE on Log__c should feed rule evaluation so the rollup-bumped-into-range case reaches the notifier'
+    );
+    System.Assert.areEqual(
+      1,
+      [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id WITH SYSTEM_MODE],
+      'A LoggerNotificationMatch__c should be recorded once the rollup update flows through the plugin'
+    );
+  }
+
+  @IsTest
+  static void it_should_fire_the_notifier_only_once_when_a_record_matches_the_same_rule_at_after_insert_and_after_update() {
+    // Records that match on both AFTER_INSERT and AFTER_UPDATE (typical of a filter that references
+    // fields updated by same-transaction downstream DML) should notify exactly once per (rule, record)
+    // per transaction. The processor tracks dispatched (rule, record) pairs and skips duplicates.
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    log.TransactionId__c = 'log-fires-once';
+    LoggerDataStore.getDatabase().insertRecord(log);
+    // Rule filter is satisfied on both passes below - the in-memory record carries a matching value at
+    // AFTER_INSERT, and the same record with the same value is re-presented at AFTER_UPDATE. Without
+    // the (rule, record) dedup, the notifier would fire twice.
+    LoggerNotificationRule__c rule = buildRule(Schema.Log__c.SObjectType, 'TransactionId__c = \'log-fires-once\'');
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = service.Id
+    );
+    LoggerDataStore.getDatabase().insertRecord(recipient);
+
+    System.Test.startTest();
+    LoggerNotificationsPlugin plugin = new LoggerNotificationsPlugin();
+    plugin.execute(
+      new LoggerPlugin__mdt(),
+      new LoggerTriggerableContext(Schema.Log__c.SObjectType, System.TriggerOperation.AFTER_INSERT, new List<SObject>{ log })
+    );
+    plugin.execute(
+      new LoggerPlugin__mdt(),
+      new LoggerTriggerableContext(Schema.Log__c.SObjectType, System.TriggerOperation.AFTER_UPDATE, new List<SObject>{ log })
+    );
+    System.Test.stopTest();
+
+    System.Assert.areEqual(
+      1,
+      mockNotifierInvocationCount,
+      'Same-transaction AFTER_INSERT + AFTER_UPDATE for the same (rule, record) should fire the notifier exactly once'
+    );
+    System.Assert.areEqual(
+      1,
+      [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id WITH SYSTEM_MODE],
+      'Only one LoggerNotificationMatch__c should be recorded for the deduped (rule, record) pair'
+    );
+  }
+
   private static RecordingNotifier installRecordingNotifier() {
     RecordingNotifier recorder = new RecordingNotifier();
     LoggerNotificationsPlugin.notifierOverride = recorder;
     return recorder;
+  }
+
+  private static LoggerNotificationRule__c buildRule(Schema.SObjectType sobjectType, String filter) {
+    return new LoggerNotificationRule__c(
+      IsEnabled__c = true,
+      IsMatchHistoryEnabled__c = true,
+      IsDeliveryHistoryEnabled__c = true,
+      IsMatchThresholdEnabled__c = false,
+      Name = 'Test rule',
+      SourceSObjectFilter__c = filter,
+      SourceSObjectType__c = sobjectType.toString()
+    );
+  }
+
+  private static LoggerNotificationService__c buildService(String notifierApexClassName) {
+    return new LoggerNotificationService__c(IsEnabled__c = true, Name = 'Mock service', NotifierApexClassName__c = notifierApexClassName);
+  }
+
+  public class MockNotifier extends LoggerNotifier {
+    public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+      mockNotifierInvocationCount++;
+      mockNotifierLastRequest = request;
+      return null;
+    }
   }
 
   private class RecordingNotifier extends LoggerNotificationProcessor {
