@@ -68,7 +68,7 @@ This is why:
 
 The recipient&apos;s `Configuration (JSON)` field controls what gets rendered in the email body and (optionally) the subject line.
 
-- `sourceFields` - which source-record fields render in the body. Each entry is either a bare string (`&quot;LoggingLevel__c&quot;`) or an object (`{&quot;field&quot;: &quot;Log__c&quot;, &quot;displayLabel&quot;: &quot;Parent Log&quot;}`). Object entries support `displayField` (a different field whose value is rendered) and `displayLabel` (a label override in place of the field&apos;s describe label). Dotted paths (`Log__r.LoggedBy__r.Name`) are supported and are hydrated via SOQL at delivery time.
+- `sourceFields` - which source-record fields render in the body. Each entry is either a bare string (`&quot;LoggingLevel__c&quot;`) or an object (`{&quot;sourceField&quot;: &quot;Log__c&quot;, &quot;displayLabel&quot;: &quot;Parent Log&quot;}`). Object entries support `displayField` (a different field whose value is rendered) and `displayLabel` (a label override in place of the field&apos;s describe label). Dotted paths (`Log__r.LoggedBy__r.Name`) are supported and are re-queried via SOQL at delivery time.
 - `includeNullValues` - `true` renders blank fields as `(empty)`; the default `false` drops them.
 - `subjectTemplate` - custom subject line with `{!token}` merge tokens. Built-in tokens: `{!ruleName}`, `{!matchCount}`. Any other token is treated as a field API name on the first matching record and supports dotted paths (`{!Log__r.Name}`). Unknown tokens resolve to an empty string; a blank / all-blank template falls back to the default subject.
 

@@ -1201,6 +1201,44 @@ private class LoggerNotificationProcessor_Tests {
   }
 
   @IsTest
+  static void it_should_evaluate_filters_that_traverse_parent_relationships() {
+    /* 🪵 Logging data setup */
+    // Filter reaches through a parent lookup (LogEntry__c.Log__r.TransactionId__c). The trigger hands
+    // Trigger.new records to the processor, which have the parent lookup ID but no loaded
+    // relationship, so the formula evaluator would see `Log__r` as null and silently fail to match
+    // without the re-query.
+    Log__c matchingLog = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    matchingLog.TransactionId__c = 'expected-transaction-id';
+    Log__c otherLog = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    otherLog.TransactionId__c = 'other-transaction-id';
+    LoggerDataStore.getDatabase().insertRecords(new List<Log__c>{ matchingLog, otherLog });
+    LogEntry__c matchingEntry = new LogEntry__c(Log__c = matchingLog.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LogEntry__c nonMatchingEntry = new LogEntry__c(Log__c = otherLog.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
+    LoggerDataStore.getDatabase().insertRecords(new List<LogEntry__c>{ matchingEntry, nonMatchingEntry });
+    /* 🔔 Notification data setup */
+    LoggerNotificationRule__c rule = buildRule(Schema.LogEntry__c.SObjectType, 'Log__r.TransactionId__c = \'expected-transaction-id\'');
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerDataStore.getDatabase()
+      .insertRecord(new LoggerNotificationRecipient__c(LoggerNotificationRule__c = rule.Id, LoggerNotificationService__c = service.Id));
+
+    System.Test.startTest();
+    new LoggerNotificationProcessor().sendNotifications(Schema.LogEntry__c.SObjectType, new List<SObject>{ matchingEntry, nonMatchingEntry });
+    System.Test.stopTest();
+
+    System.Assert.areEqual(1, mockNotifierInvocationCount, 'The one entry whose parent Log__r.TransactionId__c matches should be dispatched');
+    List<LoggerNotificationMatch__c> matches = [
+      SELECT LogEntry__c, MatchedRecordId__c
+      FROM LoggerNotificationMatch__c
+      WHERE LoggerNotificationRule__c = :rule.Id
+      WITH SYSTEM_MODE
+    ];
+    System.Assert.areEqual(1, matches.size(), 'Exactly one match should be created for the entry whose parent record satisfies the filter');
+    System.Assert.areEqual(matchingEntry.Id, matches.get(0).LogEntry__c, 'The match should point at the entry under the matching parent Log__c');
+  }
+
+  @IsTest
   static void it_should_deduplicate_matching_records_by_the_rule_deduplication_source_field() {
     /* 🪵 Logging data setup */
     Log__c logA = new Log__c(TransactionId__c = 'log-a');

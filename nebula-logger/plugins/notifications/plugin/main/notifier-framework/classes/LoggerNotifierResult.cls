@@ -11,6 +11,7 @@
  *              notifier that returns a bare `new LoggerNotifierResult()` (or `null`) is treated as a plain success.
  */
 public class LoggerNotifierResult {
+  // TODO move statuses somewhere else, perhaps?
   /**
    * @description Sentinel values the runtime writes for `Status__c`. The picklist is unrestricted so admins can
    *              add their own values without a package upgrade breaking existing records.

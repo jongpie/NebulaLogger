@@ -74,7 +74,7 @@ Pick either **Incoming Webhook mode** (simpler, one channel per service) or **We
     &quot;includeNullValues&quot;: false,
     &quot;sourceFields&quot;: [
       {
-        &quot;field&quot;: &quot;Log__r.LoggedBy__c&quot;,
+        &quot;sourceField&quot;: &quot;Log__r.LoggedBy__c&quot;,
         &quot;displayField&quot;: &quot;Log__r.LoggedBy__r.Username&quot;
       },
       &quot;Log__c&quot;,
@@ -97,7 +97,7 @@ Pick either **Incoming Webhook mode** (simpler, one channel per service) or **We
     &quot;includeNullValues&quot;: false,
     &quot;sourceFields&quot;: [
       {
-        &quot;field&quot;: &quot;LoggedBy__r.Username&quot;,
+        &quot;sourceField&quot;: &quot;LoggedBy__r.Username&quot;,
         &quot;displayLabel&quot;: &quot;Logged By&quot;
       },
       &quot;Name&quot;,

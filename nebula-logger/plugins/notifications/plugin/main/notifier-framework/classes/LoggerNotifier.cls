@@ -10,7 +10,7 @@
  *              `NotifierApexClassName__c` field. The runtime instantiates the subclass dynamically for each recipient
  *              and hands it the matching records plus the recipient's connection configuration.
  *
- *              The base class also provides the shared field-path-walking and record-hydration helpers used by
+ *              The base class also provides the shared field-path-walking and record-requery helpers used by
  *              every notifier that reads recipient-configured source fields (Slack, Email, and future notifiers).
  *              These are `public static` because Apex forbids `protected static` and the helpers hold no
  *              instance state - subclasses (and the notifications engine itself) call them as pure utilities.
@@ -43,8 +43,9 @@ public abstract class LoggerNotifier {
   }
 
   /**
-   * @description Walks a dotted field path (e.g. `Log__r.Name`) on a hydrated SObject. Returns null on any
-   *              broken hop - unknown relationship name, missing parent, unknown final field.
+   * @description Walks a dotted field path (e.g. `Log__r.Name`) on an SObject that has already had its
+   *              parent relationships loaded (via SOQL SELECT or `requeryRecordsWithFieldPaths`). Returns
+   *              null on any broken hop - unknown relationship name, missing parent, unknown final field.
    */
   public static Object getValueByPath(SObject record, String fieldPath) {
     if (record == null || String.isBlank(fieldPath)) {
@@ -118,12 +119,14 @@ public abstract class LoggerNotifier {
    *              Unresolvable paths are silently dropped from the SELECT so a single bad path does not
    *              poison the whole query; the renderer already silently drops unresolvable paths at
    *              render time, so the two layers stay consistent.
-   * @param records The matching records to hydrate.
-   * @param fieldPaths The configured field paths - both flat field names and dotted relationships.
-   * @return A new list of hydrated records, in the same order as `records`. Records that could not be
-   *         hydrated (no Id, query failure) fall through untouched.
+   * @param records The matching records to re-query.
+   * @param fieldPaths The configured field paths - both flat field names and dotted relationships. A set
+   *                   so callers can accumulate paths from multiple sources (rule filters, notifier config,
+   *                   subject templates) without worrying about deduplication.
+   * @return A new list of re-queried records, in the same order as `records`. Records that could not be
+   *         re-queried (no Id, query failure) fall through untouched.
    */
-  public static List<SObject> hydrateRecordsWithFieldPaths(List<SObject> records, List<String> fieldPaths) {
+  public static List<SObject> requeryRecordsWithFieldPaths(List<SObject> records, Set<String> fieldPaths) {
     if (records == null || records.isEmpty() || fieldPaths == null || fieldPaths.isEmpty()) {
       return records;
     }
@@ -152,30 +155,30 @@ public abstract class LoggerNotifier {
     if (idsByType.isEmpty()) {
       return records;
     }
-    Map<Id, SObject> hydratedById = new Map<Id, SObject>();
+    Map<Id, SObject> requeriedById = new Map<Id, SObject>();
     for (Schema.SObjectType type : idsByType.keySet()) {
-      for (SObject queried : queryHydratedRecords(type, idsByType.get(type), fieldPaths)) {
-        hydratedById.put((Id) queried.get('Id'), queried);
+      for (SObject queried : queryRecordsWithFieldPaths(type, idsByType.get(type), fieldPaths)) {
+        requeriedById.put((Id) queried.get('Id'), queried);
       }
     }
     List<SObject> result = new List<SObject>();
     for (SObject record : records) {
       Id recordId = (Id) record.get('Id');
-      SObject hydrated = recordId == null ? null : hydratedById.get(recordId);
-      result.add(hydrated ?? record);
+      SObject requeried = recordId == null ? null : requeriedById.get(recordId);
+      result.add(requeried ?? record);
     }
     return result;
   }
 
   /**
-   * @description Runs the hydration SELECT for a single object type. Adds Id, Name (when the object has one),
+   * @description Runs the re-query SELECT for a single object type. Adds Id, Name (when the object has one),
    *              and LoggingLevel__c (used by notifiers that color-code on LogEntry) alongside the configured
-   *              paths so downstream renderers keep working after hydration replaces the trigger-supplied
+   *              paths so downstream renderers keep working after the re-query replaces the trigger-supplied
    *              record. Uses a Set to deduplicate the field list so a configured path that happens to repeat
    *              one of these fields doesn't produce a `duplicate field` SOQL error. If the query fails an
-   *              empty list is returned so the caller falls back to the un-hydrated records.
+   *              empty list is returned so the caller falls back to the trigger-supplied records.
    */
-  private static List<SObject> queryHydratedRecords(Schema.SObjectType type, Set<Id> ids, List<String> fieldPaths) {
+  private static List<SObject> queryRecordsWithFieldPaths(Schema.SObjectType type, Set<Id> ids, Set<String> fieldPaths) {
     Map<String, Schema.SObjectField> fieldMap = type.getDescribe().fields.getMap();
     Set<String> selectFieldSet = new Set<String>{ 'Id' };
     if (fieldMap.containsKey('name')) {
@@ -185,8 +188,8 @@ public abstract class LoggerNotifier {
       selectFieldSet.add('LoggingLevel__c');
     }
     // Filter out configured paths that don't resolve against the source type's describe. A single bad
-    // path used to poison the whole SELECT via QueryException, which fell back to un-hydrated records
-    // and made every OTHER configured field render as its null placeholder.
+    // path used to poison the whole SELECT via QueryException, which fell back to the trigger-supplied
+    // records and made every OTHER configured field render as its null placeholder.
     for (String path : fieldPaths) {
       if (getDescribeByPath(type, path) != null) {
         selectFieldSet.add(path);
@@ -197,7 +200,7 @@ public abstract class LoggerNotifier {
       return System.Database.queryWithBinds(query, new Map<String, Object>{ 'ids' => ids }, System.AccessLevel.SYSTEM_MODE);
     } catch (System.QueryException ex) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        Logger.warn('LoggerNotifier - could not hydrate records for field paths ' + fieldPaths + ': ' + ex.getMessage());
+        Logger.warn('LoggerNotifier - could not re-query records for field paths ' + fieldPaths + ': ' + ex.getMessage());
       }
       return new List<SObject>();
     }

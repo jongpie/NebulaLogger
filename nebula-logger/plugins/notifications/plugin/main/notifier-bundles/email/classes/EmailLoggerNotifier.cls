@@ -49,10 +49,10 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     String subjectTemplate = request.configuration.getString('subjectTemplate');
 
     Schema.SObjectType sourceType = request.matchingRecords.get(0).getSObjectType();
-    List<String> hydrationPaths = collectHydrationPaths(sourceFields, subjectTemplate, sourceType);
-    List<SObject> hydratedRecords = LoggerNotifier.hydrateRecordsWithFieldPaths(request.matchingRecords, hydrationPaths);
+    Set<String> fieldPathsToRequery = collectFieldPathsToRequery(sourceFields, subjectTemplate, sourceType);
+    List<SObject> requeriedRecords = LoggerNotifier.requeryRecordsWithFieldPaths(request.matchingRecords, fieldPathsToRequery);
 
-    Messaging.SingleEmailMessage email = this.buildEmail(request, hydratedRecords, sourceFields, includeNullValues, subjectTemplate);
+    Messaging.SingleEmailMessage email = this.buildEmail(request, requeriedRecords, sourceFields, includeNullValues, subjectTemplate);
     if (email == null) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('EmailLoggerNotifier - recipient has neither User__c nor EmailAddress__c; skipping delivery');
@@ -87,7 +87,7 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
   @TestVisible
   private Messaging.SingleEmailMessage buildEmail(
     LoggerNotifierRequest request,
-    List<SObject> hydratedRecords,
+    List<SObject> requeriedRecords,
     List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields,
     Boolean includeNullValues,
     String subjectTemplate
@@ -105,14 +105,14 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     if (targeted == false) {
       return null;
     }
-    email.setSubject(this.buildSubject(request, hydratedRecords, subjectTemplate));
-    email.setPlainTextBody(this.buildBody(request, hydratedRecords, sourceFields, includeNullValues));
+    email.setSubject(this.buildSubject(request, requeriedRecords, subjectTemplate));
+    email.setPlainTextBody(this.buildBody(request, requeriedRecords, sourceFields, includeNullValues));
     return email;
   }
 
-  private String buildSubject(LoggerNotifierRequest request, List<SObject> hydratedRecords, String subjectTemplate) {
+  private String buildSubject(LoggerNotifierRequest request, List<SObject> requeriedRecords, String subjectTemplate) {
     if (String.isNotBlank(subjectTemplate)) {
-      String rendered = renderSubjectTemplate(subjectTemplate, request, hydratedRecords);
+      String rendered = renderSubjectTemplate(subjectTemplate, request, requeriedRecords);
       if (String.isNotBlank(rendered)) {
         return rendered;
       }
@@ -122,8 +122,8 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     return 'Nebula Logger: ' + matchCount + ' ' + recordLabel + ' matched ' + request.recipient.LoggerNotificationRule__r.Name;
   }
 
-  private static String renderSubjectTemplate(String template, LoggerNotifierRequest request, List<SObject> hydratedRecords) {
-    SObject firstRecord = hydratedRecords.isEmpty() ? null : hydratedRecords.get(0);
+  private static String renderSubjectTemplate(String template, LoggerNotifierRequest request, List<SObject> requeriedRecords) {
+    SObject firstRecord = requeriedRecords.isEmpty() ? null : requeriedRecords.get(0);
     System.Matcher matcher = MERGE_TOKEN_PATTERN.matcher(template);
     List<String> segments = new List<String>();
     Integer cursor = 0;
@@ -160,7 +160,7 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
   @SuppressWarnings('PMD.ExcessiveParameterList')
   private String buildBody(
     LoggerNotifierRequest request,
-    List<SObject> hydratedRecords,
+    List<SObject> requeriedRecords,
     List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields,
     Boolean includeNullValues
   ) {
@@ -171,9 +171,9 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     }
     lines.add('Matching records: ' + request.matchingRecords.size());
     lines.add('');
-    Schema.SObjectType sourceType = hydratedRecords.get(0).getSObjectType();
+    Schema.SObjectType sourceType = requeriedRecords.get(0).getSObjectType();
     Integer index = 1;
-    for (SObject record : hydratedRecords) {
+    for (SObject record : requeriedRecords) {
       lines.add('--- Record ' + index + ' ---');
       for (LoggerNotifierConfiguration.SourceFieldDefinition definition : sourceFields) {
         String renderedField = renderField(record, sourceType, definition, includeNullValues);
@@ -214,18 +214,18 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     return label + ': ' + String.valueOf(rawValue);
   }
 
-  private static List<String> collectHydrationPaths(
+  private static Set<String> collectFieldPathsToRequery(
     List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields,
     String subjectTemplate,
     Schema.SObjectType sourceType
   ) {
-    Set<String> pathSet = new Set<String>();
+    Set<String> paths = new Set<String>();
     for (LoggerNotifierConfiguration.SourceFieldDefinition definition : sourceFields) {
       if (String.isNotBlank(definition.sourceField)) {
-        pathSet.add(definition.sourceField);
+        paths.add(definition.sourceField);
       }
       if (String.isNotBlank(definition.displayField)) {
-        pathSet.add(definition.displayField);
+        paths.add(definition.displayField);
       }
     }
     if (String.isNotBlank(subjectTemplate)) {
@@ -236,11 +236,10 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
           continue;
         }
         if (LoggerNotifier.getDescribeByPath(sourceType, tokenName) != null) {
-          pathSet.add(tokenName);
+          paths.add(tokenName);
         }
       }
     }
-    List<String> paths = new List<String>(pathSet);
     return paths;
   }
 }
