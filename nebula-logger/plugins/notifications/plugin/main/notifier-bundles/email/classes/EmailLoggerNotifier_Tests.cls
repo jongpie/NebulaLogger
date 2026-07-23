@@ -100,7 +100,7 @@ private class EmailLoggerNotifier_Tests {
   @IsTest
   static void it_should_apply_display_label_and_display_field_overrides() {
     EmailLoggerNotifier notifier = new EmailLoggerNotifier();
-    String json = '{"sourceFields":[{"field":"Message__c","displayLabel":"What Happened"}]}';
+    String json = '{"sourceFields":[{"sourceField":"Message__c","displayLabel":"What Happened"}]}';
     LoggerNotifierRequest request = buildRequest(new LoggerNotificationRecipient__c(EmailAddress__c = 'alerts@example.com', ConfigurationJson__c = json));
 
     Messaging.SingleEmailMessage email = notifier.buildEmail(request, request.matchingRecords, request.configuration.getSourceFields(), false, null);

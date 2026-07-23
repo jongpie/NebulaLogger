@@ -41,7 +41,7 @@ List<Object> sourceFieldsConfig = null;
 String ruleName = 'Manual test rule';
 
 // The matching record the notifier renders against. Uses the most recent real
-// LogEntry__c out of the org so hydration + linkification work against real
+// LogEntry__c out of the org so the re-query + linkification work against real
 // data. Run a Logger recipe first if the org has no log entries.
 List<LogEntry__c> recentEntries = [SELECT Id, Name, LoggingLevel__c, Message__c FROM LogEntry__c ORDER BY CreatedDate DESC LIMIT 1];
 if (recentEntries.isEmpty()) {
