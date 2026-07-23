@@ -110,6 +110,138 @@ public abstract class LoggerNotifier {
   }
 
   /**
+   * @description For a REFERENCE-typed field with no explicit `displayField` override, derives the `.Name`
+   *              path on the parent record so the notifier can show `<parent Name>` instead of a raw Id.
+   *              Returns null if the field is not a REFERENCE, or if the parent type has no `Name` field
+   *              (e.g. junctions, some managed objects).
+   * @param fieldPath The primary field path (e.g. `LoggedBy__c` or `Log__r.OwnerId`) to derive from.
+   * @param startType The SObject type the path is rooted at.
+   * @return The `.Name`-terminated path on the parent record, or null when substitution isn't possible.
+   */
+  public static String deriveParentNamePath(String fieldPath, Schema.SObjectType startType) {
+    Schema.DescribeFieldResult describe = getDescribeByPath(startType, fieldPath);
+    if (describe == null || describe.getType() != Schema.DisplayType.REFERENCE) {
+      return null;
+    }
+    List<Schema.SObjectType> refs = describe.getReferenceTo();
+    if (refs.isEmpty()) {
+      return null;
+    }
+    Schema.SObjectType parentType = refs.get(0);
+    if (parentType.getDescribe().fields.getMap().containsKey('name') == false) {
+      return null;
+    }
+    // Substitute the terminal foreign-key segment (`.LoggedBy__c`) with the relationship+Name pair
+    // (`.LoggedBy__r.Name`). The relationship name is the FK's `getRelationshipName()`.
+    String relationshipName = describe.getRelationshipName();
+    if (String.isBlank(relationshipName)) {
+      return null;
+    }
+    List<String> parts = fieldPath.split('\\.');
+    parts.set(parts.size() - 1, relationshipName + '.Name');
+    return String.join(parts, '.');
+  }
+
+  /**
+   * @description Gathers every field path a notifier needs pre-loaded on the matching records before
+   *              rendering: the primary `sourceField` for each definition, any `displayField` override,
+   *              and (for REFERENCE-typed primaries with no override) the parent record's `.Name` so the
+   *              renderer can substitute the parent name for the raw Id. The returned set is ready to
+   *              hand to `requeryRecordsWithFieldPaths`.
+   * @param sourceFields The recipient-configured source-field definitions.
+   * @param sourceType The SObject type the paths are rooted at.
+   * @return A set of field paths (both flat and dotted) covering the primary field, display-field override,
+   *         and REFERENCE-parent-Name fallback for each definition.
+   */
+  public static Set<String> collectFieldPathsToRequery(List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields, Schema.SObjectType sourceType) {
+    Set<String> paths = new Set<String>();
+    if (sourceFields == null) {
+      return paths;
+    }
+    for (LoggerNotifierConfiguration.SourceFieldDefinition definition : sourceFields) {
+      if (String.isNotBlank(definition.sourceField)) {
+        paths.add(definition.sourceField);
+      }
+      if (String.isNotBlank(definition.displayField)) {
+        paths.add(definition.displayField);
+      } else {
+        // REFERENCE primary field with no explicit display override: pull the parent's Name too so the
+        // renderer can substitute it for the raw Id at render time.
+        Schema.DescribeFieldResult describe = getDescribeByPath(sourceType, definition.sourceField);
+        if (describe != null && describe.getType() == Schema.DisplayType.REFERENCE) {
+          String parentNamePath = deriveParentNamePath(definition.sourceField, sourceType);
+          if (parentNamePath != null) {
+            paths.add(parentNamePath);
+          }
+        }
+      }
+    }
+    return paths;
+  }
+
+  /**
+   * @description Resolves the record Id a rendered field should link to, when the field's value points at
+   *              a specific record. Returns non-null for three cases: a REFERENCE-typed primary field
+   *              (link to the referenced record), the source record's own `Name` (link to the source
+   *              record), or a dotted path ending in `.Name` (link to the parent record whose Name is
+   *              being displayed). All other paths return null so the notifier renders them as plain text.
+   * @param record The already-requeried record carrying the resolved parent lookups.
+   * @param fieldPath The primary field path (`sourceField`) from the definition.
+   * @param primaryDescribe The describe for the primary field, so the caller doesn't pay for a re-describe.
+   * @return The Id to link to, or null when the field shouldn't render as a link.
+   */
+  public static Id resolveLinkTarget(SObject record, String fieldPath, Schema.DescribeFieldResult primaryDescribe) {
+    if (record == null || String.isBlank(fieldPath) || primaryDescribe == null) {
+      return null;
+    }
+    if (primaryDescribe.getType() == Schema.DisplayType.REFERENCE) {
+      Object value = getValueByPath(record, fieldPath);
+      return value instanceof Id ? (Id) value : null;
+    }
+    List<String> parts = fieldPath.split('\\.');
+    if (parts.get(parts.size() - 1).equalsIgnoreCase('Name') == false) {
+      return null;
+    }
+    if (parts.size() == 1) {
+      // Source record's own Name - link to the source record.
+      Object idValue = record.get('Id');
+      return idValue instanceof Id ? (Id) idValue : null;
+    }
+    // Parent record's Name - link to the parent record. The parent's Id is on the source record via the
+    // `__c` (or standard-relationship) column corresponding to the `__r` hop just before Name.
+    String parentRelationshipSegment = parts.get(parts.size() - 2);
+    // For dotted paths deeper than 2 segments, we walk the intermediate `__r` chain to reach the direct
+    // parent, then look up the Id from THAT record's foreign-key column.
+    SObject parentHolder = record;
+    for (Integer i = 0; i < parts.size() - 2; i++) {
+      try {
+        parentHolder = parentHolder.getSObject(parts.get(i));
+      } catch (System.SObjectException ex) {
+        return null;
+      }
+      if (parentHolder == null) {
+        return null;
+      }
+    }
+    Schema.SObjectField fkField = findForeignKeyField(parentHolder.getSObjectType(), parentRelationshipSegment);
+    if (fkField == null) {
+      return null;
+    }
+    Object idValue = parentHolder.get(fkField);
+    return idValue instanceof Id ? (Id) idValue : null;
+  }
+
+  private static Schema.SObjectField findForeignKeyField(Schema.SObjectType type, String relationshipSegment) {
+    for (Schema.SObjectField field : type.getDescribe().fields.getMap().values()) {
+      Schema.DescribeFieldResult describe = field.getDescribe();
+      if (relationshipSegment.equalsIgnoreCase(describe.getRelationshipName())) {
+        return field;
+      }
+    }
+    return null;
+  }
+
+  /**
    * @description When configured source fields include parent-relationship paths (containing a `.`), the
    *              trigger-supplied `matchingRecords` don't have those parent lookups populated - Salesforce
    *              only fills them in on records loaded via SOQL that explicitly selected them. This helper

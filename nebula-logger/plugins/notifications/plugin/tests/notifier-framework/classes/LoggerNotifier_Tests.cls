@@ -210,4 +210,159 @@ private class LoggerNotifier_Tests {
     LogEntry__c requeriedEntry = (LogEntry__c) requeriedRecords.get(0);
     System.Assert.areEqual(expectedParentName, requeriedEntry.Log__r.Name, 'Good path should still resolve after the bad path was dropped');
   }
+
+  @IsTest
+  static void it_should_derive_parent_name_path_for_a_reference_field() {
+    // LogEntry__c.Log__c is a REFERENCE to Log__c, and Log__c has a Name field.
+    String parentNamePath = LoggerNotifier.deriveParentNamePath('Log__c', Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual('Log__r.Name', parentNamePath, 'A REFERENCE field with a Name-bearing parent should derive `<relationshipName>.Name`');
+  }
+
+  @IsTest
+  static void it_should_derive_parent_name_path_when_field_path_is_dotted() {
+    // Log__c.LoggedBy__c is a REFERENCE to User. Starting from LogEntry__c and going Log__r.LoggedBy__c
+    // should yield Log__r.LoggedBy__r.Name.
+    String parentNamePath = LoggerNotifier.deriveParentNamePath('Log__r.LoggedBy__c', Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual('Log__r.LoggedBy__r.Name', parentNamePath, 'A dotted REFERENCE path should replace only the terminal FK segment');
+  }
+
+  @IsTest
+  static void it_should_return_null_parent_name_path_for_non_reference_fields() {
+    System.Assert.isNull(
+      LoggerNotifier.deriveParentNamePath('LoggingLevel__c', Schema.LogEntry__c.SObjectType),
+      'A non-REFERENCE field has no parent to link to'
+    );
+  }
+
+  @IsTest
+  static void it_should_return_null_parent_name_path_for_unknown_fields() {
+    System.Assert.isNull(
+      LoggerNotifier.deriveParentNamePath('ThisFieldDoesNotExist__c', Schema.LogEntry__c.SObjectType),
+      'An unknown field should return null rather than throwing'
+    );
+  }
+
+  @IsTest
+  static void it_should_return_null_parent_name_path_for_blank_or_null_inputs() {
+    System.Assert.isNull(LoggerNotifier.deriveParentNamePath(null, Schema.LogEntry__c.SObjectType));
+    System.Assert.isNull(LoggerNotifier.deriveParentNamePath('', Schema.LogEntry__c.SObjectType));
+    System.Assert.isNull(LoggerNotifier.deriveParentNamePath('Log__c', null));
+  }
+
+  @IsTest
+  static void it_should_return_an_empty_set_when_source_fields_are_null_or_empty() {
+    System.Assert.areEqual(new Set<String>(), LoggerNotifier.collectFieldPathsToRequery(null, Schema.LogEntry__c.SObjectType));
+    System.Assert.areEqual(
+      new Set<String>(),
+      LoggerNotifier.collectFieldPathsToRequery(new List<LoggerNotifierConfiguration.SourceFieldDefinition>(), Schema.LogEntry__c.SObjectType)
+    );
+  }
+
+  @IsTest
+  static void it_should_collect_the_bare_source_field_path_for_non_reference_definitions() {
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = new List<LoggerNotifierConfiguration.SourceFieldDefinition>{
+      new LoggerNotifierConfiguration.SourceFieldDefinition('LoggingLevel__c', null, null),
+      new LoggerNotifierConfiguration.SourceFieldDefinition('Message__c', null, null)
+    };
+
+    Set<String> paths = LoggerNotifier.collectFieldPathsToRequery(sourceFields, Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(new Set<String>{ 'LoggingLevel__c', 'Message__c' }, paths, 'Non-REFERENCE definitions should contribute only their source field');
+  }
+
+  @IsTest
+  static void it_should_include_the_parent_name_path_for_reference_definitions_without_override() {
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = new List<LoggerNotifierConfiguration.SourceFieldDefinition>{
+      new LoggerNotifierConfiguration.SourceFieldDefinition('Log__c', null, null)
+    };
+
+    Set<String> paths = LoggerNotifier.collectFieldPathsToRequery(sourceFields, Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(new Set<String>{ 'Log__c', 'Log__r.Name' }, paths, 'A REFERENCE field with no override should also request the parent Name');
+  }
+
+  @IsTest
+  static void it_should_include_the_display_field_override_instead_of_the_parent_name_path() {
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = new List<LoggerNotifierConfiguration.SourceFieldDefinition>{
+      new LoggerNotifierConfiguration.SourceFieldDefinition('Log__c', 'Log__r.TransactionId__c', null)
+    };
+
+    Set<String> paths = LoggerNotifier.collectFieldPathsToRequery(sourceFields, Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(
+      new Set<String>{ 'Log__c', 'Log__r.TransactionId__c' },
+      paths,
+      'An explicit displayField should replace the auto-derived parent Name path'
+    );
+  }
+
+  @IsTest
+  static void it_should_resolve_the_link_target_id_for_a_reference_field() {
+    // The trigger-supplied record carries the FK; the REFERENCE case reads it directly with no re-query.
+    Id logId = (Id) LoggerMockDataCreator.createId(Schema.Log__c.SObjectType);
+    LogEntry__c logEntry = new LogEntry__c(Log__c = logId);
+    Schema.DescribeFieldResult logDescribe = LoggerNotifier.getDescribeByPath(Schema.LogEntry__c.SObjectType, 'Log__c');
+
+    Id linkTarget = LoggerNotifier.resolveLinkTarget(logEntry, 'Log__c', logDescribe);
+
+    System.Assert.areEqual(logId, linkTarget, 'A REFERENCE field should link to the referenced record');
+  }
+
+  @IsTest
+  static void it_should_return_null_link_target_for_a_reference_field_with_a_null_value() {
+    LogEntry__c logEntry = new LogEntry__c();
+    Schema.DescribeFieldResult logDescribe = LoggerNotifier.getDescribeByPath(Schema.LogEntry__c.SObjectType, 'Log__c');
+
+    System.Assert.isNull(LoggerNotifier.resolveLinkTarget(logEntry, 'Log__c', logDescribe), 'A REFERENCE field with a null value should not link');
+  }
+
+  @IsTest
+  static void it_should_resolve_the_link_target_for_a_bare_name_path() {
+    // A `Name` on the source record links to the source record itself.
+    Id fakeId = (Id) LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType);
+    LogEntry__c logEntry = (LogEntry__c) System.JSON.deserialize(
+      '{"attributes":{"type":"LogEntry__c"},"Id":"' + fakeId + '","Name":"LE-0001"}',
+      LogEntry__c.class
+    );
+    Schema.DescribeFieldResult nameDescribe = LoggerNotifier.getDescribeByPath(Schema.LogEntry__c.SObjectType, 'Name');
+
+    Id linkTarget = LoggerNotifier.resolveLinkTarget(logEntry, 'Name', nameDescribe);
+
+    System.Assert.areEqual(fakeId, linkTarget, 'A bare Name path should link to the source record');
+  }
+
+  @IsTest
+  static void it_should_resolve_the_link_target_for_a_parent_dotted_name_path() {
+    Id logId = (Id) LoggerMockDataCreator.createId(Schema.Log__c.SObjectType);
+    // Trigger-supplied FK on the source record; the walker reads the FK column, not the __r sub-record.
+    LogEntry__c logEntry = new LogEntry__c(Log__c = logId);
+    Schema.DescribeFieldResult logNameDescribe = LoggerNotifier.getDescribeByPath(Schema.LogEntry__c.SObjectType, 'Log__r.Name');
+
+    Id linkTarget = LoggerNotifier.resolveLinkTarget(logEntry, 'Log__r.Name', logNameDescribe);
+
+    System.Assert.areEqual(logId, linkTarget, 'A parent-dotted Name path should link to the parent record');
+  }
+
+  @IsTest
+  static void it_should_return_null_link_target_for_a_scalar_non_name_path() {
+    LogEntry__c logEntry = new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name());
+    Schema.DescribeFieldResult loggingLevelDescribe = LoggerNotifier.getDescribeByPath(Schema.LogEntry__c.SObjectType, 'LoggingLevel__c');
+
+    System.Assert.isNull(
+      LoggerNotifier.resolveLinkTarget(logEntry, 'LoggingLevel__c', loggingLevelDescribe),
+      'A scalar non-Name field should not link to anything'
+    );
+  }
+
+  @IsTest
+  static void it_should_return_null_link_target_for_null_inputs() {
+    Schema.DescribeFieldResult logDescribe = LoggerNotifier.getDescribeByPath(Schema.LogEntry__c.SObjectType, 'Log__c');
+
+    System.Assert.isNull(LoggerNotifier.resolveLinkTarget(null, 'Log__c', logDescribe));
+    System.Assert.isNull(LoggerNotifier.resolveLinkTarget(new LogEntry__c(), null, logDescribe));
+    System.Assert.isNull(LoggerNotifier.resolveLinkTarget(new LogEntry__c(), '', logDescribe));
+    System.Assert.isNull(LoggerNotifier.resolveLinkTarget(new LogEntry__c(), 'Log__c', null));
+  }
 }

@@ -75,11 +75,15 @@ Pick either **Incoming Webhook mode** (simpler, one channel per service) or **We
     &quot;sourceFields&quot;: [
       {
         &quot;sourceField&quot;: &quot;Log__r.LoggedBy__c&quot;,
-        &quot;displayField&quot;: &quot;Log__r.LoggedBy__r.Username&quot;
+        &quot;displayField&quot;: &quot;Log__r.LoggedBy__r.Username&quot;,
+        &quot;displayLabel&quot;: &quot;Logged By Username&quot;
       },
       &quot;Log__c&quot;,
       &quot;LoggingLevel__c&quot;,
-      &quot;Message__c&quot;,
+      {
+        &quot;sourceField&quot;: &quot;Message__c&quot;,
+        &quot;maxLength&quot;: 500
+      },
       &quot;Origin__c&quot;,
       &quot;StackTrace__c&quot;,
       &quot;ExceptionType__c&quot;,

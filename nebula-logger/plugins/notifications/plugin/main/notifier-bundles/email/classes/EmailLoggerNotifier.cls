@@ -26,10 +26,22 @@
  *              to the default subject.
  */
 public without sharing class EmailLoggerNotifier extends LoggerNotifier {
-  // TODO eliminate this, the list of source fields will vary based on rule's SourceSObjectType__c,
-  // so definining defaults needs to be sobject-specific.
-  // The recipients should provide a list of source fields, so there shouldn't be a need for default fields.
-  private static final List<String> DEFAULT_SOURCE_FIELDS = new List<String>{ 'LoggingLevel__c', 'Origin__c', 'Message__c', 'StackTrace__c' };
+  // Per-SObject default sourceFields used when a recipient's ConfigurationJson__c does not specify its
+  // own list. Keys are the source SObject's unqualified API name (matching how rules store
+  // SourceSObjectType__c and how SuggestedConfigurationJson__c is keyed). The '*' key is the fallback
+  // for any SObject not spelled out.
+  private static final Map<String, List<String>> DEFAULT_SOURCE_FIELDS_BY_SOBJECT = new Map<String, List<String>>{
+    Schema.LogEntry__c.SObjectType.toString() => new List<String>{ 'LoggingLevel__c', 'Origin__c', 'Message__c', 'StackTrace__c' },
+    Schema.Log__c.SObjectType.toString() => new List<String>{
+      'Name',
+      'TransactionId__c',
+      'TotalERRORLogEntries__c',
+      'TotalWARNLogEntries__c',
+      'StartTime__c',
+      'EndTime__c'
+    },
+    '*' => new List<String>{ 'Name' }
+  };
   private static final String NULL_VALUE_PLACEHOLDER = '(empty)';
   private static final System.Pattern MERGE_TOKEN_PATTERN = System.Pattern.compile('\\{!([^{}]+)\\}');
 
@@ -41,14 +53,14 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     if (request == null || request.recipient == null || request.matchingRecords == null || request.matchingRecords.isEmpty()) {
       return null;
     }
+    Schema.SObjectType sourceType = request.matchingRecords.get(0).getSObjectType();
     List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = request.configuration.getSourceFields();
     if (sourceFields == null) {
-      sourceFields = LoggerNotifier.buildDefaultSourceFields(DEFAULT_SOURCE_FIELDS);
+      sourceFields = LoggerNotifier.buildDefaultSourceFields(getDefaultSourceFields(sourceType));
     }
     Boolean includeNullValues = request.configuration.getBoolean('includeNullValues', false);
     String subjectTemplate = request.configuration.getString('subjectTemplate');
 
-    Schema.SObjectType sourceType = request.matchingRecords.get(0).getSObjectType();
     Set<String> fieldPathsToRequery = collectFieldPathsToRequery(sourceFields, subjectTemplate, sourceType);
     List<SObject> requeriedRecords = LoggerNotifier.requeryRecordsWithFieldPaths(request.matchingRecords, fieldPathsToRequery);
 
@@ -120,6 +132,16 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
     Integer matchCount = request.matchingRecords.size();
     String recordLabel = matchCount == 1 ? 'record' : 'records';
     return 'Nebula Logger: ' + matchCount + ' ' + recordLabel + ' matched ' + request.recipient.LoggerNotificationRule__r.Name;
+  }
+
+  private static List<String> getDefaultSourceFields(Schema.SObjectType sourceType) {
+    if (sourceType != null) {
+      List<String> match = DEFAULT_SOURCE_FIELDS_BY_SOBJECT.get(sourceType.toString());
+      if (match != null) {
+        return match;
+      }
+    }
+    return DEFAULT_SOURCE_FIELDS_BY_SOBJECT.get('*');
   }
 
   private static String renderSubjectTemplate(String template, LoggerNotifierRequest request, List<SObject> requeriedRecords) {

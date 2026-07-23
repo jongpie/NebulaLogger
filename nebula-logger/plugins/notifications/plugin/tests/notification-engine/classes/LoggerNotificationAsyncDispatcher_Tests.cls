@@ -11,6 +11,11 @@ private class LoggerNotificationAsyncDispatcher_Tests {
   private static Integer mockNotifierThrownCount = 0;
   private static Boolean mockNotifierShouldThrowNext = false;
 
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
+
   private static void resetMockNotifier() {
     mockNotifierInvocationCount = 0;
     mockNotifierThrownCount = 0;

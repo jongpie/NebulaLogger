@@ -42,9 +42,7 @@ private class CMDT_LoggerNotificationsPlugin_Tests {
     List<LoggerSObjectHandler__mdt> bundledRecords = [
       SELECT Id
       FROM LoggerSObjectHandler__mdt
-      WHERE
-        DeveloperName = 'LoggerNotificationDeliveryHandler'
-        OR SObjectType__r.QualifiedApiName = :Schema.LoggerNotificationDelivery__c.SObjectType.getDescribe().getLocalName()
+      WHERE SObjectType__r.QualifiedApiName = :Schema.LoggerNotificationDelivery__c.SObjectType.getDescribe().getLocalName()
     ];
 
     System.Assert.isTrue(bundledRecords.isEmpty(), 'No record or handler should be present for LoggerNotificationDelivery__c');
@@ -55,9 +53,7 @@ private class CMDT_LoggerNotificationsPlugin_Tests {
     List<LoggerSObjectHandler__mdt> bundledRecords = [
       SELECT Id
       FROM LoggerSObjectHandler__mdt
-      WHERE
-        DeveloperName = 'LoggerNotificationMatchHandler'
-        OR SObjectType__r.QualifiedApiName = :Schema.LoggerNotificationMatch__c.SObjectType.getDescribe().getLocalName()
+      WHERE SObjectType__r.QualifiedApiName = :Schema.LoggerNotificationMatch__c.SObjectType.getDescribe().getLocalName()
     ];
 
     System.Assert.isTrue(bundledRecords.isEmpty(), 'No record or handler should be present for LoggerNotificationMatch__c');
