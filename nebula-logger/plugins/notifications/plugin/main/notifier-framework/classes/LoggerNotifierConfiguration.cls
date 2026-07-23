@@ -16,7 +16,9 @@
  *                  "LoggingLevel__c",                                              // bare string form
  *                  { "sourceField": "Log__r.LoggedBy__c",                          // object form
  *                    "displayField": "Log__r.LoggedBy__r.Username",                // optional value override
- *                    "displayLabel": "Logged By" }                                 // optional label override
+ *                    "displayLabel": "Logged By",                                  // optional label override
+ *                    "maxLength": 50                                               // optional truncation cap
+ *                  }
  *                ]
  *              }
  */
@@ -169,18 +171,24 @@ public class LoggerNotifierConfiguration {
     }
     Object displayFieldValue = sourceFieldMap.get('displayField');
     Object displayLabelValue = sourceFieldMap.get('displayLabel');
+    Object maxLengthValue = sourceFieldMap.get('maxLength');
+    Integer maxLength = maxLengthValue instanceof Integer && ((Integer) maxLengthValue) > 0 ? (Integer) maxLengthValue : null;
     return new SourceFieldDefinition(
       (String) sourceFieldValue,
       displayFieldValue instanceof String && String.isNotBlank((String) displayFieldValue) ? (String) displayFieldValue : null,
-      displayLabelValue instanceof String && String.isNotBlank((String) displayLabelValue) ? (String) displayLabelValue : null
+      displayLabelValue instanceof String && String.isNotBlank((String) displayLabelValue) ? (String) displayLabelValue : null,
+      maxLength
     );
   }
 
   /**
    * @description Describes one entry in a recipient's `sourceFields` config. The `sourceField` API name drives
-   *              the re-query, linkification, and the default label / DisplayType lookup. The two optional
-   *              overrides let admins tweak either the value (`displayField`) or the label (`displayLabel`)
-   *              without changing what the underlying field points at.
+   *              the re-query, linkification, and the default label / DisplayType lookup. The three optional
+   *              overrides let admins tweak either the value (`displayField`), the label (`displayLabel`), or
+   *              the maximum rendered length (`maxLength`) without changing what the underlying field points at.
+   *              `maxLength` is a hint for notifiers - each notifier decides how (or whether) to apply it.
+   *              Notifiers that already enforce a per-field ceiling (e.g. Slack's ~2000-character attachment
+   *              limit) treat the configured value as a further clamp within that ceiling.
    */
   public class SourceFieldDefinition {
     /** @description The primary field API name / dotted path. Never blank. */
@@ -192,10 +200,23 @@ public class LoggerNotifierConfiguration {
     /** @description Optional literal label used instead of the field's describe-provided label. */
     public final String displayLabel;
 
+    /**
+     * @description Optional positive integer specifying the maximum number of characters that should be
+     *              rendered for this field. Notifiers that honor it truncate longer values (usually with
+     *              an ellipsis) at render time. Null / absent means "no admin-configured cap"; the notifier
+     *              is free to apply its own default.
+     */
+    public final Integer maxLength;
+
     public SourceFieldDefinition(String sourceField, String displayField, String displayLabel) {
+      this(sourceField, displayField, displayLabel, null);
+    }
+
+    public SourceFieldDefinition(String sourceField, String displayField, String displayLabel, Integer maxLength) {
       this.sourceField = sourceField;
       this.displayField = displayField;
       this.displayLabel = displayLabel;
+      this.maxLength = maxLength;
     }
   }
 }

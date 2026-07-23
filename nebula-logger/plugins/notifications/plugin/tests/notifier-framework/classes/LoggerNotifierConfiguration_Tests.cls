@@ -163,6 +163,47 @@ private class LoggerNotifierConfiguration_Tests {
   }
 
   @IsTest
+  static void it_should_parse_the_configured_max_length_from_an_object_entry() {
+    String json = '{"sourceFields":[{"sourceField":"Message__c","maxLength":500}]}';
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
+
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = new LoggerNotifierConfiguration(recipient).getSourceFields();
+
+    System.Assert.areEqual(1, sourceFields.size());
+    System.Assert.areEqual(500, sourceFields.get(0).maxLength);
+  }
+
+  @IsTest
+  static void it_should_default_max_length_to_null_when_absent_or_not_a_positive_integer() {
+    // Absent, wrong type (string), zero, and negative all resolve to null so notifiers know "no admin cap".
+    String json =
+      '{"sourceFields":[' +
+      '{"sourceField":"A__c"},' +
+      '{"sourceField":"B__c","maxLength":"nope"},' +
+      '{"sourceField":"C__c","maxLength":0},' +
+      '{"sourceField":"D__c","maxLength":-5}' +
+      ']}';
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
+
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = new LoggerNotifierConfiguration(recipient).getSourceFields();
+
+    System.Assert.areEqual(4, sourceFields.size());
+    for (LoggerNotifierConfiguration.SourceFieldDefinition definition : sourceFields) {
+      System.Assert.isNull(definition.maxLength, 'Non-positive-integer maxLength values should parse as null: ' + definition.sourceField);
+    }
+  }
+
+  @IsTest
+  static void it_should_default_max_length_to_null_for_bare_string_entries() {
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["Message__c"]}');
+
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = new LoggerNotifierConfiguration(recipient).getSourceFields();
+
+    System.Assert.areEqual(1, sourceFields.size());
+    System.Assert.isNull(sourceFields.get(0).maxLength);
+  }
+
+  @IsTest
   static void it_should_return_null_from_get_string_when_key_is_absent() {
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"someOtherKey":"value"}');
 
