@@ -256,7 +256,7 @@ private class SlackLoggerNotifier_Tests {
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-    String json = '{"sourceFields":[{"field":"Log__c","displayField":"Log__r.LoggedByUsername__c"}]}';
+    String json = '{"sourceFields":[{"sourceField":"Log__c","displayField":"Log__r.LoggedByUsername__c"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
     recipient.LoggerNotificationRule__r = buildRule();
     recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
@@ -276,7 +276,7 @@ private class SlackLoggerNotifier_Tests {
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-    String json = '{"sourceFields":[{"field":"LoggingLevel__c","displayLabel":"Severity"}]}';
+    String json = '{"sourceFields":[{"sourceField":"LoggingLevel__c","displayLabel":"Severity"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
     recipient.LoggerNotificationRule__r = buildRule();
     recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
