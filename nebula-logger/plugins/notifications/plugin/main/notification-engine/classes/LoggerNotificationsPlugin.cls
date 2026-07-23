@@ -40,7 +40,7 @@ public without sharing class LoggerNotificationsPlugin implements LoggerPlugin.T
       return;
     }
 
-    // AFTER_UPDATE is accepted so that Log__c rollup fields (TotalERRORLogEntries__c, TotalLogEntries__c,
+    // AFTER_UPDATE is accepted so that rollup fields (like Log__c.TotalERRORLogEntries__c, Log__c.TotalLogEntries__c,
     // etc.) - which Salesforce recalculates when child LogEntry__c records insert - can drive rule
     // matching. The rollup value on Trigger.new for AFTER_UPDATE reflects the post-recalculation value,
     // so no re-query is needed. Per-(rule, record) deduplication in `LoggerNotificationProcessor` keeps

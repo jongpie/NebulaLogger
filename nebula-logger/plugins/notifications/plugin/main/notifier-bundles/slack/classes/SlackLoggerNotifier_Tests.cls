@@ -9,6 +9,7 @@ private class SlackLoggerNotifier_Tests {
   private static final String NOTIFICATION_COLOR_RED = '#FF7373';
   private static final String NOTIFICATION_COLOR_ORANGE = '#FFC873';
   private static final String NOTIFICATION_COLOR_GREEN = '#7CD197';
+  private static final String NOTIFICATION_COLOR_BLUE = '#7C8CD1';
 
   @IsTest
   static void it_should_short_circuit_when_context_is_null_or_has_no_matching_records() {
@@ -81,19 +82,67 @@ private class SlackLoggerNotifier_Tests {
   @IsTest
   static void it_should_color_error_entries_red() {
     String payload = capturePayloadForLoggingLevel(System.LoggingLevel.ERROR.name());
+
     System.Assert.isTrue(payload.contains(NOTIFICATION_COLOR_RED), 'ERROR attachments should be red: ' + payload);
   }
 
   @IsTest
   static void it_should_color_warn_entries_orange() {
     String payload = capturePayloadForLoggingLevel(System.LoggingLevel.WARN.name());
+
     System.Assert.isTrue(payload.contains(NOTIFICATION_COLOR_ORANGE), 'WARN attachments should be orange: ' + payload);
   }
 
   @IsTest
   static void it_should_color_non_error_non_warn_entries_green() {
     String payload = capturePayloadForLoggingLevel(System.LoggingLevel.INFO.name());
+
     System.Assert.isTrue(payload.contains(NOTIFICATION_COLOR_GREEN), 'Non-error/non-warn attachments should be green: ' + payload);
+  }
+
+  @IsTest
+  static void it_should_color_log_records_with_error_entries_red() {
+    // Log__c uses the rolled-up ERROR count to pick its color rather than a LoggingLevel__c field on
+    // the record itself. Any positive TotalERRORLogEntries__c rollup drives the attachment red.
+    String payload = capturePayloadForLog(buildLogWithRollups(3, 0));
+
+    System.Assert.isTrue(payload.contains(NOTIFICATION_COLOR_RED), 'Log__c with ERROR rollup > 0 should render red: ' + payload);
+  }
+
+  @IsTest
+  static void it_should_color_log_records_with_warn_entries_but_no_errors_red() {
+    // Log__c's WARN rollup also drives red today - the notifier treats any non-zero WARN aggregate on a
+    // Log rollup as elevated enough to warrant the ERROR color, since a WARN on a rolled-up log means
+    // the whole transaction contained at least one warning worth attention.
+    String payload = capturePayloadForLog(buildLogWithRollups(0, 2));
+
+    System.Assert.isTrue(payload.contains(NOTIFICATION_COLOR_RED), 'Log__c with no ERROR but WARN > 0 should still render red: ' + payload);
+  }
+
+  @IsTest
+  static void it_should_color_log_records_with_no_error_or_warn_entries_green() {
+    String payload = capturePayloadForLog(buildLogWithRollups(0, 0));
+
+    System.Assert.isTrue(payload.contains(NOTIFICATION_COLOR_GREEN), 'Log__c with no ERROR / WARN rollups should render green: ' + payload);
+  }
+
+  @IsTest
+  static void it_should_color_records_of_other_sobjects_with_the_blue_fallback() {
+    // The switch on record only carries branches for Log__c and LogEntry__c. Anything else - other
+    // Nebula custom objects the notifier might match on in the future, or a hand-rolled test record like
+    // this Account - falls through the switch and gets the blue fallback so the attachment is still
+    // rendered with a visible sidebar color.
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ new Account(Name = 'Placeholder record') });
+
+    String payload = sendAndCapture(request);
+
+    System.Assert.isTrue(payload.contains(NOTIFICATION_COLOR_BLUE), 'Non-Log / non-LogEntry records should fall back to the blue color: ' + payload);
+    System.Assert.isFalse(payload.contains(NOTIFICATION_COLOR_RED), 'Fallback path should not accidentally pick the red color: ' + payload);
+    System.Assert.isFalse(payload.contains(NOTIFICATION_COLOR_GREEN), 'Fallback path should not accidentally pick the green color: ' + payload);
+    System.Assert.isFalse(payload.contains(NOTIFICATION_COLOR_ORANGE), 'Fallback path should not accidentally pick the orange color: ' + payload);
   }
 
   @IsTest
@@ -146,6 +195,56 @@ private class SlackLoggerNotifier_Tests {
     // LoggingLevel__c is a Picklist (scalar) so it should render half-width wrapped in single backticks.
     System.Assert.isTrue(payload.contains('```Something went wrong```'), 'Long text fields should be wrapped in a triple-backtick code block: ' + payload);
     System.Assert.isTrue(payload.contains('`ERROR`'), 'Scalar fields should be wrapped in single backticks for inline code rendering: ' + payload);
+  }
+
+  @IsTest
+  static void it_should_truncate_wide_field_values_at_the_default_ceiling_when_no_max_length_is_configured() {
+    String longMessage = 'a'.repeat(3000);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["Message__c"]}');
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ new LogEntry__c(Message__c = longMessage) });
+
+    String payload = sendAndCapture(request);
+
+    // Slack's ~2000-character legacy-attachment ceiling clamps the value at 1990 characters total: 1987 a's plus the `...` ellipsis abbreviate() appends.
+    System.Assert.isTrue(payload.contains('a'.repeat(1987) + '...```'), 'Long values should be abbreviated at the default ceiling: ' + payload);
+    System.Assert.isFalse(payload.contains('a'.repeat(1988)), 'The raw un-truncated value should not appear in the payload: ' + payload);
+  }
+
+  @IsTest
+  static void it_should_honor_a_configured_max_length_below_the_default_ceiling() {
+    String longMessage = 'x'.repeat(1000);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      ConfigurationJson__c = '{"sourceFields":[{"sourceField":"Message__c","maxLength":50}]}'
+    );
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ new LogEntry__c(Message__c = longMessage) });
+
+    String payload = sendAndCapture(request);
+
+    // maxLength: 50 → abbreviate to 50 characters total (47 x's + `...`) inside the triple-backtick block.
+    System.Assert.isTrue(payload.contains('```' + 'x'.repeat(47) + '...```'), 'Admin-configured maxLength should clamp the rendered value: ' + payload);
+  }
+
+  @IsTest
+  static void it_should_clamp_a_configured_max_length_that_exceeds_the_default_ceiling() {
+    String longMessage = 'y'.repeat(3000);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      ConfigurationJson__c = '{"sourceFields":[{"sourceField":"Message__c","maxLength":5000}]}'
+    );
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ new LogEntry__c(Message__c = longMessage) });
+
+    String payload = sendAndCapture(request);
+
+    // An admin-configured maxLength above the ~2000-character Slack ceiling should still be clamped at 1990: 1987 y's plus `...`.
+    System.Assert.isTrue(
+      payload.contains('y'.repeat(1987) + '...```'),
+      'Configured maxLength above the Slack ceiling should be clamped to the ceiling: ' + payload
+    );
   }
 
   @IsTest
@@ -211,7 +310,7 @@ private class SlackLoggerNotifier_Tests {
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
-    logEntry = [SELECT Id, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
+    logEntry = [SELECT Id, LoggingLevel__c, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
 
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["Name"]}');
     recipient.LoggerNotificationRule__r = buildRule();
@@ -294,7 +393,7 @@ private class SlackLoggerNotifier_Tests {
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
-    logEntry = [SELECT Id, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
+    logEntry = [SELECT Id, LoggingLevel__c, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
 
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
     recipient.LoggerNotificationRule__r = buildRule();
@@ -489,6 +588,24 @@ private class SlackLoggerNotifier_Tests {
     recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
     LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ new LogEntry__c(LoggingLevel__c = loggingLevel) });
     return sendAndCapture(request);
+  }
+
+  private static String capturePayloadForLog(Log__c log) {
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
+    recipient.LoggerNotificationRule__r = buildRule();
+    recipient.LoggerNotificationService__r = buildService('https://example.com/hook', null);
+    LoggerNotifierRequest request = new LoggerNotifierRequest(recipient, new List<SObject>{ log });
+    return sendAndCapture(request);
+  }
+
+  // TotalERRORLogEntries__c / TotalWARNLogEntries__c are rollup summary fields that Apex won't let a test
+  // set directly. Round-trip through JSON so the returned Log__c carries the requested rollup values
+  // for the notifier's switch on record to branch on.
+  private static Log__c buildLogWithRollups(Integer errorRollup, Integer warnRollup) {
+    return (Log__c) LoggerMockDataCreator.setReadOnlyField(
+      new Log__c(),
+      new Map<Schema.SObjectField, Object>{ Schema.Log__c.TotalERRORLogEntries__c => errorRollup, Schema.Log__c.TotalWARNLogEntries__c => warnRollup }
+    );
   }
 
   private static String sendAndCapture(LoggerNotifierRequest request) {
