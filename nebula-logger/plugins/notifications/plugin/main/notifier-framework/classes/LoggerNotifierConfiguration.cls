@@ -14,7 +14,7 @@
  *              {
  *                "sourceFields": [
  *                  "LoggingLevel__c",                                              // bare string form
- *                  { "field": "Log__r.LoggedBy__c",                                // object form
+ *                  { "sourceField": "Log__r.LoggedBy__c",                          // object form
  *                    "displayField": "Log__r.LoggedBy__r.Username",                // optional value override
  *                    "displayLabel": "Logged By" }                                 // optional label override
  *                ]
@@ -163,14 +163,14 @@ public class LoggerNotifierConfiguration {
       return null;
     }
     Map<String, Object> sourceFieldMap = (Map<String, Object>) rawSourceField;
-    Object fieldValue = sourceFieldMap.get('field');
-    if ((fieldValue instanceof String) == false || String.isBlank((String) fieldValue)) {
+    Object sourceFieldValue = sourceFieldMap.get('sourceField');
+    if ((sourceFieldValue instanceof String) == false || String.isBlank((String) sourceFieldValue)) {
       return null;
     }
     Object displayFieldValue = sourceFieldMap.get('displayField');
     Object displayLabelValue = sourceFieldMap.get('displayLabel');
     return new SourceFieldDefinition(
-      (String) fieldValue,
+      (String) sourceFieldValue,
       displayFieldValue instanceof String && String.isNotBlank((String) displayFieldValue) ? (String) displayFieldValue : null,
       displayLabelValue instanceof String && String.isNotBlank((String) displayLabelValue) ? (String) displayLabelValue : null
     );

@@ -344,4 +344,140 @@ private class CMDT_LoggerNotificationsPlugin_Tests {
     System.Assert.isNotNull(resolvedApexClass, 'Configured Apex class should resolve at runtime');
     System.Assert.isInstanceOfType(resolvedApexClass.newInstance(), LoggerNotifier.class, 'Configured Apex class should extend LoggerNotifier');
   }
+
+  // Regression coverage for the Slack notifier's SuggestedConfigurationJson__c. The stored value used to
+  // spell the object-form primary key as `field`; the notifier framework parses `sourceField`, so every
+  // object entry silently deserialized with a null `sourceField` and the field was excluded from the Slack
+  // message at runtime. These tests validate that the bundled JSON parses via LoggerNotifierConfiguration
+  // AND that every configured source-field path resolves against the org schema, which catches both the
+  // key mismatch and a stale field API name in a single assertion.
+
+  @IsTest
+  static void it_has_slack_suggested_configuration_json_that_deserializes_cleanly() {
+    LoggerNotifierType__mdt bundledRecord = querySuggestedConfigurationJson('Slack');
+    Map<String, LoggerNotifierConfiguration> configurationsBySObjectKey = deserializeSuggestedConfigurations(bundledRecord);
+
+    LoggerNotifierConfiguration logEntryConfiguration = configurationsBySObjectKey.get(Schema.LogEntry__c.SObjectType.toString());
+    System.Assert.isNotNull(logEntryConfiguration, 'Slack SuggestedConfigurationJson__c should include a LogEntry__c entry');
+    assertAllSourceFieldsHaveNonBlankSourceField(logEntryConfiguration, Schema.LogEntry__c.SObjectType);
+
+    LoggerNotifierConfiguration logConfiguration = configurationsBySObjectKey.get(Schema.Log__c.SObjectType.toString());
+    System.Assert.isNotNull(logConfiguration, 'Slack SuggestedConfigurationJson__c should include a Log__c entry');
+    assertAllSourceFieldsHaveNonBlankSourceField(logConfiguration, Schema.Log__c.SObjectType);
+
+    LoggerNotifierConfiguration wildcardConfiguration = configurationsBySObjectKey.get('*');
+    System.Assert.isNotNull(wildcardConfiguration, 'Slack SuggestedConfigurationJson__c should include the "*" wildcard entry');
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> wildcardSourceFields = wildcardConfiguration.getSourceFields();
+    System.Assert.isNotNull(wildcardSourceFields, 'Wildcard entry should carry a sourceFields list');
+    System.Assert.isFalse(wildcardSourceFields.isEmpty(), 'Wildcard entry should carry at least one source field');
+    for (LoggerNotifierConfiguration.SourceFieldDefinition definition : wildcardSourceFields) {
+      System.Assert.isNotNull(definition.sourceField, 'Every wildcard sourceFields entry should populate its sourceField property');
+      System.Assert.isTrue(String.isNotBlank(definition.sourceField), 'Every wildcard sourceFields entry should populate its sourceField property');
+    }
+  }
+
+  @IsTest
+  static void it_has_email_suggested_configuration_json_that_deserializes_cleanly() {
+    // Email doesn't use object-form entries today, but the same guardrail applies: if a future edit
+    // introduces one with the wrong key, the test breaks before the notifier silently drops the field.
+    LoggerNotifierType__mdt bundledRecord = querySuggestedConfigurationJson('Email');
+    Map<String, LoggerNotifierConfiguration> configurationsBySObjectKey = deserializeSuggestedConfigurations(bundledRecord);
+
+    LoggerNotifierConfiguration logEntryConfiguration = configurationsBySObjectKey.get(Schema.LogEntry__c.SObjectType.toString());
+    System.Assert.isNotNull(logEntryConfiguration, 'Email SuggestedConfigurationJson__c should include a LogEntry__c entry');
+    assertAllSourceFieldsHaveNonBlankSourceField(logEntryConfiguration, Schema.LogEntry__c.SObjectType);
+
+    LoggerNotifierConfiguration logConfiguration = configurationsBySObjectKey.get(Schema.Log__c.SObjectType.toString());
+    System.Assert.isNotNull(logConfiguration, 'Email SuggestedConfigurationJson__c should include a Log__c entry');
+    assertAllSourceFieldsHaveNonBlankSourceField(logConfiguration, Schema.Log__c.SObjectType);
+  }
+
+  @IsTest
+  static void it_has_custom_notification_suggested_configuration_json_that_deserializes_cleanly() {
+    LoggerNotifierType__mdt bundledRecord = querySuggestedConfigurationJson('CustomNotification');
+    Map<String, LoggerNotifierConfiguration> configurationsBySObjectKey = deserializeSuggestedConfigurations(bundledRecord);
+    System.Assert.isFalse(
+      configurationsBySObjectKey.isEmpty(),
+      'CustomNotification SuggestedConfigurationJson__c should deserialize into at least one SObject-keyed entry'
+    );
+    // The parser accepts absent sourceFields lists (falls back to notifier defaults) - the only invariant
+    // worth asserting for CustomNotification is that whatever list IS present populates sourceField.
+    for (String sobjectKey : configurationsBySObjectKey.keySet()) {
+      List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = configurationsBySObjectKey.get(sobjectKey).getSourceFields();
+      if (sourceFields == null) {
+        continue;
+      }
+      for (LoggerNotifierConfiguration.SourceFieldDefinition definition : sourceFields) {
+        System.Assert.isNotNull(definition.sourceField, 'Entry under key "' + sobjectKey + '" is missing its sourceField property (likely wrong JSON key)');
+        System.Assert.isTrue(String.isNotBlank(definition.sourceField), 'Entry under key "' + sobjectKey + '" has a blank sourceField');
+      }
+    }
+  }
+
+  @IsTest
+  static void it_has_slack_suggested_configuration_json_that_resolves_the_reference_style_source_field() {
+    // Narrow, high-signal regression assertion for the exact defect - the LogEntry__c entry's first
+    // sourceField is the object form { "sourceField": "Log__r.LoggedBy__c", ... }. Under the pre-fix
+    // parser (which read the `field` key), definition.sourceField came back null and the notifier
+    // silently dropped the LoggedBy attachment. Asserting the resolved path here directly reproduces
+    // the failure the bug caused in production Slack messages.
+    LoggerNotifierType__mdt bundledRecord = querySuggestedConfigurationJson('Slack');
+    Map<String, LoggerNotifierConfiguration> configurationsBySObjectKey = deserializeSuggestedConfigurations(bundledRecord);
+    LoggerNotifierConfiguration logEntryConfiguration = configurationsBySObjectKey.get(Schema.LogEntry__c.SObjectType.toString());
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = logEntryConfiguration.getSourceFields();
+
+    System.Assert.isNotNull(sourceFields, 'LogEntry__c entry should carry a sourceFields list');
+    System.Assert.isFalse(sourceFields.isEmpty(), 'LogEntry__c entry should carry at least one source field');
+    LoggerNotifierConfiguration.SourceFieldDefinition firstDefinition = sourceFields.get(0);
+    System.Assert.areEqual('Log__r.LoggedBy__c', firstDefinition.sourceField, 'Object-form entry should populate its sourceField from the JSON');
+    System.Assert.areEqual('Log__r.LoggedBy__r.Username', firstDefinition.displayField, 'Object-form entry should populate its displayField from the JSON');
+  }
+
+  private static LoggerNotifierType__mdt querySuggestedConfigurationJson(String developerName) {
+    // LoggerNotifierType__mdt.getInstance() returns Long Text Area fields truncated at 255 chars, which
+    // silently corrupts JSON longer than that. Round-trip via SOQL so the full JSON reaches the parser.
+    return [SELECT DeveloperName, SuggestedConfigurationJson__c FROM LoggerNotifierType__mdt WHERE DeveloperName = :developerName];
+  }
+
+  private static Map<String, LoggerNotifierConfiguration> deserializeSuggestedConfigurations(LoggerNotifierType__mdt bundledRecord) {
+    System.Assert.isNotNull(bundledRecord, 'Notifier type record is missing');
+    System.Assert.isNotNull(bundledRecord.SuggestedConfigurationJson__c, 'SuggestedConfigurationJson__c should not be blank');
+    Object parsed;
+    try {
+      parsed = System.JSON.deserializeUntyped(bundledRecord.SuggestedConfigurationJson__c);
+    } catch (System.JSONException ex) {
+      System.Assert.fail('SuggestedConfigurationJson__c on ' + bundledRecord.DeveloperName + ' failed to parse: ' + ex.getMessage());
+    }
+    System.Assert.isInstanceOfType(
+      parsed,
+      Map<String, Object>.class,
+      'SuggestedConfigurationJson__c on ' + bundledRecord.DeveloperName + ' should be an SObject-keyed map'
+    );
+    Map<String, Object> parsedMap = (Map<String, Object>) parsed;
+    Map<String, LoggerNotifierConfiguration> configurationsBySObjectKey = new Map<String, LoggerNotifierConfiguration>();
+    for (String sobjectKey : parsedMap.keySet()) {
+      // Re-serialize the per-SObject value so a LoggerNotificationRecipient__c stand-in can round-trip it
+      // through the same parser the notifier framework uses at runtime.
+      String perSObjectJson = System.JSON.serialize(parsedMap.get(sobjectKey));
+      LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = perSObjectJson);
+      configurationsBySObjectKey.put(sobjectKey, new LoggerNotifierConfiguration(recipient));
+    }
+    return configurationsBySObjectKey;
+  }
+
+  private static void assertAllSourceFieldsHaveNonBlankSourceField(LoggerNotifierConfiguration configuration, Schema.SObjectType sourceType) {
+    List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = configuration.getSourceFields();
+    System.Assert.isNotNull(sourceFields, 'Per-SObject entry should carry a sourceFields list');
+    System.Assert.isFalse(sourceFields.isEmpty(), 'Per-SObject entry should carry at least one source field');
+    for (LoggerNotifierConfiguration.SourceFieldDefinition definition : sourceFields) {
+      System.Assert.isNotNull(definition.sourceField, 'Every sourceFields entry should populate its sourceField property');
+      System.Assert.isTrue(String.isNotBlank(definition.sourceField), 'Every sourceFields entry should populate its sourceField property');
+      Schema.DescribeFieldResult describe = LoggerNotifier.getDescribeByPath(sourceType, definition.sourceField);
+      System.Assert.isNotNull(describe, 'sourceField "' + definition.sourceField + '" should resolve to a real field on ' + sourceType);
+      if (String.isNotBlank(definition.displayField)) {
+        Schema.DescribeFieldResult displayDescribe = LoggerNotifier.getDescribeByPath(sourceType, definition.displayField);
+        System.Assert.isNotNull(displayDescribe, 'displayField "' + definition.displayField + '" should resolve to a real field on ' + sourceType);
+      }
+    }
+  }
 }

@@ -112,7 +112,7 @@ private class LoggerNotifierConfiguration_Tests {
 
   @IsTest
   static void it_should_return_source_fields_for_object_entries_with_overrides() {
-    String json = '{"sourceFields":[{"field":"Log__r.LoggedBy__c","displayField":"Log__r.LoggedBy__r.Username","displayLabel":"Logged By"}]}';
+    String json = '{"sourceFields":[{"sourceField":"Log__r.LoggedBy__c","displayField":"Log__r.LoggedBy__r.Username","displayLabel":"Logged By"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
 
     List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = new LoggerNotifierConfiguration(recipient).getSourceFields();
@@ -125,7 +125,7 @@ private class LoggerNotifierConfiguration_Tests {
 
   @IsTest
   static void it_should_allow_bare_strings_and_object_entries_in_the_same_list() {
-    String json = '{"sourceFields":["LoggingLevel__c",{"field":"Message__c","displayLabel":"Body"}]}';
+    String json = '{"sourceFields":["LoggingLevel__c",{"sourceField":"Message__c","displayLabel":"Body"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
 
     List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = new LoggerNotifierConfiguration(recipient).getSourceFields();
@@ -138,13 +138,13 @@ private class LoggerNotifierConfiguration_Tests {
   }
 
   @IsTest
-  static void it_should_drop_object_entries_missing_a_field_key() {
-    String json = '{"sourceFields":[{"displayField":"Log__r.Name"},{"field":"LoggingLevel__c"}]}';
+  static void it_should_drop_object_entries_missing_a_source_field_key() {
+    String json = '{"sourceFields":[{"displayField":"Log__r.Name"},{"sourceField":"LoggingLevel__c"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
 
     List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = new LoggerNotifierConfiguration(recipient).getSourceFields();
 
-    System.Assert.areEqual(1, sourceFields.size(), 'Entries without a `field` key should be silently dropped');
+    System.Assert.areEqual(1, sourceFields.size(), 'Entries without a `sourceField` key should be silently dropped');
     System.Assert.areEqual('LoggingLevel__c', sourceFields.get(0).sourceField);
   }
 
@@ -152,7 +152,7 @@ private class LoggerNotifierConfiguration_Tests {
   static void it_should_treat_blank_display_overrides_as_absent() {
     // Blank displayField / displayLabel strings should behave the same as an absent key - the notifier
     // falls back to the field's own value / describe label.
-    String json = '{"sourceFields":[{"field":"LoggingLevel__c","displayField":"","displayLabel":"   "}]}';
+    String json = '{"sourceFields":[{"sourceField":"LoggingLevel__c","displayField":"","displayLabel":"   "}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
 
     List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields = new LoggerNotifierConfiguration(recipient).getSourceFields();
@@ -271,8 +271,8 @@ private class LoggerNotifierConfiguration_Tests {
   @IsTest
   static void it_should_flatten_source_fields_for_the_backwards_compatible_string_accessor() {
     // getSourceFieldPaths() (the pre-existing plain-strings accessor) should still work for object entries
-    // by returning just the underlying `field` value from each sourceField.
-    String json = '{"sourceFields":["LoggingLevel__c",{"field":"Message__c","displayLabel":"Body"}]}';
+    // by returning just the underlying `sourceField` value from each entry.
+    String json = '{"sourceFields":["LoggingLevel__c",{"sourceField":"Message__c","displayLabel":"Body"}]}';
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = json);
 
     List<String> flat = new LoggerNotifierConfiguration(recipient).getSourceFieldPaths();
