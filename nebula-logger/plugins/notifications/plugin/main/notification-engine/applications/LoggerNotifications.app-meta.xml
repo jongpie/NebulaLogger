@@ -14,6 +14,7 @@
     <label>Nebula Logger Notifications</label>
     <navType>Standard</navType>
     <tabs>LoggerNotificationRule__c</tabs>
+    <tabs>LoggerNotificationRecipient__c</tabs>
     <tabs>LoggerNotificationService__c</tabs>
     <tabs>LoggerNotificationMatch__c</tabs>
     <tabs>LoggerNotificationDelivery__c</tabs>

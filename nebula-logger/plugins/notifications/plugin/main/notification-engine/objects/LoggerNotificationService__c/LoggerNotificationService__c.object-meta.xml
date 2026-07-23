@@ -168,6 +168,6 @@
         <excludedStandardButtons>Import</excludedStandardButtons>
         <listViewButtons>GuidedNew</listViewButtons>
     </searchLayouts>
-    <sharingModel>ReadWrite</sharingModel>
+    <sharingModel>Read</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>
