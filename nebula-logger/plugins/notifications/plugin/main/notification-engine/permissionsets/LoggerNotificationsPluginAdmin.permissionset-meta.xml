@@ -4,6 +4,10 @@
         <application>LoggerNotifications</application>
         <visible>true</visible>
     </applicationVisibilities>
+    <applicationVisibilities>
+        <application>LoggerNotificationsConsole</application>
+        <visible>true</visible>
+    </applicationVisibilities>
     <classAccesses>
         <apexClass>CustomNotificationLoggerNotifier</apexClass>
         <enabled>true</enabled>
@@ -14,6 +18,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>LoggerNotificationAsyncDispatcher</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>LoggerNotificationFormController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -42,10 +50,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>LoggerNotifierConfiguration</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LoggerNotificationFormController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -433,6 +437,10 @@
     </tabSettings>
     <tabSettings>
         <tab>LoggerNotificationMatch__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>LoggerNotificationRecipient__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
