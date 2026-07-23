@@ -179,7 +179,7 @@ private class SlackLoggerNotifier_Tests {
 
   @IsTest
   static void it_should_render_parent_relationship_fields_when_the_configured_path_is_dotted() {
-    // Set up a real Log__c + LogEntry__c so the hydration SOQL can requery the entry with Log__r.Name populated.
+    // Set up a real Log__c + LogEntry__c so the re-query SOQL can load the entry with Log__r.Name populated.
     Log__c log = new Log__c(TransactionId__c = 'txn-' + System.now().getTime());
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c logEntry = new LogEntry__c(
@@ -397,11 +397,11 @@ private class SlackLoggerNotifier_Tests {
   }
 
   @IsTest
-  static void it_should_still_hydrate_valid_fields_when_a_configured_field_does_not_exist_on_the_source_object() {
+  static void it_should_still_resolve_valid_fields_when_a_configured_field_does_not_exist_on_the_source_object() {
     // Reproduction for the reported bug: when a single configured source field is misspelled or missing,
-    // the hydration SOQL used to throw QueryException, which fell back to un-hydrated records and made
-    // every OTHER configured field render as the null placeholder. Filtering unresolvable paths out of
-    // the SELECT lets the good ones still hydrate. This test uses a real inserted record (unlike the
+    // the re-query SOQL used to throw QueryException, which fell back to the trigger-supplied records and
+    // made every OTHER configured field render as the null placeholder. Filtering unresolvable paths out of
+    // the SELECT lets the good ones still resolve. This test uses a real inserted record (unlike the
     // sibling test above, which uses in-memory records with no Ids and short-circuits before SOQL).
     Log__c log = new Log__c(TransactionId__c = 'txn-bad-path-' + System.now().getTime());
     LoggerDataStore.getDatabase().insertRecord(log);
@@ -432,7 +432,7 @@ private class SlackLoggerNotifier_Tests {
       'Message__c should still render its real value even though another configured field is invalid: ' + payload
     );
     log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id];
-    System.Assert.isTrue(payload.contains(log.Name), 'Log__r.Name should still hydrate and render even though another configured field is invalid: ' + payload);
+    System.Assert.isTrue(payload.contains(log.Name), 'Log__r.Name should still resolve and render even though another configured field is invalid: ' + payload);
   }
 
   @IsTest

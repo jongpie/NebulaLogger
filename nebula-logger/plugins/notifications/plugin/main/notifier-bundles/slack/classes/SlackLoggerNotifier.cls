@@ -177,10 +177,10 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     Schema.SObjectType sourceType = request.matchingRecords.get(0).getSObjectType();
     // Compute every schema path we'll need to resolve values against - the primary field, any overridden
     // display field, and (for REFERENCE-typed primaries with no display override) the parent record's Name.
-    List<String> hydrationPaths = collectHydrationPaths(sourceFields, sourceType);
-    List<SObject> hydratedRecords = LoggerNotifier.hydrateRecordsWithFieldPaths(request.matchingRecords, hydrationPaths);
+    Set<String> fieldPathsToRequery = collectFieldPathsToRequery(sourceFields, sourceType);
+    List<SObject> requeriedRecords = LoggerNotifier.requeryRecordsWithFieldPaths(request.matchingRecords, fieldPathsToRequery);
     notification.attachments = new List<AttachmentDto>();
-    for (SObject record : hydratedRecords) {
+    for (SObject record : requeriedRecords) {
       notification.attachments.add(this.buildAttachment(record, sourceFields, includeNullValues));
     }
     // 'short' is a reserved word in Apex, so it's serialized as `isShort` here and swapped in the JSON string
@@ -329,14 +329,14 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
     return String.join(parts, '.');
   }
 
-  private static List<String> collectHydrationPaths(List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields, Schema.SObjectType sourceType) {
-    Set<String> pathSet = new Set<String>();
+  private static Set<String> collectFieldPathsToRequery(List<LoggerNotifierConfiguration.SourceFieldDefinition> sourceFields, Schema.SObjectType sourceType) {
+    Set<String> paths = new Set<String>();
     for (LoggerNotifierConfiguration.SourceFieldDefinition definition : sourceFields) {
       if (String.isNotBlank(definition.sourceField)) {
-        pathSet.add(definition.sourceField);
+        paths.add(definition.sourceField);
       }
       if (String.isNotBlank(definition.displayField)) {
-        pathSet.add(definition.displayField);
+        paths.add(definition.displayField);
       } else {
         // REFERENCE primary field with no explicit display override: pull the parent's Name too so the
         // renderer can substitute it for the raw Id at render time.
@@ -344,12 +344,11 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
         if (describe != null && describe.getType() == Schema.DisplayType.REFERENCE) {
           String parentNamePath = deriveParentNamePath(definition.sourceField, sourceType);
           if (parentNamePath != null) {
-            pathSet.add(parentNamePath);
+            paths.add(parentNamePath);
           }
         }
       }
     }
-    List<String> paths = new List<String>(pathSet);
     return paths;
   }
 

@@ -7,10 +7,10 @@
  * @group Plugins
  * @description Async harness for every `LoggerNotifier` implementation. `LoggerNotificationProcessor`
  *              batches all recipients across all matched rules into a single instance of this
- *              Queueable and enqueues it once per transaction. The Queueable rehydrates each
- *              request, instantiates the notifier class, invokes `sendNotification` in an async
- *              request where callouts are legal, and updates the pre-inserted
- *              `LoggerNotificationDelivery__c` records with the outcome.
+ *              Queueable and enqueues it once per transaction. The Queueable builds a
+ *              `LoggerNotifierRequest` per dispatch, instantiates the notifier class, invokes
+ *              `sendNotification` in an async request where callouts are legal, and updates the
+ *              pre-inserted `LoggerNotificationDelivery__c` records with the outcome.
  *
  *              Even non-callout notifiers (Email, CustomNotification) run here rather than in
  *              the source trigger transaction. That way notifier failures never break the record
@@ -59,7 +59,7 @@ public without sharing class LoggerNotificationAsyncDispatcher implements System
 
   private void invokeNotifier(PendingDispatch dispatch, Id jobId, List<LoggerNotificationDelivery__c> deliveriesToUpdate) {
     LoggerNotifier notifier = newNotifierInstance(dispatch.recipient.LoggerNotificationService__r.NotifierApexClassName__c);
-    List<LoggerNotificationDelivery__c> deliveries = this.rehydrateDeliveries(dispatch);
+    List<LoggerNotificationDelivery__c> deliveries = this.buildDeliveriesToUpdate(dispatch);
     if (notifier == null) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn(
@@ -106,7 +106,12 @@ public without sharing class LoggerNotificationAsyncDispatcher implements System
     }
   }
 
-  private List<LoggerNotificationDelivery__c> rehydrateDeliveries(PendingDispatch dispatch) {
+  /**
+   * @description Constructs empty `LoggerNotificationDelivery__c` records carrying only the pre-inserted
+   *              delivery IDs. Returns null when the rule had `IsDeliveryHistoryEnabled__c` = FALSE
+   *              (no pending delivery records were inserted).
+   */
+  private List<LoggerNotificationDelivery__c> buildDeliveriesToUpdate(PendingDispatch dispatch) {
     if (dispatch.pendingDeliveryIds == null || dispatch.pendingDeliveryIds.isEmpty()) {
       return null;
     }
@@ -149,8 +154,8 @@ public without sharing class LoggerNotificationAsyncDispatcher implements System
     // the enqueuing transaction; the dispatcher reads their Ids into `pendingDeliveryIds` after DML so
     // it can update them once the callout completes.
     public final List<LoggerNotificationDelivery__c> pendingDeliveries;
-    // Populated by the runtime AFTER the pending deliveries are inserted; the dispatcher rehydrates
-    // records by Id from these values at execute time.
+    // Populated by the runtime AFTER the pending deliveries are inserted; the dispatcher builds
+    // Id-only update records from these values at execute time.
     public List<Id> pendingDeliveryIds;
 
     public PendingDispatch(LoggerNotificationRecipient__c recipient, List<SObject> matchingRecords, List<LoggerNotificationDelivery__c> pendingDeliveries) {

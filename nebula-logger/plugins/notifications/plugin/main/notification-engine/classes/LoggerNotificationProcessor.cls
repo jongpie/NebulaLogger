@@ -66,9 +66,17 @@ public virtual without sharing class LoggerNotificationProcessor {
   }
 
   private List<RuleEvaluation> buildEvaluations(List<LoggerNotificationRule__c> applicableRules, List<SObject> records, Schema.SObjectType sobjectType) {
+    // Trigger.new records have parent lookup IDs but no loaded relationships, so a filter like
+    // `Log__r.LoggedBy__r.Username = 'x'` evaluates against a null `Log__r` and silently fails to
+    // match. Compile every applicable rule's formula up front, union their referenced field paths,
+    // and re-query the trigger.new records by Id with those paths in the SELECT clause. The union
+    // makes this one query per invocation instead of one per rule.
+    Set<String> referencedFieldPaths = this.filterEvaluator.collectReferencedFieldPaths(sobjectType, applicableRules);
+    List<SObject> requeriedRecords = LoggerNotifier.requeryRecordsWithFieldPaths(records, referencedFieldPaths);
+
     List<RuleEvaluation> evaluations = new List<RuleEvaluation>();
     for (LoggerNotificationRule__c rule : applicableRules) {
-      List<SObject> matchingRecords = this.filterEvaluator.evaluate(sobjectType, rule.SourceSObjectFilter__c, records);
+      List<SObject> matchingRecords = this.filterEvaluator.evaluate(sobjectType, rule.SourceSObjectFilter__c, requeriedRecords);
 
       if (matchingRecords.isEmpty()) {
         continue;
@@ -268,6 +276,13 @@ public virtual without sharing class LoggerNotificationProcessor {
     }
     // TODO uhhhh reenqueue, don't return
     // TODO Pre-inserted PENDING delivery records are permanently orphaned when the queueable governor limit is already at max
+    /*
+      In enqueueAsyncDispatches, when System.Limits.getQueueableJobs() >= getLimitQueueableJobs(), the method logs a warning and returns early.
+      At this point LoggerNotificationDelivery__c records with Status__c = 'Pending' have already been committed to the database (inserted earlier in sendNotifications).
+      Those records will remain stuck in the Pending state indefinitely — there is no scheduled retry, no platform event, and no background mechanism to re-attempt the dispatch.
+      Admins will see records that appear to be in-flight but will never be delivered.
+      At minimum, update the stuck deliveries to Failed before returning so the data reflects reality.
+    */
     if (System.Limits.getQueueableJobs() >= System.Limits.getLimitQueueableJobs()) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
         Logger.warn('Nebula Logger Notifications - queueable limit reached, skipping ' + dispatches.size() + ' async notifier dispatch(es)');
@@ -404,6 +419,31 @@ public virtual without sharing class LoggerNotificationProcessor {
 
   private class RuleFilterEvaluator {
     private final Map<String, FormulaEval.FormulaInstance> cachedInstances = new Map<String, FormulaEval.FormulaInstance>();
+
+    /**
+     * @description Compiles every applicable rule's filter formula and returns the union of the field
+     *              paths those formulas reference. Rules whose filter fails to compile contribute
+     *              nothing to the union; they'll be skipped again in the per-record evaluate loop.
+     *              Field paths are returned in the format `FormulaInstance.getReferencedFields()` uses
+     *              (dotted relationship notation for parent lookups, e.g. `Log__r.LoggedBy__r.Username`),
+     *              which is the same syntax `LoggerNotifier.requeryRecordsWithFieldPaths` expects.
+     */
+    public Set<String> collectReferencedFieldPaths(Schema.SObjectType sobjectType, List<LoggerNotificationRule__c> rules) {
+      Set<String> referencedFieldPaths = new Set<String>();
+      for (LoggerNotificationRule__c rule : rules) {
+        FormulaEval.FormulaInstance formulaInstance = this.getFormulaInstance(sobjectType, rule.SourceSObjectFilter__c);
+
+        if (formulaInstance == null) {
+          continue;
+        }
+
+        Set<String> ruleFields = formulaInstance.getReferencedFields();
+        if (ruleFields != null) {
+          referencedFieldPaths.addAll(ruleFields);
+        }
+      }
+      return referencedFieldPaths;
+    }
 
     public Boolean evaluate(Schema.SObjectType sobjectType, String filter, SObject record) {
       // TODO I'm not convinced these checks are all needed - why wouldn't we have an sobjectype or record or filter?

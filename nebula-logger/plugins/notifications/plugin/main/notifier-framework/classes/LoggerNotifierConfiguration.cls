@@ -178,7 +178,7 @@ public class LoggerNotifierConfiguration {
 
   /**
    * @description Describes one entry in a recipient's `sourceFields` config. The `sourceField` API name drives
-   *              hydration, linkification, and the default label / DisplayType lookup. The two optional
+   *              the re-query, linkification, and the default label / DisplayType lookup. The two optional
    *              overrides let admins tweak either the value (`displayField`) or the label (`displayLabel`)
    *              without changing what the underlying field points at.
    */

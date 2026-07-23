@@ -135,65 +135,65 @@ private class LoggerNotifier_Tests {
   @IsTest
   static void it_should_return_records_untouched_when_no_dotted_paths_are_configured() {
     List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) };
-    List<String> flatPaths = new List<String>{ 'LoggingLevel__c', 'Message__c' };
+    Set<String> flatPaths = new Set<String>{ 'LoggingLevel__c', 'Message__c' };
 
-    List<SObject> hydrated = LoggerNotifier.hydrateRecordsWithFieldPaths(records, flatPaths);
+    List<SObject> requeriedRecords = LoggerNotifier.requeryRecordsWithFieldPaths(records, flatPaths);
 
     // Same reference means we skipped the SOQL round-trip entirely - the flat-path short-circuit fired.
-    System.Assert.isTrue(hydrated === records, 'Flat paths should short-circuit hydration and return the input list untouched');
+    System.Assert.isTrue(requeriedRecords === records, 'Flat paths should short-circuit the re-query and return the input list untouched');
   }
 
   @IsTest
   static void it_should_return_records_untouched_when_records_are_null_or_empty() {
-    System.Assert.isNull(LoggerNotifier.hydrateRecordsWithFieldPaths(null, new List<String>{ 'Log__r.Name' }));
+    System.Assert.isNull(LoggerNotifier.requeryRecordsWithFieldPaths(null, new Set<String>{ 'Log__r.Name' }));
     List<SObject> empty = new List<SObject>();
-    System.Assert.isTrue(LoggerNotifier.hydrateRecordsWithFieldPaths(empty, new List<String>{ 'Log__r.Name' }) === empty);
+    System.Assert.isTrue(LoggerNotifier.requeryRecordsWithFieldPaths(empty, new Set<String>{ 'Log__r.Name' }) === empty);
   }
 
   @IsTest
   static void it_should_return_records_untouched_when_field_paths_are_null_or_empty() {
     List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) };
 
-    System.Assert.isTrue(LoggerNotifier.hydrateRecordsWithFieldPaths(records, null) === records);
-    System.Assert.isTrue(LoggerNotifier.hydrateRecordsWithFieldPaths(records, new List<String>()) === records);
+    System.Assert.isTrue(LoggerNotifier.requeryRecordsWithFieldPaths(records, null) === records);
+    System.Assert.isTrue(LoggerNotifier.requeryRecordsWithFieldPaths(records, new Set<String>()) === records);
   }
 
   @IsTest
   static void it_should_leave_records_without_ids_untouched() {
-    // Records without a persisted Id cannot be re-queried, so the hydration falls through and returns them unchanged.
+    // Records without a persisted Id cannot be re-queried, so the helper falls through and returns them unchanged.
     List<SObject> records = new List<SObject>{ new LogEntry__c(LoggingLevel__c = System.LoggingLevel.ERROR.name()) };
 
-    List<SObject> hydrated = LoggerNotifier.hydrateRecordsWithFieldPaths(records, new List<String>{ 'Log__r.Name' });
+    List<SObject> requeriedRecords = LoggerNotifier.requeryRecordsWithFieldPaths(records, new Set<String>{ 'Log__r.Name' });
 
-    System.Assert.areEqual(1, hydrated.size());
-    System.Assert.isTrue(hydrated.get(0) === records.get(0), 'Records without Ids should fall through untouched');
+    System.Assert.areEqual(1, requeriedRecords.size());
+    System.Assert.isTrue(requeriedRecords.get(0) === records.get(0), 'Records without Ids should fall through untouched');
   }
 
   @IsTest
-  static void it_should_hydrate_parent_lookups_when_dotted_paths_are_configured() {
+  static void it_should_load_parent_lookups_when_dotted_paths_are_configured() {
     Log__c log = new Log__c(TransactionId__c = 'test-transaction');
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
-    // Log__c.Name is auto-numbered; Salesforce only populates it into the local record on requery.
+    // Log__c.Name is auto-numbered; Salesforce only populates it into the local record on re-query.
     String expectedParentName = [SELECT Name FROM Log__c WHERE Id = :log.Id].Name;
     // The trigger-supplied record only carries the FK; Log__r.Name is unpopulated in-memory.
     LogEntry__c triggerCopy = new LogEntry__c(Id = logEntry.Id, Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name());
 
-    List<SObject> hydrated = LoggerNotifier.hydrateRecordsWithFieldPaths(new List<SObject>{ triggerCopy }, new List<String>{ 'Log__r.Name' });
+    List<SObject> requeriedRecords = LoggerNotifier.requeryRecordsWithFieldPaths(new List<SObject>{ triggerCopy }, new Set<String>{ 'Log__r.Name' });
 
-    System.Assert.areEqual(1, hydrated.size());
-    LogEntry__c hydratedEntry = (LogEntry__c) hydrated.get(0);
-    System.Assert.areEqual(log.Id, hydratedEntry.Log__c);
-    System.Assert.isNotNull(hydratedEntry.Log__r, 'Log__r should have been hydrated by the re-query');
-    System.Assert.areEqual(expectedParentName, hydratedEntry.Log__r.Name, 'Log__r.Name should now be resolvable via getValueByPath');
+    System.Assert.areEqual(1, requeriedRecords.size());
+    LogEntry__c requeriedEntry = (LogEntry__c) requeriedRecords.get(0);
+    System.Assert.areEqual(log.Id, requeriedEntry.Log__c);
+    System.Assert.isNotNull(requeriedEntry.Log__r, 'Log__r should have been loaded by the re-query');
+    System.Assert.areEqual(expectedParentName, requeriedEntry.Log__r.Name, 'Log__r.Name should now be resolvable via getValueByPath');
   }
 
   @IsTest
   static void it_should_drop_unresolvable_paths_from_the_select() {
-    // A single bogus configured path used to poison the whole SELECT, which fell back to un-hydrated
-    // records and made every OTHER configured field render as its null placeholder. Dropping unresolvable
-    // paths from the SELECT lets the good ones still hydrate.
+    // A single bogus configured path used to poison the whole SELECT, which fell back to the
+    // trigger-supplied records and made every OTHER configured field render as its null placeholder.
+    // Dropping unresolvable paths from the SELECT lets the good ones still resolve.
     Log__c log = new Log__c(TransactionId__c = 'drop-unresolvable');
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
@@ -201,13 +201,13 @@ private class LoggerNotifier_Tests {
     String expectedParentName = [SELECT Name FROM Log__c WHERE Id = :log.Id].Name;
     LogEntry__c triggerCopy = new LogEntry__c(Id = logEntry.Id, Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name());
 
-    List<SObject> hydrated = LoggerNotifier.hydrateRecordsWithFieldPaths(
+    List<SObject> requeriedRecords = LoggerNotifier.requeryRecordsWithFieldPaths(
       new List<SObject>{ triggerCopy },
-      new List<String>{ 'Log__r.Name', 'NoSuchPath__r.Name' }
+      new Set<String>{ 'Log__r.Name', 'NoSuchPath__r.Name' }
     );
 
-    System.Assert.areEqual(1, hydrated.size());
-    LogEntry__c hydratedEntry = (LogEntry__c) hydrated.get(0);
-    System.Assert.areEqual(expectedParentName, hydratedEntry.Log__r.Name, 'Good path should still hydrate after the bad path was dropped');
+    System.Assert.areEqual(1, requeriedRecords.size());
+    LogEntry__c requeriedEntry = (LogEntry__c) requeriedRecords.get(0);
+    System.Assert.areEqual(expectedParentName, requeriedEntry.Log__r.Name, 'Good path should still resolve after the bad path was dropped');
   }
 }
