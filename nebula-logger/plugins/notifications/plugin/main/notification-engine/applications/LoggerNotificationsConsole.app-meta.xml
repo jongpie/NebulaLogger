@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
-    <actionOverrides>
-        <actionName>Tab</actionName>
-        <content>LoggerNotificationsHomePage</content>
-        <formFactor>Large</formFactor>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Flexipage</type>
-        <pageOrSobjectType>standard-home</pageOrSobjectType>
-    </actionOverrides>
     <brand>
         <headerColor>#1E1E1E</headerColor>
         <shouldOverrideOrgTheme>true</shouldOverrideOrgTheme>
     </brand>
-    <description>Configure and monitor Nebula Logger notification rules, services, and recipients. Console navigation lets admins keep multiple related records open in workspace tabs.</description>
+    <description>Console app to configure and monitor Nebula Logger notification rules, services, and recipients. Console navigation lets admins keep multiple related records open in workspace tabs.</description>
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
@@ -20,8 +12,8 @@
     <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
     <label>Nebula Logger Notifications Console</label>
     <navType>Console</navType>
-    <tabs>standard-home</tabs>
     <tabs>LoggerNotificationRule__c</tabs>
+    <tabs>LoggerNotificationRecipient__c</tabs>
     <tabs>LoggerNotificationService__c</tabs>
     <tabs>LoggerNotificationMatch__c</tabs>
     <tabs>LoggerNotificationDelivery__c</tabs>
@@ -31,10 +23,16 @@
     <uiType>Lightning</uiType>
     <workspaceConfig>
         <mappings>
+            <fieldName>LoggerNotificationMatch__c</fieldName>
             <tab>LoggerNotificationDelivery__c</tab>
         </mappings>
         <mappings>
+            <fieldName>LoggerNotificationRule__c</fieldName>
             <tab>LoggerNotificationMatch__c</tab>
+        </mappings>
+        <mappings>
+            <fieldName>LoggerNotificationRule__c</fieldName>
+            <tab>LoggerNotificationRecipient__c</tab>
         </mappings>
         <mappings>
             <tab>LoggerNotificationRule__c</tab>
@@ -47,9 +45,6 @@
         </mappings>
         <mappings>
             <tab>standard-WaveHomeLightning</tab>
-        </mappings>
-        <mappings>
-            <tab>standard-home</tab>
         </mappings>
         <mappings>
             <tab>standard-report</tab>
