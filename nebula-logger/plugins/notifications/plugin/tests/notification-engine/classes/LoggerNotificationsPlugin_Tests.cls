@@ -258,11 +258,18 @@ private class LoggerNotificationsPlugin_Tests {
     LoggerDataStore.getDatabase().insertRecord(recipient);
 
     System.Test.startTest();
-    new LoggerNotificationsPlugin()
-      .execute(
-        new LoggerPlugin__mdt(),
-        new LoggerTriggerableContext(Schema.Log__c.SObjectType, System.TriggerOperation.AFTER_UPDATE, new List<SObject>{ updatedLog })
-      );
+    // Mirror the natural transaction shape: AFTER_INSERT first with the freshly-inserted Log__c (rollup
+    // still 0 in memory, filter does not match), then AFTER_UPDATE once Salesforce recalculates the
+    // new rollup value.
+    LoggerNotificationsPlugin plugin = new LoggerNotificationsPlugin();
+    plugin.execute(
+      new LoggerPlugin__mdt(),
+      new LoggerTriggerableContext(Schema.Log__c.SObjectType, System.TriggerOperation.AFTER_INSERT, new List<SObject>{ log })
+    );
+    plugin.execute(
+      new LoggerPlugin__mdt(),
+      new LoggerTriggerableContext(Schema.Log__c.SObjectType, System.TriggerOperation.AFTER_UPDATE, new List<SObject>{ updatedLog })
+    );
     System.Test.stopTest();
 
     System.Assert.areEqual(
@@ -274,6 +281,53 @@ private class LoggerNotificationsPlugin_Tests {
       1,
       [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id WITH SYSTEM_MODE],
       'A LoggerNotificationMatch__c should be recorded once the rollup update flows through the plugin'
+    );
+  }
+
+  @IsTest
+  static void it_should_ignore_after_update_for_records_not_seen_at_after_insert_in_the_same_transaction() {
+    // The plugin accepts AFTER_UPDATE only so that Salesforce's rollup recalculation on any rollup summary fields
+    // (which fires an AFTER_UPDATE immediately after the AFTER_INSERT pass that spawned the rollup) can be
+    // observed by rule filters. It should NOT process later admin edits to those same records - e.g.,
+    // an admin updating Log__c.Status__c / Log__c.Comments__c in a subsequent transaction. Only records
+    // whose ID appeared in an AFTER_INSERT context earlier - in the same transaction - should be evaluated
+    // at AFTER_UPDATE. This test simulates the admin-edit case: a Log__c already exists in the database
+    // (the plugin never saw its AFTER_INSERT because that was a prior transaction), and the plugin is
+    // handed only its AFTER_UPDATE. Notifier must not fire.
+    Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+    log.TransactionId__c = 'admin-edited-log';
+    LoggerDataStore.getDatabase().insertRecord(log);
+    Log__c persistedLog = [SELECT Id, TransactionId__c FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
+    LoggerNotificationRule__c rule = buildRule(Schema.Log__c.SObjectType, 'TransactionId__c = \'admin-edited-log\'');
+    LoggerDataStore.getDatabase().insertRecord(rule);
+    LoggerNotificationService__c service = buildService(MOCK_NOTIFIER_CLASS);
+    LoggerDataStore.getDatabase().insertRecord(service);
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      LoggerNotificationRule__c = rule.Id,
+      LoggerNotificationService__c = service.Id
+    );
+    LoggerDataStore.getDatabase().insertRecord(recipient);
+
+    System.Test.startTest();
+    // Only AFTER_UPDATE fires - no preceding AFTER_INSERT for this record in this transaction. This
+    // mirrors the shape of a later admin edit that flows through the Log__c trigger stack without any
+    // preceding insert pass.
+    new LoggerNotificationsPlugin()
+      .execute(
+        new LoggerPlugin__mdt(),
+        new LoggerTriggerableContext(Schema.Log__c.SObjectType, System.TriggerOperation.AFTER_UPDATE, new List<SObject>{ persistedLog })
+      );
+    System.Test.stopTest();
+
+    System.Assert.areEqual(
+      0,
+      mockNotifierInvocationCount,
+      'AFTER_UPDATE for a record that was not inserted earlier in this transaction should be ignored (admin-edit case)'
+    );
+    System.Assert.areEqual(
+      0,
+      [SELECT COUNT() FROM LoggerNotificationMatch__c WHERE LoggerNotificationRule__c = :rule.Id WITH SYSTEM_MODE],
+      'No LoggerNotificationMatch__c should be recorded when AFTER_UPDATE is ignored for a record that was not inserted this transaction'
     );
   }
 
