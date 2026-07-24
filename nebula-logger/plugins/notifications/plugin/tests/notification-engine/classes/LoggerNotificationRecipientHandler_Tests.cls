@@ -155,6 +155,102 @@ private class LoggerNotificationRecipientHandler_Tests {
   }
 
   @IsTest
+  static void it_should_reject_a_source_fields_entry_with_the_wrong_object_key_on_insert() {
+    // Regression coverage for the CMDT `field` -> `sourceField` defect. The pre-fix parser silently
+    // dropped these entries at runtime; the handler now surfaces the mistake at save time.
+    LoggerNotificationRecipient__c recipient = buildValidRecipient();
+    recipient.ConfigurationJson__c = '{"sourceFields":[{"field":"LoggingLevel__c"}]}';
+
+    System.DmlException thrownException;
+    try {
+      LoggerDataStore.getDatabase().insertRecord(recipient);
+    } catch (System.DmlException ex) {
+      thrownException = ex;
+    }
+
+    System.Assert.isNotNull(thrownException, 'Object-form entry using the wrong primary key should have blocked the insert');
+    System.Assert.isTrue(
+      thrownException.getMessage().contains('is missing a non-blank "sourceField" property'),
+      'Error message should identify the missing sourceField property: ' + thrownException.getMessage()
+    );
+  }
+
+  @IsTest
+  static void it_should_reject_a_bare_string_source_field_that_does_not_resolve() {
+    LoggerNotificationRecipient__c recipient = buildValidRecipient();
+    recipient.ConfigurationJson__c = '{"sourceFields":["ThisFieldDoesNotExist__c"]}';
+
+    System.DmlException thrownException;
+    try {
+      LoggerDataStore.getDatabase().insertRecord(recipient);
+    } catch (System.DmlException ex) {
+      thrownException = ex;
+    }
+
+    System.Assert.isNotNull(thrownException, 'An unresolvable field path should have blocked the insert');
+    System.Assert.isTrue(
+      thrownException.getMessage().contains('sourceField path does not resolve'),
+      'Error message should identify the unresolvable path: ' + thrownException.getMessage()
+    );
+    System.Assert.isTrue(
+      thrownException.getMessage().contains('ThisFieldDoesNotExist__c'),
+      'Error message should name the offending path: ' + thrownException.getMessage()
+    );
+  }
+
+  @IsTest
+  static void it_should_reject_an_object_source_field_that_does_not_resolve() {
+    LoggerNotificationRecipient__c recipient = buildValidRecipient();
+    recipient.ConfigurationJson__c = '{"sourceFields":[{"sourceField":"NoSuchFieldOnLogEntry__c"}]}';
+
+    System.DmlException thrownException;
+    try {
+      LoggerDataStore.getDatabase().insertRecord(recipient);
+    } catch (System.DmlException ex) {
+      thrownException = ex;
+    }
+
+    System.Assert.isNotNull(thrownException, 'An unresolvable object-form sourceField should have blocked the insert');
+    System.Assert.isTrue(
+      thrownException.getMessage().contains('NoSuchFieldOnLogEntry__c'),
+      'Error message should name the offending path: ' + thrownException.getMessage()
+    );
+  }
+
+  @IsTest
+  static void it_should_reject_an_unresolvable_display_field_on_insert() {
+    LoggerNotificationRecipient__c recipient = buildValidRecipient();
+    recipient.ConfigurationJson__c = '{"sourceFields":[{"sourceField":"LoggingLevel__c","displayField":"NotARealDisplayField__c"}]}';
+
+    System.DmlException thrownException;
+    try {
+      LoggerDataStore.getDatabase().insertRecord(recipient);
+    } catch (System.DmlException ex) {
+      thrownException = ex;
+    }
+
+    System.Assert.isNotNull(thrownException, 'An unresolvable displayField should have blocked the insert');
+    System.Assert.isTrue(
+      thrownException.getMessage().contains('displayField path does not resolve'),
+      'Error message should identify the unresolvable display path: ' + thrownException.getMessage()
+    );
+  }
+
+  @IsTest
+  static void it_should_accept_a_realistic_source_fields_config_on_insert() {
+    LoggerNotificationRecipient__c recipient = buildValidRecipient();
+    recipient.ConfigurationJson__c =
+      '{"sourceFields":["LoggingLevel__c","Message__c",' +
+      '{"sourceField":"Log__r.LoggedBy__c","displayField":"Log__r.LoggedBy__r.Username"}],' +
+      '"includeNullValues":false}';
+
+    LoggerDataStore.getDatabase().insertRecord(recipient);
+
+    LoggerNotificationRecipient__c requeried = [SELECT Id, ConfigurationJson__c FROM LoggerNotificationRecipient__c WHERE Id = :recipient.Id WITH SYSTEM_MODE];
+    System.Assert.isNotNull(requeried.ConfigurationJson__c);
+  }
+
+  @IsTest
   static void it_should_skip_validation_when_the_config_json_is_unchanged_on_update() {
     LoggerNotificationRecipient__c recipient = buildValidRecipient();
     recipient.ConfigurationJson__c = '{"foo":"bar"}';

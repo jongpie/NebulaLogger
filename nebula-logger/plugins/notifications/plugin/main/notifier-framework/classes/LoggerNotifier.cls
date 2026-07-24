@@ -28,6 +28,27 @@ public abstract class LoggerNotifier {
   public abstract LoggerNotifierResult sendNotification(LoggerNotifierRequest request);
 
   /**
+   * @description Called by `LoggerNotificationRecipientHandler` on insert / update to validate the
+   *              recipient's `ConfigurationJson__c` before the record is persisted. The default
+   *              implementation delegates to `LoggerNotifierConfiguration.validate`, which covers every
+   *              framework-level defect class (malformed JSON, wrong top-level shape, `sourceFields`
+   *              entries with missing / stale field paths). Subclasses override only when they have
+   *              notifier-specific rules the framework cannot know about - for example, Email's
+   *              `subjectTemplate` merge-token contract, or Slack's mode-specific requirement that
+   *              certain fields be populated when a Named Credential is configured. Overrides should
+   *              call `super.validateConfiguration(...)` first and append their own errors to the
+   *              returned list so both layers of checks report on the same save.
+   * @param recipient The recipient whose configuration should be validated.
+   * @param sourceType The `Schema.SObjectType` referenced by the rule's `SourceSObjectType__c`. May be
+   *                   null when the source type could not be resolved - field-path checks skip in that
+   *                   case because the rule handler already reports the unresolved SObject separately.
+   * @return An ordered list of human-readable error messages. Empty when the configuration is valid.
+   */
+  public virtual List<String> validateConfiguration(LoggerNotificationRecipient__c recipient, Schema.SObjectType sourceType) {
+    return LoggerNotifierConfiguration.validate(recipient?.ConfigurationJson__c, sourceType);
+  }
+
+  /**
    * @description Builds a default `SourceFieldDefinition` list from a notifier's built-in fallback field names.
    *              Used when the recipient's `ConfigurationJson__c` does not specify `sourceFields`.
    * @param fieldNames The bare field API names the notifier falls back to.
