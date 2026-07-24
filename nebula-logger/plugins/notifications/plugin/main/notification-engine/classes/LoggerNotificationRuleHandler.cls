@@ -155,6 +155,7 @@ public without sharing class LoggerNotificationRuleHandler extends LoggerSObject
    * @return                 The resolved `Schema.SObjectType`, or `null` if it cannot be resolved even
    *                         after applying the namespace prefix.
    */
+  // TODO move this somewhere else for reuse
   public static Schema.SObjectType resolveSObjectType(String sobjectTypeName) {
     if (String.isBlank(sobjectTypeName)) {
       return null;
