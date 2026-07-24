@@ -6,6 +6,8 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerNotifier_Tests {
+  private static final String PICKY_NOTIFIER_CUSTOM_TOGGLE_UNSUPPORTED_ERROR = 'PickyNotifier does not support the customToggle option';
+
   @IsTest
   static void it_should_return_one_spec_per_field_name_with_no_overrides() {
     // TODO eliminate this, the list of source fields will vary based on rule's SourceSObjectType__c,
@@ -364,5 +366,56 @@ private class LoggerNotifier_Tests {
     System.Assert.isNull(LoggerNotifier.resolveLinkTarget(new LogEntry__c(), null, logDescribe));
     System.Assert.isNull(LoggerNotifier.resolveLinkTarget(new LogEntry__c(), '', logDescribe));
     System.Assert.isNull(LoggerNotifier.resolveLinkTarget(new LogEntry__c(), 'Log__c', null));
+  }
+
+  @IsTest
+  static void it_should_delegate_default_validate_configuration_to_the_framework_validator() {
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":[{"field":"LoggingLevel__c"}]}');
+    LoggerNotifier stubNotifier = new StubNotifier();
+
+    List<String> errors = stubNotifier.validateConfiguration(recipient, Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(new List<String>{ LoggerNotifierConfiguration.OBJECT_ENTRY_MISSING_SOURCE_FIELD_ERROR_MESSAGE }, errors);
+  }
+
+  @IsTest
+  static void it_should_return_no_errors_from_default_validate_configuration_for_a_valid_config() {
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["LoggingLevel__c"]}');
+    LoggerNotifier stubNotifier = new StubNotifier();
+
+    List<String> errors = stubNotifier.validateConfiguration(recipient, Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(0, errors.size(), 'A valid config should produce no errors: ' + errors);
+  }
+
+  @IsTest
+  static void it_should_allow_a_subclass_to_add_notifier_specific_validation_errors() {
+    LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(
+      ConfigurationJson__c = '{"sourceFields":["LoggingLevel__c"],"customToggle":true}'
+    );
+
+    List<String> errors = new PickyNotifier().validateConfiguration(recipient, Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(new List<String>{ PICKY_NOTIFIER_CUSTOM_TOGGLE_UNSUPPORTED_ERROR }, errors);
+  }
+
+  public class StubNotifier extends LoggerNotifier {
+    public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+      return null;
+    }
+  }
+
+  public class PickyNotifier extends LoggerNotifier {
+    public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
+      return null;
+    }
+
+    public override List<String> validateConfiguration(LoggerNotificationRecipient__c recipient, Schema.SObjectType sourceType) {
+      List<String> errors = super.validateConfiguration(recipient, sourceType);
+      if (String.isNotBlank(recipient?.ConfigurationJson__c) && recipient.ConfigurationJson__c.contains('"customToggle":true')) {
+        errors.add(PICKY_NOTIFIER_CUSTOM_TOGGLE_UNSUPPORTED_ERROR);
+      }
+      return errors;
+    }
   }
 }

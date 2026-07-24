@@ -320,4 +320,163 @@ private class LoggerNotifierConfiguration_Tests {
 
     System.Assert.areEqual(new List<String>{ 'LoggingLevel__c', 'Message__c' }, flat);
   }
+
+  @IsTest
+  static void it_should_return_no_validation_errors_when_json_is_blank() {
+    System.Assert.areEqual(
+      0,
+      LoggerNotifierConfiguration.validate(null, Schema.LogEntry__c.SObjectType).size(),
+      'A null JSON should be treated as absent, not invalid'
+    );
+    System.Assert.areEqual(
+      0,
+      LoggerNotifierConfiguration.validate('', Schema.LogEntry__c.SObjectType).size(),
+      'A blank JSON should be treated as absent, not invalid'
+    );
+    System.Assert.areEqual(
+      0,
+      LoggerNotifierConfiguration.validate('   ', Schema.LogEntry__c.SObjectType).size(),
+      'Whitespace-only JSON should be treated as absent, not invalid'
+    );
+  }
+
+  @IsTest
+  static void it_should_return_a_validation_error_for_malformed_json() {
+    List<String> errors = LoggerNotifierConfiguration.validate('{"foo":', Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(1, errors.size(), 'Malformed JSON should produce a single error: ' + errors);
+    System.Assert.isTrue(
+      errors.get(0).startsWith(LoggerNotifierConfiguration.INVALID_JSON_ERROR_PREFIX),
+      'Malformed JSON error should carry the invalid-JSON prefix: ' + errors.get(0)
+    );
+  }
+
+  @IsTest
+  static void it_should_return_a_validation_error_when_top_level_is_not_a_map() {
+    System.Assert.areEqual(
+      new List<String>{ LoggerNotifierConfiguration.TOP_LEVEL_SHAPE_ERROR_MESSAGE },
+      LoggerNotifierConfiguration.validate('["foo","bar"]', Schema.LogEntry__c.SObjectType)
+    );
+    System.Assert.areEqual(
+      new List<String>{ LoggerNotifierConfiguration.TOP_LEVEL_SHAPE_ERROR_MESSAGE },
+      LoggerNotifierConfiguration.validate('42', Schema.LogEntry__c.SObjectType)
+    );
+    System.Assert.areEqual(
+      new List<String>{ LoggerNotifierConfiguration.TOP_LEVEL_SHAPE_ERROR_MESSAGE },
+      LoggerNotifierConfiguration.validate('"just a string"', Schema.LogEntry__c.SObjectType)
+    );
+  }
+
+  @IsTest
+  static void it_should_return_no_validation_errors_when_source_fields_is_absent() {
+    System.Assert.areEqual(
+      0,
+      LoggerNotifierConfiguration.validate('{"someOtherKey":"value"}', Schema.LogEntry__c.SObjectType).size(),
+      'Configs without a sourceFields key are valid'
+    );
+  }
+
+  @IsTest
+  static void it_should_return_a_validation_error_when_source_fields_is_not_a_list() {
+    List<String> errors = LoggerNotifierConfiguration.validate('{"sourceFields":"LoggingLevel__c"}', Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(new List<String>{ LoggerNotifierConfiguration.SOURCE_FIELDS_NOT_A_LIST_ERROR_MESSAGE }, errors);
+  }
+
+  @IsTest
+  static void it_should_return_a_validation_error_when_object_entry_uses_the_wrong_primary_key() {
+    // This is the exact regression case from the CMDT `field` -> `sourceField` rename - the pre-fix parser
+    // silently dropped these entries at runtime. The validator flags them at save time so admins never
+    // persist a config the notifier will silently ignore.
+    List<String> errors = LoggerNotifierConfiguration.validate('{"sourceFields":[{"field":"LoggingLevel__c"}]}', Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(new List<String>{ LoggerNotifierConfiguration.OBJECT_ENTRY_MISSING_SOURCE_FIELD_ERROR_MESSAGE }, errors);
+  }
+
+  @IsTest
+  static void it_should_return_a_validation_error_when_object_entry_source_field_is_blank() {
+    List<String> errors = LoggerNotifierConfiguration.validate('{"sourceFields":[{"sourceField":"","displayLabel":"X"}]}', Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(new List<String>{ LoggerNotifierConfiguration.OBJECT_ENTRY_MISSING_SOURCE_FIELD_ERROR_MESSAGE }, errors);
+  }
+
+  @IsTest
+  static void it_should_return_a_validation_error_for_a_bare_string_path_that_does_not_resolve() {
+    List<String> errors = LoggerNotifierConfiguration.validate('{"sourceFields":["ThisFieldDoesNotExist__c"]}', Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(1, errors.size(), 'One unresolvable bare-string entry should produce one error: ' + errors);
+    System.Assert.areEqual(LoggerNotifierConfiguration.UNRESOLVABLE_SOURCE_FIELD_ERROR_PREFIX + 'ThisFieldDoesNotExist__c', errors.get(0));
+  }
+
+  @IsTest
+  static void it_should_return_a_validation_error_for_an_object_source_field_that_does_not_resolve() {
+    List<String> errors = LoggerNotifierConfiguration.validate('{"sourceFields":[{"sourceField":"ThisFieldDoesNotExist__c"}]}', Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(new List<String>{ LoggerNotifierConfiguration.UNRESOLVABLE_SOURCE_FIELD_ERROR_PREFIX + 'ThisFieldDoesNotExist__c' }, errors);
+  }
+
+  @IsTest
+  static void it_should_return_a_validation_error_for_a_display_field_that_does_not_resolve() {
+    List<String> errors = LoggerNotifierConfiguration.validate(
+      '{"sourceFields":[{"sourceField":"LoggingLevel__c","displayField":"NotARealDisplayField__c"}]}',
+      Schema.LogEntry__c.SObjectType
+    );
+
+    System.Assert.areEqual(new List<String>{ LoggerNotifierConfiguration.UNRESOLVABLE_DISPLAY_FIELD_ERROR_PREFIX + 'NotARealDisplayField__c' }, errors);
+  }
+
+  @IsTest
+  static void it_should_skip_field_path_checks_when_source_type_is_null() {
+    // The rule handler blocks a save with an unresolvable SourceSObjectType__c separately - the recipient
+    // handler shouldn't double-report the same problem.
+    List<String> errors = LoggerNotifierConfiguration.validate('{"sourceFields":["AnythingGoesHere__c"]}', null);
+
+    System.Assert.areEqual(0, errors.size(), 'A null source type should skip field-path validation: ' + errors);
+  }
+
+  @IsTest
+  static void it_should_pass_validation_for_a_realistic_slack_style_config() {
+    String json =
+      '{"sourceFields":["LoggingLevel__c","Message__c",' +
+      '{"sourceField":"Log__r.LoggedBy__c","displayField":"Log__r.LoggedBy__r.Username"},' +
+      '{"sourceField":"Log__r.OrganizationId__c"}],"includeNullValues":false}';
+    List<String> errors = LoggerNotifierConfiguration.validate(json, Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(0, errors.size(), 'A realistic Slack-style config should validate cleanly: ' + errors);
+  }
+
+  @IsTest
+  static void it_should_accumulate_multiple_errors_across_entries() {
+    String json = '{"sourceFields":["BadFieldA__c",{"sourceField":"BadFieldB__c"},{"field":"BadFieldC__c"}]}';
+    List<String> errors = LoggerNotifierConfiguration.validate(json, Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(3, errors.size(), 'Every offending entry should get its own error: ' + errors);
+  }
+
+  @IsTest
+  static void it_should_validate_a_positive_integer_max_length_cleanly() {
+    String json = '{"sourceFields":[{"sourceField":"Message__c","maxLength":500}]}';
+
+    List<String> errors = LoggerNotifierConfiguration.validate(json, Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(0, errors.size(), 'A positive integer maxLength should validate cleanly: ' + errors);
+  }
+
+  @IsTest
+  static void it_should_reject_a_max_length_that_is_not_a_positive_integer() {
+    String json =
+      '{"sourceFields":[' +
+      '{"sourceField":"Message__c","maxLength":"nope"},' +
+      '{"sourceField":"LoggingLevel__c","maxLength":0},' +
+      '{"sourceField":"Origin__c","maxLength":-10},' +
+      '{"sourceField":"StackTrace__c","maxLength":null}' +
+      ']}';
+
+    List<String> errors = LoggerNotifierConfiguration.validate(json, Schema.LogEntry__c.SObjectType);
+
+    System.Assert.areEqual(4, errors.size(), 'Every non-positive-integer maxLength should surface its own error: ' + errors);
+    for (String error : errors) {
+      System.Assert.areEqual(LoggerNotifierConfiguration.MAX_LENGTH_MUST_BE_POSITIVE_INTEGER_ERROR_MESSAGE, error);
+    }
+  }
 }

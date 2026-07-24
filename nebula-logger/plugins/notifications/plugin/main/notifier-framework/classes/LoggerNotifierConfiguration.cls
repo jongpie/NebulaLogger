@@ -23,6 +23,21 @@
  *              }
  */
 public class LoggerNotifierConfiguration {
+  @TestVisible
+  private static final String INVALID_JSON_ERROR_PREFIX = 'Configuration JSON is not valid JSON: ';
+  @TestVisible
+  private static final String TOP_LEVEL_SHAPE_ERROR_MESSAGE = 'Configuration JSON must be a JSON object (Map<String, Object>). Top-level arrays, strings, numbers, booleans, and nulls are not allowed.';
+  @TestVisible
+  private static final String SOURCE_FIELDS_NOT_A_LIST_ERROR_MESSAGE = 'Configuration JSON key "sourceFields" must be a JSON array.';
+  @TestVisible
+  private static final String OBJECT_ENTRY_MISSING_SOURCE_FIELD_ERROR_MESSAGE = 'Object-form entry in "sourceFields" is missing a non-blank "sourceField" property (spelling matters - the sibling override is "displayField").';
+  @TestVisible
+  private static final String UNRESOLVABLE_SOURCE_FIELD_ERROR_PREFIX = 'sourceField path does not resolve on the rule\'s source SObject: ';
+  @TestVisible
+  private static final String UNRESOLVABLE_DISPLAY_FIELD_ERROR_PREFIX = 'displayField path does not resolve on the rule\'s source SObject: ';
+  @TestVisible
+  private static final String MAX_LENGTH_MUST_BE_POSITIVE_INTEGER_ERROR_MESSAGE = 'Object-form entry in "sourceFields" has a "maxLength" that is not a positive integer.';
+
   private final Map<String, Object> rawConfig;
 
   /**
@@ -135,6 +150,107 @@ public class LoggerNotifierConfiguration {
     return result;
   }
 
+  /**
+   * @description Runs the framework-level schema checks against the configuration JSON. Notifiers whose
+   *              recipients populate `sourceFields` (Slack, Email, and future ones that render source-record
+   *              fields) can delegate their save-time validation to this method - the checks catch every
+   *              defect class that has burned notifier admins historically:
+   *              - Malformed JSON that would blow up `deserializeUntyped`.
+   *              - A top-level shape that is not a JSON object (an array, a scalar, `null`).
+   *              - A `sourceFields` key whose value is not a JSON array.
+   *              - Object-form entries missing a non-blank `sourceField` property (the exact defect that
+   *                caused the CMDT `field` -> `sourceField` regression to silently drop fields at runtime).
+   *              - `sourceField` / `displayField` paths that do not resolve against the rule's source
+   *                SObject via `LoggerNotifier.getDescribeByPath` - either a stale field API name after a
+   *                rename, or a path that references the wrong SObject.
+   *
+   *              Callers pass the resolved `Schema.SObjectType` (from the rule's `SourceSObjectType__c`)
+   *              so path checks can be done against the exact type the rule will run against. If the
+   *              source type is null (e.g. rule was saved with an unresolved SObject name), field-path
+   *              checks are skipped - the rule handler already blocks that case separately, so double-
+   *              reporting the same problem on the recipient adds noise.
+   * @param sourceType The `Schema.SObjectType` referenced by the rule's `SourceSObjectType__c`, or null
+   *                   when it could not be resolved.
+   * @param rawJson The raw configuration JSON string (before the constructor's tolerant parsing collapsed
+   *                malformed / non-object JSON to an empty map). Blank / null inputs return an empty list.
+   * @return An ordered list of human-readable error messages. Empty when the configuration passes every
+   *         check.
+   */
+  public static List<String> validate(String rawJson, Schema.SObjectType sourceType) {
+    List<String> errors = new List<String>();
+    if (String.isBlank(rawJson)) {
+      return errors;
+    }
+    Object parsed;
+    try {
+      parsed = System.JSON.deserializeUntyped(rawJson);
+    } catch (System.JSONException parseException) {
+      errors.add(INVALID_JSON_ERROR_PREFIX + parseException.getMessage());
+      return errors;
+    }
+    if ((parsed instanceof Map<String, Object>) == false) {
+      errors.add(TOP_LEVEL_SHAPE_ERROR_MESSAGE);
+      return errors;
+    }
+    Map<String, Object> topLevel = (Map<String, Object>) parsed;
+    if (topLevel.containsKey('sourceFields')) {
+      validateSourceFieldsEntry(topLevel.get('sourceFields'), sourceType, errors);
+    }
+    return errors;
+  }
+
+  private static void validateSourceFieldsEntry(Object rawSourceFields, Schema.SObjectType sourceType, List<String> errors) {
+    if ((rawSourceFields instanceof List<Object>) == false) {
+      errors.add(SOURCE_FIELDS_NOT_A_LIST_ERROR_MESSAGE);
+      return;
+    }
+    for (Object rawEntry : (List<Object>) rawSourceFields) {
+      if (rawEntry == null) {
+        continue;
+      }
+      if (rawEntry instanceof String) {
+        String pathValue = (String) rawEntry;
+        if (String.isBlank(pathValue)) {
+          continue;
+        }
+        appendUnresolvablePathError(sourceType, pathValue, UNRESOLVABLE_SOURCE_FIELD_ERROR_PREFIX, errors);
+        continue;
+      }
+      if ((rawEntry instanceof Map<String, Object>) == false) {
+        errors.add(OBJECT_ENTRY_MISSING_SOURCE_FIELD_ERROR_MESSAGE);
+        continue;
+      }
+      Map<String, Object> entryMap = (Map<String, Object>) rawEntry;
+      Object sourceFieldValue = entryMap.get('sourceField');
+      if ((sourceFieldValue instanceof String) == false || String.isBlank((String) sourceFieldValue)) {
+        errors.add(OBJECT_ENTRY_MISSING_SOURCE_FIELD_ERROR_MESSAGE);
+        continue;
+      }
+      appendUnresolvablePathError(sourceType, (String) sourceFieldValue, UNRESOLVABLE_SOURCE_FIELD_ERROR_PREFIX, errors);
+      Object displayFieldValue = entryMap.get('displayField');
+      if (displayFieldValue instanceof String && String.isNotBlank((String) displayFieldValue)) {
+        appendUnresolvablePathError(sourceType, (String) displayFieldValue, UNRESOLVABLE_DISPLAY_FIELD_ERROR_PREFIX, errors);
+      }
+      if (entryMap.containsKey('maxLength')) {
+        Object maxLengthValue = entryMap.get('maxLength');
+        if ((maxLengthValue instanceof Integer) == false || ((Integer) maxLengthValue) <= 0) {
+          errors.add(MAX_LENGTH_MUST_BE_POSITIVE_INTEGER_ERROR_MESSAGE);
+        }
+      }
+    }
+  }
+
+  // TODO revisit these parameters
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  private static void appendUnresolvablePathError(Schema.SObjectType sourceType, String path, String prefix, List<String> errors) {
+    if (sourceType == null) {
+      return;
+    }
+    if (LoggerNotifier.getDescribeByPath(sourceType, path) == null) {
+      errors.add(prefix + path);
+    }
+  }
+
   private static Map<String, Object> parseRawConfig(LoggerNotificationRecipient__c recipient) {
     if (recipient == null || String.isBlank(recipient.ConfigurationJson__c)) {
       return new Map<String, Object>();
@@ -159,7 +275,7 @@ public class LoggerNotifierConfiguration {
     }
     if (rawSourceField instanceof String) {
       String fieldName = (String) rawSourceField;
-      return String.isBlank(fieldName) ? null : new SourceFieldDefinition(fieldName, null, null);
+      return String.isBlank(fieldName) ? null : new SourceFieldDefinition(fieldName, null, null, null);
     }
     if ((rawSourceField instanceof Map<String, Object>) == false) {
       return null;
@@ -212,6 +328,8 @@ public class LoggerNotifierConfiguration {
       this(sourceField, displayField, displayLabel, null);
     }
 
+    // TODO revisit these parameters
+    @SuppressWarnings('PMD.ExcessiveParameterList')
     public SourceFieldDefinition(String sourceField, String displayField, String displayLabel, Integer maxLength) {
       this.sourceField = sourceField;
       this.displayField = displayField;
