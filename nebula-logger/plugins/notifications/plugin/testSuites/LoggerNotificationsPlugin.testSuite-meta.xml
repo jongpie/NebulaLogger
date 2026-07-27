@@ -10,6 +10,7 @@
     <testClassName>LoggerNotificationServiceHandler_Tests</testClassName>
     <testClassName>LoggerNotificationsPlugin_Tests</testClassName>
     <testClassName>LoggerNotifierConfiguration_Tests</testClassName>
+    <testClassName>LoggerNotifierDispatchPacker_Tests</testClassName>
     <testClassName>LoggerNotifierRequest_Tests</testClassName>
     <testClassName>LoggerNotifierResult_Tests</testClassName>
     <testClassName>LoggerNotifier_Tests</testClassName>

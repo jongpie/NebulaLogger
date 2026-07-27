@@ -24,14 +24,11 @@ private class CMDT_LoggerNotificationsPlugin_Tests {
       'Adds the ability to configure notification rules for logging records and sends notifications to each rule\'s configured recipients (Slack, email, etc.).',
       bundledRecord.Description__c
     );
-    System.Assert.isNull(bundledRecord.ExecutionOrder__c);
     System.Assert.isTrue(bundledRecord.IsEnabled__c);
-    System.Assert.isNull(bundledRecord.Link__c);
     System.Assert.areEqual('Logger Notifications', bundledRecord.Label);
-    System.Assert.isNull(bundledRecord.PluginApiName__c);
-    System.Assert.areEqual('Apex', bundledRecord.PluginType__c);
+    System.Assert.isNotNull(bundledRecord.Link__c, 'TODO add a link for the new notifications plugin');
     System.Assert.areEqual(LoggerNotificationsPlugin.class.getName(), bundledRecord.SObjectHandlerApexClass__c);
-    System.Assert.areEqual(100.0, bundledRecord.SObjectHandlerExecutionOrder__c);
+    System.Assert.isNull(bundledRecord.SObjectHandlerExecutionOrder__c);
     System.Assert.isNull(bundledRecord.SObjectHandlerFlowName__c);
     System.Assert.isNull(bundledRecord.SObjectType__c);
     System.Assert.areEqual('v1.0.0', bundledRecord.VersionNumber__c);

@@ -23,10 +23,6 @@
         <value xsi:type="xsd:string">Adds the ability to configure notification rules for logging records and sends notifications to each rule&apos;s configured recipients (Slack, email, etc.).</value>
     </values>
     <values>
-        <field>ExecutionOrder__c</field>
-        <value xsi:nil="true"/>
-    </values>
-    <values>
         <field>IsEnabled__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
@@ -35,20 +31,12 @@
         <value xsi:nil="true"/>
     </values>
     <values>
-        <field>PluginApiName__c</field>
-        <value xsi:nil="true"/>
-    </values>
-    <values>
-        <field>PluginType__c</field>
-        <value xsi:type="xsd:string">Apex</value>
-    </values>
-    <values>
         <field>SObjectHandlerApexClass__c</field>
         <value xsi:type="xsd:string">LoggerNotificationsPlugin</value>
     </values>
     <values>
         <field>SObjectHandlerExecutionOrder__c</field>
-        <value xsi:type="xsd:double">100.0</value>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>SObjectHandlerFlowName__c</field>
