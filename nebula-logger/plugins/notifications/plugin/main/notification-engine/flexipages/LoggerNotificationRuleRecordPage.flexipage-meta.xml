@@ -735,6 +735,9 @@
                             <value>RetentionDate__c</value>
                         </valueListItems>
                         <valueListItems>
+                            <value>CREATED_DATE</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value>LAST_UPDATE</value>
                         </valueListItems>
                     </valueList>
@@ -807,6 +810,9 @@
                         </valueListItems>
                         <valueListItems>
                             <value>RetentionDate__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>CREATED_DATE</value>
                         </valueListItems>
                         <valueListItems>
                             <value>LAST_UPDATE</value>
