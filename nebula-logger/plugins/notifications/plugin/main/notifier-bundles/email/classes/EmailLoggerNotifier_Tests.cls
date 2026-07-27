@@ -7,6 +7,16 @@
 @IsTest(IsParallel=true)
 private class EmailLoggerNotifier_Tests {
   @IsTest
+  static void it_should_declare_only_the_email_operation_primitive() {
+    // EmailLoggerNotifier calls `Messaging.sendEmail(...)`, which the platform treats conservatively
+    // when mixed with callouts in the same transaction. Kept distinct from CALLOUT and DML in the
+    // enum so the packer can isolate email-sending notifiers from either side effect.
+    Set<LoggerNotifier.Operation> operations = new EmailLoggerNotifier().getSupportedOperations();
+
+    System.Assert.areEqual(new Set<LoggerNotifier.Operation>{ LoggerNotifier.Operation.EMAIL }, operations);
+  }
+
+  @IsTest
   static void it_should_short_circuit_when_context_is_null_or_records_are_empty() {
     EmailLoggerNotifier notifier = new EmailLoggerNotifier();
 

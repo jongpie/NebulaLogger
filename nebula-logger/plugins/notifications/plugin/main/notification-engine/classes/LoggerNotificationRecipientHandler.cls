@@ -24,11 +24,11 @@ public without sharing class LoggerNotificationRecipientHandler extends LoggerSO
   }
 
   protected override void executeBeforeInsert(List<SObject> triggerNew) {
-    this.validateConfigurationJson(triggerNew, null);
+    this.validateConfigurationJson((List<LoggerNotificationRecipient__c>) triggerNew, null);
   }
 
   protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
-    this.validateConfigurationJson(triggerNewMap.values(), triggerOldMap);
+    this.validateConfigurationJson((List<LoggerNotificationRecipient__c>) triggerNewMap.values(), (Map<Id, LoggerNotificationRecipient__c>) triggerOldMap);
   }
 
   private void validateConfigurationJson(List<LoggerNotificationRecipient__c> recipients, Map<Id, LoggerNotificationRecipient__c> triggerOldMap) {

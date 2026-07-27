@@ -45,6 +45,10 @@ public without sharing class EmailLoggerNotifier extends LoggerNotifier {
   private static final String NULL_VALUE_PLACEHOLDER = '(empty)';
   private static final System.Pattern MERGE_TOKEN_PATTERN = System.Pattern.compile('\\{!([^{}]+)\\}');
 
+  public override Set<LoggerNotifier.Operation> getSupportedOperations() {
+    return new Set<LoggerNotifier.Operation>{ LoggerNotifier.Operation.EMAIL };
+  }
+
   /**
    * @description Called by `LoggerNotificationAsyncDispatcher`.
    * @param request The rule + recipient + service + matching records to deliver.

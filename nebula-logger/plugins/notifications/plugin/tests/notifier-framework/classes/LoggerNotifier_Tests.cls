@@ -399,6 +399,28 @@ private class LoggerNotifier_Tests {
     System.Assert.areEqual(new List<String>{ PICKY_NOTIFIER_CUSTOM_TOGGLE_UNSUPPORTED_ERROR }, errors);
   }
 
+  @IsTest
+  static void it_should_expose_the_three_operation_primitives() {
+    // The framework relies on distinct enum values for its packing algorithm. If new primitives get
+    // added later (PLATFORM_EVENT, etc.), that's a compatible extension - existing notifiers don't
+    // need to change. This test locks in the shape of the enum at its current release.
+    Set<LoggerNotifier.Operation> allValues = new Set<LoggerNotifier.Operation>(LoggerNotifier.Operation.values());
+
+    System.Assert.isTrue(allValues.contains(LoggerNotifier.Operation.CALLOUT), 'CALLOUT primitive is required for HTTP-callout notifiers');
+    System.Assert.isTrue(allValues.contains(LoggerNotifier.Operation.DML), 'DML primitive is required for notifiers that trigger DML side effects');
+    System.Assert.isTrue(allValues.contains(LoggerNotifier.Operation.EMAIL), 'EMAIL primitive is required for notifiers that call Messaging.sendEmail');
+  }
+
+  @IsTest
+  static void it_should_default_getSupportedOperations_to_an_empty_set() {
+    // A notifier that performs none of the tracked primitives is packable with anything else, which
+    // minimizes async job usage - so the default MUST be an empty set.
+    Set<LoggerNotifier.Operation> operations = new StubNotifier().getSupportedOperations();
+
+    System.Assert.isNotNull(operations, 'getSupportedOperations should never return null');
+    System.Assert.areEqual(0, operations.size(), 'A subclass that does not override should default to an empty set');
+  }
+
   public class StubNotifier extends LoggerNotifier {
     public override LoggerNotifierResult sendNotification(LoggerNotifierRequest request) {
       return null;

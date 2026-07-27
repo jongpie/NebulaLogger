@@ -10,6 +10,10 @@
  *              record - status, HTTP details, external reference, error message, etc. All fields are optional; a
  *              notifier that returns a bare `new LoggerNotifierResult()` (or `null`) is treated as a plain success.
  */
+// LoggerNotifierResult is a DTO - every field is intentionally public data, not behavior. The two PMD
+// counts (ExcessivePublicCount, TooManyFields) are structural limits designed for behavioral classes;
+// they don't apply meaningfully to a DTO whose whole job is to expose named data slots.
+@SuppressWarnings('PMD.ExcessivePublicCount, PMD.TooManyFields')
 public class LoggerNotifierResult {
   // TODO move statuses somewhere else, perhaps?
   /**
@@ -106,6 +110,56 @@ public class LoggerNotifierResult {
    *              keep the first attempt's job id. Left blank by notifiers themselves.
    */
   public Id jobId;
+
+  /**
+   * @description SObject records the notifier wants inserted in a follow-up transaction. The async
+   *              dispatcher batches these across every notifier in a group and inserts them via
+   *              `LoggerDataStore.getDatabase().insertRecords(...)` from its Finalizer, which runs in
+   *              a fresh transaction with a clean callout budget. Use this to defer DML that would
+   *              otherwise poison a subsequent callout notifier in the same group. Leave blank when
+   *              the notifier does DML inline or does no DML at all.
+   */
+  public List<SObject> deferredDmlInserts;
+
+  /**
+   * @description SObject records the notifier wants updated in a follow-up transaction. See
+   *              `deferredDmlInserts` for how the framework batches and applies these.
+   */
+  public List<SObject> deferredDmlUpdates;
+
+  /**
+   * @description SObject records the notifier wants deleted in a follow-up transaction. See
+   *              `deferredDmlInserts` for how the framework batches and applies these.
+   */
+  public List<SObject> deferredDmlDeletes;
+
+  /**
+   * @description HTTP requests the notifier wants sent in a follow-up transaction. The async
+   *              dispatcher's Finalizer issues each of these via `new System.Http().send(...)` and
+   *              records the outcomes on the associated delivery record. Use this to defer callouts
+   *              from a group whose earlier notifier(s) performed DML - the follow-up transaction
+   *              has a clean uncommitted-work slate. Leave blank when the notifier calls out inline
+   *              or makes no callouts.
+   */
+  public List<System.HttpRequest> deferredCallouts;
+
+  /**
+   * @description Emails the notifier wants sent in a follow-up transaction. The async dispatcher's
+   *              Finalizer issues these via `Messaging.sendEmail(...)` from a fresh transaction. Use
+   *              this when the notifier needs to compute the email inline (e.g. via the recipient's
+   *              template) but wants the send itself deferred so it doesn't interact with a
+   *              callout that runs later in the same group.
+   */
+  public List<Messaging.SingleEmailMessage> deferredEmails;
+
+  /**
+   * @description Escape-hatch bucket for work that doesn't fit the typed `deferred*` fields. Each
+   *              queueable in this list is passed to `LoggerDataStore.getJobQueue().enqueueJob(...)`
+   *              by the async dispatcher's Finalizer. Use when a notifier needs to do something too
+   *              complex or too specialized for the typed buckets (three separate callouts to three
+   *              different services, a scheduled retry, a Platform Event fan-out, etc.).
+   */
+  public List<System.Queueable> followUpQueueables;
 
   /**
    * @description Default constructor - all fields left blank, treated as a plain success by the runtime.

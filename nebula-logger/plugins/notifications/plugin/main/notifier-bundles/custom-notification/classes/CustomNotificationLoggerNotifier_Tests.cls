@@ -9,6 +9,17 @@ private class CustomNotificationLoggerNotifier_Tests {
   private static final String NOTIFICATION_TYPE_DEVELOPER_NAME = 'LoggerCustomNotification';
 
   @IsTest
+  static void it_should_declare_only_the_dml_operation_primitive() {
+    // Salesforce treats `Messaging.CustomNotification.send(...)` as DML for the "uncommitted work
+    // pending" check - a subsequent callout in the same transaction throws CalloutException. The
+    // dispatcher relies on this declaration to isolate CustomNotification recipients from
+    // callout-performing recipients (like Slack) on the same rule.
+    Set<LoggerNotifier.Operation> operations = new CustomNotificationLoggerNotifier().getSupportedOperations();
+
+    System.Assert.areEqual(new Set<LoggerNotifier.Operation>{ LoggerNotifier.Operation.DML }, operations);
+  }
+
+  @IsTest
   static void it_should_short_circuit_when_request_is_null_or_has_no_records() {
     MockSender mockSender = installMockSender();
     CustomNotificationLoggerNotifier notifier = new CustomNotificationLoggerNotifier();

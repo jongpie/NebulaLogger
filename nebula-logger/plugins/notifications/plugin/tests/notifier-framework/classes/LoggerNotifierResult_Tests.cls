@@ -168,6 +168,78 @@ private class LoggerNotifierResult_Tests {
     System.Assert.isNull(delivery.JobId__c, 'JobId__c should stay null when the result carries no jobId');
   }
 
+  @IsTest
+  static void it_should_default_every_deferred_work_field_to_null() {
+    // A notifier that returns a plain new LoggerNotifierResult() should not require the runtime to
+    // treat null and empty lists differently. Default state for every deferred* bucket is null.
+    LoggerNotifierResult result = new LoggerNotifierResult();
+
+    System.Assert.isNull(result.deferredDmlInserts);
+    System.Assert.isNull(result.deferredDmlUpdates);
+    System.Assert.isNull(result.deferredDmlDeletes);
+    System.Assert.isNull(result.deferredCallouts);
+    System.Assert.isNull(result.deferredEmails);
+    System.Assert.isNull(result.followUpQueueables);
+  }
+
+  @IsTest
+  static void it_should_accept_records_assigned_to_each_deferred_dml_bucket() {
+    LoggerNotifierResult result = new LoggerNotifierResult();
+    Log__c toInsert = new Log__c(TransactionId__c = 'to-insert');
+    Log__c toUpdate = new Log__c(Id = LoggerMockDataCreator.createId(Schema.Log__c.SObjectType), TransactionId__c = 'to-update');
+    Log__c toDelete = new Log__c(Id = LoggerMockDataCreator.createId(Schema.Log__c.SObjectType));
+
+    result.deferredDmlInserts = new List<SObject>{ toInsert };
+    result.deferredDmlUpdates = new List<SObject>{ toUpdate };
+    result.deferredDmlDeletes = new List<SObject>{ toDelete };
+
+    System.Assert.areEqual(new List<SObject>{ toInsert }, result.deferredDmlInserts);
+    System.Assert.areEqual(new List<SObject>{ toUpdate }, result.deferredDmlUpdates);
+    System.Assert.areEqual(new List<SObject>{ toDelete }, result.deferredDmlDeletes);
+  }
+
+  @IsTest
+  static void it_should_accept_http_requests_in_the_deferred_callouts_bucket() {
+    LoggerNotifierResult result = new LoggerNotifierResult();
+    System.HttpRequest deferredRequest = new System.HttpRequest();
+    deferredRequest.setEndpoint('https://example.com/deferred');
+    deferredRequest.setMethod('POST');
+
+    result.deferredCallouts = new List<System.HttpRequest>{ deferredRequest };
+
+    System.Assert.areEqual(1, result.deferredCallouts.size());
+    System.Assert.areEqual('https://example.com/deferred', result.deferredCallouts.get(0).getEndpoint());
+  }
+
+  @IsTest
+  static void it_should_accept_single_email_messages_in_the_deferred_emails_bucket() {
+    LoggerNotifierResult result = new LoggerNotifierResult();
+    Messaging.SingleEmailMessage deferredEmail = new Messaging.SingleEmailMessage();
+    deferredEmail.setSubject('Deferred subject');
+
+    result.deferredEmails = new List<Messaging.SingleEmailMessage>{ deferredEmail };
+
+    System.Assert.areEqual(1, result.deferredEmails.size());
+    System.Assert.areEqual('Deferred subject', result.deferredEmails.get(0).getSubject());
+  }
+
+  @IsTest
+  static void it_should_accept_queueables_in_the_follow_up_queueables_bucket() {
+    LoggerNotifierResult result = new LoggerNotifierResult();
+    System.Queueable followUp = new NoOpFollowUpQueueable();
+
+    result.followUpQueueables = new List<System.Queueable>{ followUp };
+
+    System.Assert.areEqual(1, result.followUpQueueables.size());
+    System.Assert.isTrue(result.followUpQueueables.get(0) instanceof NoOpFollowUpQueueable);
+  }
+
+  public class NoOpFollowUpQueueable implements System.Queueable {
+    @SuppressWarnings('PMD.EmptyStatementBlock')
+    public void execute(System.QueueableContext context) {
+    }
+  }
+
   private static System.HttpResponse buildResponse(Integer statusCode, String statusReason, String body) {
     System.HttpResponse response = new System.HttpResponse();
     response.setStatusCode(statusCode);

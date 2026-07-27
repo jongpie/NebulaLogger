@@ -38,6 +38,10 @@ public without sharing class CustomNotificationLoggerNotifier extends LoggerNoti
   @TestVisible
   private static Sender sender = new RealSender();
 
+  public override Set<LoggerNotifier.Operation> getSupportedOperations() {
+    return new Set<LoggerNotifier.Operation>{ LoggerNotifier.Operation.DML };
+  }
+
   /**
    * @description Called by `LoggerNotificationAsyncDispatcher` in an async context.
    * @param notifierRequest The rule + recipient + service + matching records to deliver.
