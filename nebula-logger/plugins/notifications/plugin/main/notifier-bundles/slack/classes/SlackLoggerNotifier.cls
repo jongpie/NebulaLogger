@@ -64,6 +64,10 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
   // triple-backtick wrapping on wide values and the abbreviate() ellipsis without tripping the truncation.
   private static final Integer MAX_RENDERED_FIELD_LENGTH = 1990;
 
+  public override Set<LoggerNotifier.Operation> getSupportedOperations() {
+    return new Set<LoggerNotifier.Operation>{ LoggerNotifier.Operation.CALLOUT };
+  }
+
   /**
    * @description Called by `LoggerNotificationAsyncDispatcher` in an async, callout-legal context.
    * @param request The rule + recipient + service + matching records to deliver.
@@ -294,7 +298,7 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
         if (log.TotalERRORLogEntries__c > 0) {
           color = NOTIFICATION_COLOR_RED;
         } else if (log.TotalWARNLogEntries__c > 0) {
-          color = NOTIFICATION_COLOR_RED;
+          color = NOTIFICATION_COLOR_ORANGE;
         } else {
           color = NOTIFICATION_COLOR_GREEN;
         }

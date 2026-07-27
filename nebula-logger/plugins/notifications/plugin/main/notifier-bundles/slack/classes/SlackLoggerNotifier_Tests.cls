@@ -12,6 +12,16 @@ private class SlackLoggerNotifier_Tests {
   private static final String NOTIFICATION_COLOR_BLUE = '#7C8CD1';
 
   @IsTest
+  static void it_should_declare_only_the_callout_operation_primitive() {
+    // Slack posts to a webhook or Slack Web API via HTTP callout. The dispatcher relies on this
+    // declaration to keep Slack out of the same Queueable transaction as a DML notifier that would
+    // otherwise trigger "uncommitted work pending" on the callout.
+    Set<LoggerNotifier.Operation> operations = new SlackLoggerNotifier().getSupportedOperations();
+
+    System.Assert.areEqual(new Set<LoggerNotifier.Operation>{ LoggerNotifier.Operation.CALLOUT }, operations);
+  }
+
+  @IsTest
   static void it_should_short_circuit_when_context_is_null_or_has_no_matching_records() {
     LoggerMockDataCreator.MockHttpCallout calloutMock = installCalloutMock();
     SlackLoggerNotifier notifier = new SlackLoggerNotifier();
@@ -102,7 +112,7 @@ private class SlackLoggerNotifier_Tests {
 
   @IsTest
   static void it_should_color_log_records_with_error_entries_red() {
-    // Log__c uses the rolled-up ERROR count to pick its color rather than a LoggingLevel__c field on
+    // Log__c uses the rolled-up ERROR and WARN counts to pick its color rather than a LoggingLevel__c field on
     // the record itself. Any positive TotalERRORLogEntries__c rollup drives the attachment red.
     String payload = capturePayloadForLog(buildLogWithRollups(3, 0));
 
@@ -111,12 +121,11 @@ private class SlackLoggerNotifier_Tests {
 
   @IsTest
   static void it_should_color_log_records_with_warn_entries_but_no_errors_red() {
-    // Log__c's WARN rollup also drives red today - the notifier treats any non-zero WARN aggregate on a
-    // Log rollup as elevated enough to warrant the ERROR color, since a WARN on a rolled-up log means
-    // the whole transaction contained at least one warning worth attention.
+    // Log__c uses the rolled-up ERROR and WARN counts to pick its color rather than a LoggingLevel__c field on
+    // the record itself. A 0 TotalERRORLogEntries__c rollup and any positive TotalWARNLogEntries__c rollup drives the attachment orange.
     String payload = capturePayloadForLog(buildLogWithRollups(0, 2));
 
-    System.Assert.isTrue(payload.contains(NOTIFICATION_COLOR_RED), 'Log__c with no ERROR but WARN > 0 should still render red: ' + payload);
+    System.Assert.isTrue(payload.contains(NOTIFICATION_COLOR_ORANGE), 'Log__c with no ERROR but WARN > 0 should render orange: ' + payload);
   }
 
   @IsTest
@@ -288,7 +297,7 @@ private class SlackLoggerNotifier_Tests {
       Message__c = 'Something broke'
     );
     LoggerDataStore.getDatabase().insertRecord(logEntry);
-    log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
 
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["LoggingLevel__c","Log__r.Name"]}');
     recipient.LoggerNotificationRule__r = buildRule();
@@ -310,7 +319,7 @@ private class SlackLoggerNotifier_Tests {
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
-    logEntry = [SELECT Id, LoggingLevel__c, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
+    logEntry = [SELECT Id, LoggingLevel__c, Name FROM LogEntry__c WHERE Id = :logEntry.Id WITH SYSTEM_MODE];
 
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["Name"]}');
     recipient.LoggerNotificationRule__r = buildRule();
@@ -331,7 +340,7 @@ private class SlackLoggerNotifier_Tests {
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
-    log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
 
     // Configure the raw lookup (Log__c) with no displayField - the runtime should auto-fall-back to Log__r.Name.
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c(ConfigurationJson__c = '{"sourceFields":["Log__c"]}');
@@ -393,7 +402,7 @@ private class SlackLoggerNotifier_Tests {
     LoggerDataStore.getDatabase().insertRecord(log);
     LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), Timestamp__c = System.now());
     LoggerDataStore.getDatabase().insertRecord(logEntry);
-    logEntry = [SELECT Id, LoggingLevel__c, Name FROM LogEntry__c WHERE Id = :logEntry.Id];
+    logEntry = [SELECT Id, LoggingLevel__c, Name FROM LogEntry__c WHERE Id = :logEntry.Id WITH SYSTEM_MODE];
 
     LoggerNotificationRecipient__c recipient = new LoggerNotificationRecipient__c();
     recipient.LoggerNotificationRule__r = buildRule();
@@ -530,7 +539,7 @@ private class SlackLoggerNotifier_Tests {
       payload.contains('```Something broke```'),
       'Message__c should still render its real value even though another configured field is invalid: ' + payload
     );
-    log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id];
+    log = [SELECT Id, Name FROM Log__c WHERE Id = :log.Id WITH SYSTEM_MODE];
     System.Assert.isTrue(payload.contains(log.Name), 'Log__r.Name should still resolve and render even though another configured field is invalid: ' + payload);
   }
 

@@ -17,6 +17,33 @@
  */
 public abstract class LoggerNotifier {
   /**
+   * @description Transactional side effects a `LoggerNotifier` subclass may perform inside its
+   *              `sendNotification` call. Concrete notifiers self-declare via `getSupportedOperations`;
+   *              the async dispatcher uses those declarations to pack multiple notifiers into as few
+   *              Queueable transactions as possible while respecting Salesforce's per-transaction
+   *              rules (e.g. "no callouts after DML"). Nested inside `LoggerNotifier` so overrides
+   *              read as `Set<LoggerNotifier.Operation>`, keeping the ownership relationship obvious.
+   *
+   *              Each value maps to a distinct Salesforce primitive with its own transactional rules:
+   *                - CALLOUT - any HTTP callout (Slack, Teams, PagerDuty, generic REST notifier).
+   *                - DML - any statement Salesforce treats as DML for the "uncommitted work pending"
+   *                    check, including `insert` / `update` / `delete` / `upsert` on SObject records
+   *                    and `Messaging.CustomNotification.send(...)`.
+   *                - EMAIL - `Messaging.sendEmail(...)` calls. Kept distinct because email sending has
+   *                    historically been treated conservatively by the platform when mixed with
+   *                    callouts in the same transaction.
+   *
+   *              Adding a new value later (e.g. `PLATFORM_EVENT`) is a compatible extension:
+   *              notifiers that don't touch it don't change, and the dispatcher's compatibility rules
+   *              gain a new case for the new primitive.
+   */
+  public enum Operation {
+    CALLOUT,
+    DML,
+    EMAIL
+  }
+
+  /**
    * @description Called by `LoggerNotificationProcessor` when one or more records match a rule that references this service.
    *              Subclasses are responsible for delivering the notification (callout, email, etc.) and
    *              returning a `LoggerNotifierResult` describing what happened. Returning `null` is treated
@@ -26,6 +53,25 @@ public abstract class LoggerNotifier {
    *         or `null` to accept the runtime's default of "delivered with no additional detail".
    */
   public abstract LoggerNotifierResult sendNotification(LoggerNotifierRequest request);
+
+  /**
+   * @description Declares which `LoggerNotifier.Operation` primitives the subclass may perform inside
+   *              `sendNotification`. The async dispatcher uses this to pack multiple notifiers into as
+   *              few Queueable transactions as possible while respecting Salesforce's per-transaction
+   *              rules (e.g. "no callouts after DML"). Default is an empty set - a notifier that
+   *              performs none of the tracked primitives is packable with anything else, which
+   *              minimizes async job usage.
+   *
+   *              Subclasses that make HTTP callouts should include `Operation.CALLOUT`; those that
+   *              perform any DML (including `Messaging.CustomNotification.send`) should include
+   *              `Operation.DML`; those that call `Messaging.sendEmail` should include
+   *              `Operation.EMAIL`. A notifier that does more than one primitive returns the union -
+   *              the dispatcher handles the packing.
+   * @return The set of `Operation` values this notifier may perform.
+   */
+  public virtual Set<Operation> getSupportedOperations() {
+    return new Set<Operation>();
+  }
 
   /**
    * @description Called by `LoggerNotificationRecipientHandler` on insert / update to validate the
