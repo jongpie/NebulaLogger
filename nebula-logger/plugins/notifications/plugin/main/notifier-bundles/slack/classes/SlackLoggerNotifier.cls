@@ -265,12 +265,17 @@ public without sharing class SlackLoggerNotifier extends LoggerNotifier {
       ? MAX_RENDERED_FIELD_LENGTH
       : Math.max(4, Math.min(definition.maxLength, MAX_RENDERED_FIELD_LENGTH));
     String stringValue = String.valueOf(rawValue).abbreviate(effectiveMaxLength);
+    // If there's a link, don't wrap in single backticks - just use stringValue as-is
+    // TODO decide if I would ever want to support wide fields as links
+    Id linkTarget = LoggerNotifier.resolveLinkTarget(record, definition.sourceField, primaryDescribe);
+    if (linkTarget != null) {
+      return new FieldDto(label, wrapAsLink(linkTarget, stringValue), isWide == false);
+    }
     String renderedValue = isWide ? '```' + stringValue + '```' : '`' + stringValue + '`';
     // Slack's `<url|text>` mrkdwn wrapping only kicks in when the primary field points at a specific record
     // (a Name on the source record, a parent Name via `.Name`, or a REFERENCE lookup). Everything else stays
     // as plain rendered text.
-    Id linkTarget = LoggerNotifier.resolveLinkTarget(record, definition.sourceField, primaryDescribe);
-    return new FieldDto(label, wrapAsLink(linkTarget, renderedValue), isWide == false);
+    return new FieldDto(label, renderedValue, isWide == false);
   }
 
   private static String wrapAsLink(Id linkTarget, String renderedValue) {

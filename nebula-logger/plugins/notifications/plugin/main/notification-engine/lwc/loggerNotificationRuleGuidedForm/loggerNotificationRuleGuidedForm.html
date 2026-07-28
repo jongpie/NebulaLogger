@@ -308,14 +308,15 @@
               </template>
               <template lwc:if={recipient.supportsUser}>
                 <lightning-record-picker
-                  label="User"
-                  placeholder="Search users..."
-                  object-api-name="User"
-                  value={recipient.User__c}
-                  data-local-id={recipient.localId}
                   data-field="User__c"
+                  data-local-id={recipient.localId}
+                  display-info={recipientUserLookupDisplayInfo}
+                  label="User"
+                  object-api-name="User"
                   onchange={handleUserChange}
+                  placeholder="Search users..."
                   required={recipient.userRequired}
+                  value={recipient.User__c}
                 ></lightning-record-picker>
               </template>
 

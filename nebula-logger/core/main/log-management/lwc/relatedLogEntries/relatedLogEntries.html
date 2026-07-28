@@ -27,6 +27,16 @@
               style="display: inline-block"
               variant="label-hidden"
             ></lightning-input>
+            <lightning-input
+              class="slds-m-right_xx-small"
+              data-id="enter-search"
+              placeholder="Search"
+              type="search"
+              value={search}
+              onchange={handleSearchChange}
+              style="display: inline-block"
+              variant="label-hidden"
+            ></lightning-input>
             <lightning-button-icon icon-name="utility:refresh" onclick={refresh}></lightning-button-icon>
           </div>
         </header>

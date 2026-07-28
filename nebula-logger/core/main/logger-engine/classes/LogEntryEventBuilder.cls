@@ -1030,6 +1030,23 @@ global with sharing class LogEntryEventBuilder {
     );
   }
 
+  public static String getOrganizationEnvironmentType(Schema.Organization organization) {
+    if (cachedOrganizationEnvironmentType != null) {
+      return cachedOrganizationEnvironmentType;
+    }
+
+    if (organization == null) {
+      cachedOrganizationEnvironmentType = '';
+    } else if (organization.IsSandbox && organization.TrialExpirationDate != null) {
+      cachedOrganizationEnvironmentType = 'Scratch Org';
+    } else if (organization.IsSandbox) {
+      cachedOrganizationEnvironmentType = 'Sandbox';
+    } else {
+      cachedOrganizationEnvironmentType = 'Production';
+    }
+    return cachedOrganizationEnvironmentType;
+  }
+
   @SuppressWarnings('PMD.NcssCount')
   private static LogEntryEvent__e getLogEntryEventTemplate(System.LoggingLevel entryLoggingLevel) {
     LogEntryEvent__e logEntryEventTemplate = new LogEntryEvent__e(
@@ -1146,7 +1163,7 @@ global with sharing class LogEntryEventBuilder {
       return;
     }
 
-    logEntryEvent.OrganizationEnvironmentType__c = getOrganizationEnvironmentType(userSettings);
+    logEntryEvent.OrganizationEnvironmentType__c = getOrganizationEnvironmentType(CACHED_ORGANIZATION);
     logEntryEvent.OrganizationId__c = CACHED_ORGANIZATION?.Id;
     logEntryEvent.OrganizationInstanceName__c = CACHED_ORGANIZATION?.InstanceName;
     logEntryEvent.OrganizationName__c = CACHED_ORGANIZATION?.Name;
@@ -1216,29 +1233,6 @@ global with sharing class LogEntryEventBuilder {
       strippedRecordIdToRecord.put(recordIdString, record);
     }
     return System.JSON.serializePretty(strippedRecordIdToRecord);
-  }
-
-  private static String getOrganizationEnvironmentType(LoggerSettings__c userSettings) {
-    if (cachedOrganizationEnvironmentType != null) {
-      return cachedOrganizationEnvironmentType;
-    }
-
-    if (userSettings.IsEnabled__c == false || LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == false) {
-      return '';
-    }
-
-    Schema.Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
-    String cachedOrganizationEnvironmentType;
-    if (cachedOrganization == null) {
-      cachedOrganizationEnvironmentType = '';
-    } else if (cachedOrganization.IsSandbox && cachedOrganization.TrialExpirationDate != null) {
-      cachedOrganizationEnvironmentType = 'Scratch Org';
-    } else if (cachedOrganization.IsSandbox) {
-      cachedOrganizationEnvironmentType = 'Sandbox';
-    } else {
-      cachedOrganizationEnvironmentType = 'Production';
-    }
-    return cachedOrganizationEnvironmentType;
   }
 
   private static String getNamespacePrefix() {

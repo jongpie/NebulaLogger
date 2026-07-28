@@ -692,7 +692,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
   }
 
   private static void setQueriedOrganizationDetails(List<Log__c> logs) {
-    if (LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY) {
+    if (LoggerParameter.QUERY_ORGANIZATION_DATA == false || LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == true) {
       return;
     }
 
@@ -702,6 +702,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     for (Log__c log : logs) {
+      log.OrganizationEnvironmentType__c = LogEntryEventBuilder.getOrganizationEnvironmentType(cachedOrganization);
       log.OrganizationId__c = cachedOrganization.Id;
       log.OrganizationInstanceName__c = cachedOrganization.InstanceName;
       log.OrganizationName__c = cachedOrganization.Name;
