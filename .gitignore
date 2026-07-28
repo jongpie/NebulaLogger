@@ -9,6 +9,7 @@ docs/apex/Miscellaneous/
 temp/
 test-coverage/
 .claude/
+CLAUDE.md
 
 # NPM
 node_modules/
