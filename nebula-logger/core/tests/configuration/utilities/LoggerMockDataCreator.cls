@@ -434,7 +434,7 @@ public class LoggerMockDataCreator {
     String uniqueString = Logger.getTransactionId() + (userMockUsernameCount++) + '@test.com';
     return new Schema.User(
       Alias = 'user_xyz',
-      Email = 'user_xyz@test.com.net.org',
+      Email = 'nebula.logger.testing.fake@gmail.com',
       EmailEncodingKey = 'ISO-8859-1',
       FederationIdentifier = uniqueString + '.sso',
       LanguageLocaleKey = 'en_US',

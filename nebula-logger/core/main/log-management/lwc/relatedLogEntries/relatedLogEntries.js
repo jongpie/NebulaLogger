@@ -19,6 +19,7 @@ export default class RelatedLogEntries extends LightningElement {
 
   @track wiredResult;
   @track isLoading = true;
+  // TODO add a UI element for this, maybe make a @api filter property for all future filters?
   @track shouldEnableStrictSearch = true;
 
   get title() {

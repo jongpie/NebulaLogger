@@ -756,6 +756,10 @@ export default class LoggerNotificationRuleGuidedForm extends NavigationMixin(Li
     return `The rule will fire once ${count} ${matchNoun} ${matchVerb} recorded within any rolling ${increment}-${unitLabel} window.`;
   }
 
+  get recipientUserLookupDisplayInfo() {
+    return { additionalFields: ['Username', 'Email'] };
+  }
+
   get recipientRows() {
     // Enrich pendingRecipients with UI-only fields the template needs (service name, notifier CMDT).
     return this.pendingRecipients.map((recipient, index) => {
