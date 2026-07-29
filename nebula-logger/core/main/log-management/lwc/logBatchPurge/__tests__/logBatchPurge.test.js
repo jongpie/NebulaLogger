@@ -27,7 +27,7 @@ const mockGetLogMetricsWhenNoLogRecords = require('./data/getLogMetrics.noLogRec
 
 const mockgetBatchPurgeJobRecords = require('./data/getBatchPurgeJobRecords.json');
 const mockGetPurgeActionOptions = require('./data/getPurgeActionOptions.json');
-const mockRunBatchPurge = require('./data/runBatchPurge.json');
+const mockrunBatchPurge = require('./data/runBatchPurge.json');
 
 const SHOW_TOAST_EVENT_NAME = 'lightning__showtoast';
 const SHOW_TOAST_EVENT_HANDLER = jest.fn();
@@ -94,7 +94,7 @@ jest.mock(
   { virtual: true }
 );
 
-async function initializeElement(enableRunBatchPurgeAccess) {
+async function initializeElement(enablerunBatchPurgeAccess) {
   // Assign mock values for resolved Apex promises
   // getSchemaForName
   //     .mockResolvedValue(mockLogEntryTagObjectSchema)
@@ -112,8 +112,8 @@ async function initializeElement(enableRunBatchPurgeAccess) {
   getPurgeActionOptions.mockResolvedValue(mockGetPurgeActionOptions);
   getBatchPurgeJobRecords.mockResolvedValue(mockgetBatchPurgeJobRecords);
 
-  canUserRunLogBatchPurger.mockResolvedValue(enableRunBatchPurgeAccess);
-  runBatchPurge.mockResolvedValue(mockRunBatchPurge);
+  canUserRunLogBatchPurger.mockResolvedValue(enablerunBatchPurgeAccess);
+  runBatchPurge.mockResolvedValue(mockrunBatchPurge);
 
   // Create the component
   const logBatchPurgeElement = createElement('c-log-batch-purge', { is: logBatchPurge });
@@ -136,12 +136,6 @@ describe('logBatchPurge lwc tests', () => {
     }
     jest.clearAllMocks();
     jest.clearAllTimers();
-  });
-
-  it('sets the document title on connectedCallback', async () => {
-    await initializeElement(false);
-
-    expect(document.title).toEqual('Log Batch Purge | Salesforce');
   });
 
   it('load the component sucessfully', async () => {
@@ -282,7 +276,7 @@ describe('logBatchPurge lwc tests', () => {
     getBatchPurgeJobRecords.mockResolvedValue(mockgetBatchPurgeJobRecords);
 
     canUserRunLogBatchPurger.mockResolvedValue(true);
-    runBatchPurge.mockResolvedValue(mockRunBatchPurge);
+    runBatchPurge.mockResolvedValue(mockrunBatchPurge);
 
     // Create the component
     const logBatchPurgeElement = createElement('c-log-batch-purge', { is: logBatchPurge });

@@ -14,12 +14,10 @@ import getPurgeActionOptions from '@salesforce/apex/LogBatchPurgeController.getP
 import runBatchPurge from '@salesforce/apex/LogBatchPurgeController.runBatchPurge';
 import getBatchPurgeJobRecords from '@salesforce/apex/LogBatchPurgeController.getBatchPurgeJobRecords';
 
-const TITLE = 'Log Batch Purge';
-
 export default class LogBatchPurge extends LightningElement {
   // UI
   showLoadingSpinner = false;
-  title = TITLE;
+  title = 'Log Batch Purge';
 
   // log  metrics
   logObjectSchema;
@@ -47,7 +45,6 @@ export default class LogBatchPurge extends LightningElement {
   #pollingFrequency = 10000; // milliseconds
 
   connectedCallback() {
-    document.title = `${TITLE} | Salesforce`;
     this.selectedDateFilterOption = 'TODAY';
 
     this.loadMetricRecords();
