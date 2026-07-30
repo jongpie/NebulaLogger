@@ -8,12 +8,14 @@
 docs/apex/Miscellaneous/
 temp/
 test-coverage/
+.claude/
 
 # NPM
 node_modules/
 yarn.lock
 
 # Files to exclude
+*.env
 *.log
 **/lwc/jsconfig.json
 .config
