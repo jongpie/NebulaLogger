@@ -3273,16 +3273,22 @@ global with sharing class Logger {
   global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
     return logDatabaseErrors(loggingLevel, logMessage.getMessage(), deleteResults);
   }
-  
+
   /**
    * @description Creates a log entry for any results within the provided `List<DeleteResult>` where `isSuccess() != true`
    * @param  loggingLevel  The logging level to use for the log entry
    * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
    * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
-   * @param  records       The instance of `List<SObject>` having info about the actual record 
+   * @param  records       The instance of `List<SObject>` that correspond to the instance of `List<Database.DeleteResult>` to log
    * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
-  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.DeleteResult> deleteResults,List<Sobject> records) {
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.DeleteResult> deleteResults,
+    List<SObject> records
+  ) {
     return logDatabaseErrors(loggingLevel, logMessage.getMessage(), deleteResults, records);
   }
 
@@ -3310,16 +3316,24 @@ global with sharing class Logger {
    * @param  loggingLevel  The logging level to use for the log entry
    * @param  message       The string to use to set the entry's message field
    * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
-   * @param  records       The instance of `List<SObject>` having info about the actual record
+   * @param  records       The instance of `List<SObject>` that correspond to the instance of `List<Database.DeleteResult>` to log
    * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
-  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.DeleteResult> deleteResults,List<Sobject> records) {
-    if(deleteResults.size() != records.size()){
-        return Logger.error('Size of Lists deleteResults and records does not Match');
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.DeleteResult> deleteResults,
+    List<SObject> records
+  ) {
+    if (deleteResults.size() != records.size()) {
+      return Logger.error('Size of Lists deleteResults and records does not Match');
     }
     List<Database.DeleteResult> resultsToLog = new List<Database.DeleteResult>();
-    List<Sobject> recordsToLog = new List<Sobject>(); 
-    for(Integer i = 0; i < deleteResults.size(); i++){
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
+    for (Integer i = 0; i < deleteResults.size(); i++) {
       Database.DeleteResult deleteResult = deleteResults.get(i);
       if (deleteResult.isSuccess() == false) {
         resultsToLog.add(deleteResult);
@@ -3330,7 +3344,6 @@ global with sharing class Logger {
     Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
     return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog).setRecord(recordsToLog);
   }
-
 
   /**
    * @description Creates a log entry for any results within the provided `List<EmptyRecycleBinResult>` where `isSuccess() != true`
@@ -3355,11 +3368,12 @@ global with sharing class Logger {
    * @param  records                The instance of `List<SObject>` having info about the actual record
    * @return                        The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
   global static LogEntryEventBuilder logDatabaseErrors(
     System.LoggingLevel loggingLevel,
     LogMessage logMessage,
     List<Database.EmptyRecycleBinResult> emptyRecycleBinResults,
-    List<Sobject> records
+    List<SObject> records
   ) {
     return logDatabaseErrors(loggingLevel, logMessage.getMessage(), emptyRecycleBinResults, records);
   }
@@ -3395,27 +3409,30 @@ global with sharing class Logger {
    * @param  records                The instance of `List<SObject>` having info about the actual record
    * @return                        The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
   global static LogEntryEventBuilder logDatabaseErrors(
     System.LoggingLevel loggingLevel,
     String message,
     List<Database.EmptyRecycleBinResult> emptyRecycleBinResults,
-    List<Sobject> records
+    List<SObject> records
   ) {
-      if(emptyRecycleBinResults.size() != records.size()){
-        return Logger.error('Size of Lists emptyRecycleBinResults and records does not Match');
+    if (emptyRecycleBinResults.size() != records.size()) {
+      return Logger.error('Size of Lists emptyRecycleBinResults and records does not Match');
+    }
+    List<Database.EmptyRecycleBinResult> resultsToLog = new List<Database.EmptyRecycleBinResult>();
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
+    for (Integer i = 0; i < emptyRecycleBinResults.size(); i++) {
+      Database.EmptyRecycleBinResult emptyRecycleBinResult = emptyRecycleBinResults.get(i);
+      if (emptyRecycleBinResult.isSuccess() == false) {
+        resultsToLog.add(emptyRecycleBinResult);
+        recordsToLog.add(records.get(i));
       }
-      List<Database.EmptyRecycleBinResult> resultsToLog = new List<Database.EmptyRecycleBinResult>();
-      List<Sobject> recordsToLog = new List<Sobject>();
-      for(Integer i = 0; i < emptyRecycleBinResults.size(); i++){
-        Database.EmptyRecycleBinResult emptyRecycleBinResult = emptyRecycleBinResults.get(i);
-        if (emptyRecycleBinResult.isSuccess() == false) {
-          resultsToLog.add(emptyRecycleBinResult);
-          recordsToLog.add(records.get(i));
-        }
-      }
+    }
 
-      Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
-      return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog).setRecord(recordsToLog);
+    Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
+    return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog).setRecord(recordsToLog);
   }
 
   /**
@@ -3441,6 +3458,7 @@ global with sharing class Logger {
    * @param  records            The instance of `List<SObject>` having info about the actual record
    * @return                    The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
   global static LogEntryEventBuilder logDatabaseErrors(
     System.LoggingLevel loggingLevel,
     LogMessage logMessage,
@@ -3477,13 +3495,21 @@ global with sharing class Logger {
    * @param  records            The instance of `List<SObject>` having info about the actual record
    * @return                    The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
-  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.LeadConvertResult> leadConvertResults,List<SObject> records) {
-    if(leadConvertResults.size() != records.size()){
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.LeadConvertResult> leadConvertResults,
+    List<SObject> records
+  ) {
+    if (leadConvertResults.size() != records.size()) {
       return Logger.error('Size of Lists leadConvertResults and records does not Match');
     }
     List<Database.LeadConvertResult> resultsToLog = new List<Database.LeadConvertResult>();
-    List<SObject> recordsToLog = new List<SObject>();
-    for(Integer i = 0; i < leadConvertResults.size(); i++){
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
+    for (Integer i = 0; i < leadConvertResults.size(); i++) {
       Database.LeadConvertResult leadConvertResult = leadConvertResults.get(i);
       if (leadConvertResult.isSuccess() == false) {
         resultsToLog.add(leadConvertResult);
@@ -3514,10 +3540,15 @@ global with sharing class Logger {
    * @param  records      The instance of `List<SObject>` having info about the actual record
    * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
-  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.MergeResult> mergeResults,List<SObject> records) {
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.MergeResult> mergeResults,
+    List<SObject> records
+  ) {
     return logDatabaseErrors(loggingLevel, logMessage.getMessage(), mergeResults, records);
   }
-
 
   /**
    * @description Creates a log entry for any results within the provided `List<MergeResult>` where `isSuccess() != true`
@@ -3537,7 +3568,7 @@ global with sharing class Logger {
     Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
     return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
   }
- 
+
   /**
    * @description Creates a log entry for any results within the provided `List<MergeResult>` where `isSuccess() != true`
    * @param  loggingLevel The logging level to use for the log entry
@@ -3546,13 +3577,21 @@ global with sharing class Logger {
    * @param  records      The instance of `List<SObject>` having info about the actual record
    * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
-  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.MergeResult> mergeResults,List<SObject> records) {
-    if(mergeResults.size() != records.size()){
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.MergeResult> mergeResults,
+    List<SObject> records
+  ) {
+    if (mergeResults.size() != records.size()) {
       return Logger.error('Size of Lists mergeResults and records does not Match');
     }
     List<Database.MergeResult> resultsToLog = new List<Database.MergeResult>();
-    List<SObject> recordsToLog = new List<SObject>();
-    for(Integer i = 0; i < mergeResults.size(); i++){
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
+    for (Integer i = 0; i < mergeResults.size(); i++) {
       Database.MergeResult mergeResult = mergeResults.get(i);
       if (mergeResult.isSuccess() == false) {
         resultsToLog.add(mergeResult);
@@ -3583,7 +3622,13 @@ global with sharing class Logger {
    * @param  records      The instance of `List<SObject>` having info about the actual record
    * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
-  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.SaveResult> saveResults,List<SObject> records) {
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.SaveResult> saveResults,
+    List<SObject> records
+  ) {
     return logDatabaseErrors(loggingLevel, logMessage.getMessage(), saveResults, records);
   }
 
@@ -3614,12 +3659,20 @@ global with sharing class Logger {
    * @param  records      The instance of `List<SObject>` having info about the actual record
    * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
-  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.SaveResult> saveResults,List<SObject> records) {
-    if(saveResults.size() != records.size()){
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.SaveResult> saveResults,
+    List<SObject> records
+  ) {
+    if (saveResults.size() != records.size()) {
       return Logger.error('Size of Lists saveResults and records does not Match');
     }
     List<Database.SaveResult> resultsToLog = new List<Database.SaveResult>();
-    List<Sobject> recordsToLog = new List<Sobject>();
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
     for (Integer i = 0; i < saveResults.size(); i++) {
       Database.SaveResult saveResult = saveResults.get(i);
       if (saveResult.isSuccess() == false) {
@@ -3648,10 +3701,16 @@ global with sharing class Logger {
    * @param  loggingLevel  The logging level to use for the log entry
    * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
    * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
-   * @param  records       The instance of `List<SObject>` having info about the actual record
+   * @param  records       The instance of `List<SObject>` that correspond to the instance of `List<Database.UpsertResult>` to log
    * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
-  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UpsertResult> upsertResults,List<SObject> records) {
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.UpsertResult> upsertResults,
+    List<SObject> records
+  ) {
     return logDatabaseErrors(loggingLevel, logMessage.getMessage(), upsertResults, records);
   }
 
@@ -3679,15 +3738,23 @@ global with sharing class Logger {
    * @param  loggingLevel  The logging level to use for the log entry
    * @param  message       The string to use to set the entry's message field
    * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
-   * @param  records       The instance of `List<SObject>` having info about the actual record
+   * @param  records       The instance of `List<SObject>` that correspond to the instance of `List<Database.UpsertResult>` to log
    * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
-  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.UpsertResult> upsertResults,List<Sobject> records) {
-    if(upsertResults.size() != records.size()){
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.UpsertResult> upsertResults,
+    List<SObject> records
+  ) {
+    if (upsertResults.size() != records.size()) {
       return Logger.error('Size of Lists upsertResults and records does not Match');
     }
     List<Database.UpsertResult> resultsToLog = new List<Database.UpsertResult>();
-    List<Sobject> recordsToLog = new List<Sobject>();
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
     for (Integer i = 0; i < upsertResults.size(); i++) {
       Database.UpsertResult upsertResult = upsertResults.get(i);
       if (upsertResult.isSuccess() == false) {
@@ -3719,7 +3786,13 @@ global with sharing class Logger {
    * @param  records         The instance of `List<SObject>` having info about the actual record
    * @return                 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
-  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UndeleteResult> undeleteResults,List<Sobject> records) {
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.UndeleteResult> undeleteResults,
+    List<SObject> records
+  ) {
     return logDatabaseErrors(loggingLevel, logMessage.getMessage(), undeleteResults, records);
   }
 
@@ -3750,12 +3823,20 @@ global with sharing class Logger {
    * @param  records         The instance of `List<SObject>` having info about the actual record
    * @return                 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
    */
-  global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.UndeleteResult> undeleteResults,List<Sobject> records) {
-    if(undeleteResults.size() != records.size()){
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.UndeleteResult> undeleteResults,
+    List<SObject> records
+  ) {
+    if (undeleteResults.size() != records.size()) {
       return Logger.error('Size of Lists undeleteResults and records does not Match');
     }
     List<Database.UndeleteResult> resultsToLog = new List<Database.UndeleteResult>();
-    List<Sobject> recordsToLog = new List<Sobject>();
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
     for (Integer i = 0; i < undeleteResults.size(); i++) {
       Database.UndeleteResult undeleteResult = undeleteResults.get(i);
       if (undeleteResult.isSuccess() == false) {
@@ -3767,7 +3848,6 @@ global with sharing class Logger {
     Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
     return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog).setRecord(recordsToLog);
   }
-
 
   /**
    * @description Adds a new instance of LogEntryEventBuilder to Logger's buffer, when `shouldSave` is `true`
