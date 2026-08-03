@@ -4,12 +4,12 @@
  **********************************************************************************************-->
 
 <template>
-  <template if:false={hasLoaded}>
+  <template if:false={isLoaded}>
     <div class="slds-is-relative" style="min-height: 6em">
       <lightning-spinner></lightning-spinner>
     </div>
   </template>
-  <template if:true={hasLoaded}>
+  <template if:true={isLoaded}>
     <template if:false={sourceSnippet}>No source snippet available</template>
   </template>
   <template if:true={sourceSnippet}>

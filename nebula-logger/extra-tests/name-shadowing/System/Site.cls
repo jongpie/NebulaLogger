@@ -4,7 +4,8 @@
 //------------------------------------------------------------------------------------------------//
 
 // This class intentionally does nothing - it's here to ensure that any references
-// in Nebula Logger's codebase use `Schema.Network` instead of just `Network`
+// in Nebula Logger's codebase use `System.Site` instead of just `Site`
+// (Technically, there are 2 classes: `Schema.Site` and `System.Site` - this class handles both)
 @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
-public without sharing class Network {
+public without sharing class Site {
 }

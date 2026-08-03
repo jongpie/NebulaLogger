@@ -1814,20 +1814,15 @@ private class LogEntryEventBuilder_Tests {
     System.HttpRequest request = new System.HttpRequest();
     request.setBody('Hello, world!');
     request.setCompressed(true);
-
-    String reallyLongEndpointAddress = 'https://fake.salesforce.com/' + 'A'.repeat(LogEntryEvent__e.HttpRequestEndpoint__c.getDescribe().getLength() + 1);
-    request.setEndpoint(reallyLongEndpointAddress);
+    request.setEndpoint('https://fake.salesforce.com/');
     request.setMethod('GET');
 
     builder.setHttpRequestDetails(request);
 
     System.Assert.areEqual(request.getBody(), event.HttpRequestBody__c);
     System.Assert.areEqual(request.getCompressed(), event.HttpRequestCompressed__c);
-    System.Assert.areEqual(reallyLongEndpointAddress.left(LogEntryEvent__e.HttpRequestEndpoint__c.getDescribe().getLength()), event.HttpRequestEndpoint__c);
-    System.Assert.areEqual(
-      reallyLongEndpointAddress.left(LogEntryEvent__e.HttpRequestEndpointAddress__c.getDescribe().getLength()),
-      event.HttpRequestEndpointAddress__c
-    );
+    System.Assert.areEqual(request.getEndpoint(), event.HttpRequestEndpoint__c);
+    System.Assert.areEqual(request.getEndpoint(), event.HttpRequestEndpointAddress__c);
     System.Assert.isNull(event.HttpRequestHeaderKeys__c);
     System.Assert.isNull(event.HttpRequestHeaders__c);
     System.Assert.areEqual(request.getMethod(), event.HttpRequestMethod__c);
@@ -1909,11 +1904,106 @@ private class LogEntryEventBuilder_Tests {
 
     System.Assert.areEqual(
       excessivelyLongRequestBody.left(Schema.LogEntryEvent__e.HttpRequestBody__c.getDescribe().getLength()),
-      builder.getLogEntryEvent().HttpRequestBody__c,
-      'Expected string length ' +
-        Schema.LogEntryEvent__e.HttpRequestBody__c.getDescribe().getLength() +
-        ' for field HttpRequestBody__c, actual length is ' +
-        builder.getLogEntryEvent().HttpRequestBody__c.length()
+      builder.getLogEntryEvent().HttpRequestBody__c
+    );
+    System.Assert.isTrue(builder.getLogEntryEvent().HttpRequestBodyTruncated__c);
+  }
+
+  @IsTest
+  static void it_should_truncate_http_request_endpoint_fields_when_string_is_too_long() {
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    // The field HttpRequestEndpoint__c is now considered deprecated (though still populated) because it only supports 255 characters.
+    // For a lot of orgs, that's not nearly enough (either because they have a lot of URL parameters, or just longer URLs in general),
+    // so HttpRequestEndpointAddress__c (long textarea field) was added to be able to capture full endpoint URLs.
+    // Both fields are still set for now in LogEntryEventBuilder, so both field values are tested here.
+    System.Assert.isNull(builder.getLogEntryEvent().HttpRequestEndpoint__c);
+    System.Assert.isNull(builder.getLogEntryEvent().HttpRequestEndpointAddress__c);
+    String excessivelyLongRequestEndpoint =
+      'https://fake.salesforce.com/' + 'a'.repeat(Schema.LogEntryEvent__e.HttpRequestEndpointAddress__c.getDescribe().getLength() + 1);
+    System.HttpRequest request = new System.HttpRequest();
+    request.setEndpoint(excessivelyLongRequestEndpoint);
+
+    builder.setHttpRequestDetails(request);
+
+    System.Assert.areEqual(
+      excessivelyLongRequestEndpoint.left(Schema.LogEntryEvent__e.HttpRequestEndpoint__c.getDescribe().getLength()),
+      builder.getLogEntryEvent().HttpRequestEndpoint__c
+    );
+    System.Assert.areEqual(
+      excessivelyLongRequestEndpoint.left(Schema.LogEntryEvent__e.HttpRequestEndpointAddress__c.getDescribe().getLength()),
+      builder.getLogEntryEvent().HttpRequestEndpointAddress__c
+    );
+  }
+
+  @IsTest
+  static void it_should_truncate_http_request_header_keys_when_string_is_too_long() {
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpRequestHeaderValues', Value__c = String.valueOf(true));
+    LoggerParameter.setMock(mockParameter);
+    System.Assert.isTrue(LoggerParameter.STORE_HTTP_REQUEST_HEADER_VALUES);
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    LogEntryEvent__e event = builder.getLogEntryEvent();
+    System.Assert.isNull(event.HttpRequestHeaderKeys__c);
+    System.Assert.isNull(event.HttpRequestHeaders__c);
+    String excessivelyLongHeaderKey = 'z'.repeat(Schema.LogEntryEvent__e.HttpRequestHeaderKeys__c.getDescribe().getLength() + 1);
+    System.HttpRequest request = new System.HttpRequest();
+    request.setHeader('header-1-to-log', 'some value to log');
+    request.setHeader('a-header-to-ignore', 'ignore this value, it won\'t be logged');
+    request.setHeader('header-2-to-log', 'another value to log');
+    request.setHeader(excessivelyLongHeaderKey, 'a long key to log & truncate');
+
+    builder.setHttpRequestDetails(request, new List<String>{ 'header-1-to-log', 'header-2-to-log', excessivelyLongHeaderKey });
+
+    System.Assert.areEqual(
+      ('header-1-to-log\nheader-2-to-log\n' + excessivelyLongHeaderKey).left(Schema.LogEntryEvent__e.HttpRequestHeaderKeys__c.getDescribe().getLength()),
+      event.HttpRequestHeaderKeys__c
+    );
+    System.Assert.areEqual(
+      ('header-1-to-log: some value to log\nheader-2-to-log: another value to log\n' +
+        excessivelyLongHeaderKey +
+        ': a long key to log & truncate')
+        .left(Schema.LogEntryEvent__e.HttpRequestHeaders__c.getDescribe().getLength()),
+      event.HttpRequestHeaders__c
+    );
+  }
+
+  @IsTest
+  static void it_should_truncate_http_request_headers_when_string_is_too_long() {
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpRequestHeaderValues', Value__c = String.valueOf(true));
+    LoggerParameter.setMock(mockParameter);
+    System.Assert.isTrue(LoggerParameter.STORE_HTTP_Request_HEADER_VALUES);
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    LogEntryEvent__e event = builder.getLogEntryEvent();
+    System.Assert.isNull(event.HttpRequestHeaderKeys__c);
+    System.Assert.isNull(event.HttpRequestHeaders__c);
+    String excessivelyLongHeaderValue = 'a'.repeat(Schema.LogEntryEvent__e.HttpRequestHeaders__c.getDescribe().getLength() + 1);
+    System.HttpRequest request = new System.HttpRequest();
+    request.setHeader('header-1-to-log', 'some value to log');
+    request.setHeader('header-2-to-log', 'another value to log');
+    request.setHeader('some-header-with-a-long-value', excessivelyLongHeaderValue);
+
+    builder.setHttpRequestDetails(request, new List<String>{ 'header-1-to-log', 'header-2-to-log', 'some-header-with-a-long-value' });
+
+    System.Assert.areEqual('header-1-to-log\nheader-2-to-log\nsome-header-with-a-long-value', event.HttpRequestHeaderKeys__c);
+    System.Assert.areEqual(
+      ('header-1-to-log: some value to log\nheader-2-to-log: another value to log\nsome-header-with-a-long-value: ' + excessivelyLongHeaderValue)
+        .left(Schema.LogEntryEvent__e.HttpRequestHeaders__c.getDescribe().getLength()),
+      event.HttpRequestHeaders__c
+    );
+  }
+
+  @IsTest
+  static void it_should_truncate_http_request_method_field_when_string_is_too_long() {
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().HttpRequestMethod__c);
+    String excessivelyLongMethod = 'a'.repeat(Schema.LogEntryEvent__e.HttpRequestMethod__c.getDescribe().getLength() + 1);
+    System.HttpRequest request = new System.HttpRequest();
+    request.setMethod(excessivelyLongMethod);
+
+    builder.setHttpRequestDetails(request);
+
+    System.Assert.areEqual(
+      excessivelyLongMethod.left(Schema.LogEntryEvent__e.HttpRequestMethod__c.getDescribe().getLength()),
+      builder.getLogEntryEvent().HttpRequestMethod__c
     );
   }
 
@@ -2000,11 +2090,86 @@ private class LogEntryEventBuilder_Tests {
 
     System.Assert.areEqual(
       excessivelyLongResponseBody.left(Schema.LogEntryEvent__e.HttpResponseBody__c.getDescribe().getLength()),
-      builder.getLogEntryEvent().HttpResponseBody__c,
-      'Expected string length ' +
-        Schema.LogEntryEvent__e.HttpResponseBody__c.getDescribe().getLength() +
-        ' for field HttpResponseBody__c, actual length is ' +
-        builder.getLogEntryEvent().HttpResponseBody__c.length()
+      builder.getLogEntryEvent().HttpResponseBody__c
+    );
+    System.Assert.isTrue(builder.getLogEntryEvent().HttpResponseBodyTruncated__c);
+  }
+
+  @IsTest
+  static void it_should_truncate_http_response_header_keys_when_string_is_too_long() {
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpResponseHeaderValues', Value__c = String.valueOf(true));
+    LoggerParameter.setMock(mockParameter);
+    System.Assert.isTrue(LoggerParameter.STORE_HTTP_Response_HEADER_VALUES);
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    LogEntryEvent__e event = builder.getLogEntryEvent();
+    System.Assert.isNull(event.HttpResponseHeaderKeys__c);
+    System.Assert.isNull(event.HttpResponseHeaders__c);
+    String excessivelyLongHeaderKey = 'z'.repeat(Schema.LogEntryEvent__e.HttpResponseHeaderKeys__c.getDescribe().getLength() + 1);
+    System.HttpResponse response = new System.HttpResponse();
+    response.setHeader('header-1-to-log', 'some value to log');
+    response.setHeader('header-2-to-log', 'another value to log');
+    response.setHeader(excessivelyLongHeaderKey, 'a long key to log & truncate');
+
+    builder.setHttpResponseDetails(response);
+
+    System.Assert.areEqual(
+      ('header-1-to-log\nheader-2-to-log\n' + excessivelyLongHeaderKey).left(Schema.LogEntryEvent__e.HttpResponseHeaderKeys__c.getDescribe().getLength()),
+      event.HttpResponseHeaderKeys__c
+    );
+    System.Assert.areEqual(
+      ('header-1-to-log: some value to log\nheader-2-to-log: another value to log\n' +
+        excessivelyLongHeaderKey +
+        ': a long key to log & truncate')
+        .left(Schema.LogEntryEvent__e.HttpResponseHeaders__c.getDescribe().getLength()),
+      event.HttpResponseHeaders__c
+    );
+  }
+
+  @IsTest
+  static void it_should_truncate_http_response_headers_when_string_is_too_long() {
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreHttpResponseHeaderValues', Value__c = String.valueOf(true));
+    LoggerParameter.setMock(mockParameter);
+    System.Assert.isTrue(LoggerParameter.STORE_HTTP_Response_HEADER_VALUES);
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    LogEntryEvent__e event = builder.getLogEntryEvent();
+    System.Assert.isNull(event.HttpResponseHeaderKeys__c);
+    System.Assert.isNull(event.HttpResponseHeaders__c);
+    String excessivelyLongHeaderValue = 'a'.repeat(Schema.LogEntryEvent__e.HttpResponseHeaders__c.getDescribe().getLength() + 1);
+    System.HttpResponse response = new System.HttpResponse();
+    response.setHeader('header-1-to-log', 'some value to log');
+    response.setHeader('header-2-to-log', 'another value to log');
+    response.setHeader('some-header-with-a-long-value', excessivelyLongHeaderValue);
+
+    builder.setHttpResponseDetails(response);
+
+    System.Assert.areEqual(
+      'header-1-to-log\nheader-2-to-log\nsome-header-with-a-long-value',
+      event.HttpResponseHeaderKeys__c,
+      'Expected all header keys to fit into length of ' +
+        Schema.LogEntryEvent__e.HttpResponseHeaderKeys__c.getDescribe().getLength() +
+        ' for field HttpResponseHeaderKeys__c, actual length is ' +
+        builder.getLogEntryEvent().HttpResponseHeaderKeys__c.length()
+    );
+    System.Assert.areEqual(
+      ('header-1-to-log: some value to log\nheader-2-to-log: another value to log\nsome-header-with-a-long-value: ' + excessivelyLongHeaderValue)
+        .left(Schema.LogEntryEvent__e.HttpResponseHeaders__c.getDescribe().getLength()),
+      event.HttpResponseHeaders__c
+    );
+  }
+
+  @IsTest
+  static void it_should_truncate_http_response_status_field_when_string_is_too_long() {
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().HttpResponseStatus__c);
+    String excessivelyLongResponseStatus = 'a'.repeat(Schema.LogEntryEvent__e.HttpResponseStatus__c.getDescribe().getLength() + 1);
+    System.HttpResponse response = new System.HttpResponse();
+    response.setStatus(excessivelyLongResponseStatus);
+
+    builder.setHttpResponseDetails(response);
+
+    System.Assert.areEqual(
+      excessivelyLongResponseStatus.left(Schema.LogEntryEvent__e.HttpResponseStatus__c.getDescribe().getLength()),
+      builder.getLogEntryEvent().HttpResponseStatus__c
     );
   }
 
@@ -2119,11 +2284,123 @@ private class LogEntryEventBuilder_Tests {
 
     System.Assert.areEqual(
       excessivelyLongRequestBody.left(Schema.LogEntryEvent__e.RestRequestBody__c.getDescribe().getLength()),
-      builder.getLogEntryEvent().RestRequestBody__c,
-      'Expected string length ' +
-        Schema.LogEntryEvent__e.RestRequestBody__c.getDescribe().getLength() +
-        ' for field RestRequestBody__c, actual length is ' +
-        builder.getLogEntryEvent().RestRequestBody__c.length()
+      builder.getLogEntryEvent().RestRequestBody__c
+    );
+    System.Assert.isTrue(builder.getLogEntryEvent().RestRequestBodyTruncated__c);
+  }
+
+  @IsTest
+  static void it_should_truncate_rest_request_header_keys_field_when_string_is_too_long() {
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().RestRequestHeaderKeys__c);
+    String excessivelyLongHeaderKey = 'z'.repeat(Schema.LogEntryEvent__e.RestRequestHeaderKeys__c.getDescribe().getLength() + 1);
+    System.RestRequest request = new System.RestRequest();
+    request.addHeader(excessivelyLongHeaderKey, 'some value');
+
+    builder.setRestRequestDetails(request);
+
+    System.Assert.areEqual(
+      excessivelyLongHeaderKey.left(Schema.LogEntryEvent__e.RestRequestHeaderKeys__c.getDescribe().getLength()),
+      builder.getLogEntryEvent().RestRequestHeaderKeys__c
+    );
+  }
+
+  @IsTest
+  static void it_should_truncate_rest_request_headers_field_when_string_is_too_long() {
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestRequestHeaderValues', Value__c = String.valueOf(true));
+    LoggerParameter.setMock(mockParameter);
+    System.Assert.isTrue(LoggerParameter.STORE_REST_REQUEST_HEADER_VALUES);
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().RestRequestHeaders__c);
+    String excessivelyLongHeaderValue = 'a'.repeat(Schema.LogEntryEvent__e.RestRequestHeaders__c.getDescribe().getLength() + 1);
+    System.RestRequest request = new System.RestRequest();
+    request.addHeader('some-header', excessivelyLongHeaderValue);
+
+    builder.setRestRequestDetails(request);
+
+    System.Assert.areEqual(
+      ('some-header: ' + excessivelyLongHeaderValue).left(Schema.LogEntryEvent__e.RestRequestHeaders__c.getDescribe().getLength()),
+      builder.getLogEntryEvent().RestRequestHeaders__c
+    );
+  }
+
+  @IsTest
+  static void it_should_truncate_rest_request_method_field_when_string_is_too_long() {
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().RestRequestMethod__c);
+    String excessivelyLongMethod = 'a'.repeat(Schema.LogEntryEvent__e.RestRequestMethod__c.getDescribe().getLength() + 1);
+    System.RestRequest request = new System.RestRequest();
+    request.httpMethod = excessivelyLongMethod;
+
+    builder.setRestRequestDetails(request);
+
+    System.Assert.areEqual(
+      excessivelyLongMethod.left(Schema.LogEntryEvent__e.RestRequestMethod__c.getDescribe().getLength()),
+      builder.getLogEntryEvent().RestRequestMethod__c
+    );
+  }
+
+  @IsTest
+  static void it_should_truncate_rest_request_parameters_field_when_string_is_too_long() {
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().RestRequestParameters__c);
+    String excessivelyLongParameterValue = 'a'.repeat(Schema.LogEntryEvent__e.RestRequestParameters__c.getDescribe().getLength() + 1);
+    System.RestRequest request = new System.RestRequest();
+    request.addParameter('some-parameter', excessivelyLongParameterValue);
+
+    builder.setRestRequestDetails(request);
+
+    System.Assert.areEqual(
+      ('some-parameter: ' + excessivelyLongParameterValue).left(Schema.LogEntryEvent__e.RestRequestParameters__c.getDescribe().getLength()),
+      builder.getLogEntryEvent().RestRequestParameters__c
+    );
+  }
+
+  @IsTest
+  static void it_should_truncate_rest_request_remote_address_field_when_string_is_too_long() {
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().RestRequestRemoteAddress__c);
+    String excessivelyLongRemoteAddress = 'a'.repeat(Schema.LogEntryEvent__e.RestRequestRemoteAddress__c.getDescribe().getLength() + 1);
+    System.RestRequest request = new System.RestRequest();
+    request.remoteAddress = excessivelyLongRemoteAddress;
+
+    builder.setRestRequestDetails(request);
+
+    System.Assert.areEqual(
+      excessivelyLongRemoteAddress.left(Schema.LogEntryEvent__e.RestRequestRemoteAddress__c.getDescribe().getLength()),
+      builder.getLogEntryEvent().RestRequestRemoteAddress__c
+    );
+  }
+
+  @IsTest
+  static void it_should_truncate_rest_request_resource_path_field_when_string_is_too_long() {
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().RestRequestResourcePath__c);
+    String excessivelyLongResourcePath = 'a'.repeat(Schema.LogEntryEvent__e.RestRequestResourcePath__c.getDescribe().getLength() + 1);
+    System.RestRequest request = new System.RestRequest();
+    request.resourcePath = excessivelyLongResourcePath;
+
+    builder.setRestRequestDetails(request);
+
+    System.Assert.areEqual(
+      excessivelyLongResourcePath.left(Schema.LogEntryEvent__e.RestRequestResourcePath__c.getDescribe().getLength()),
+      builder.getLogEntryEvent().RestRequestResourcePath__c
+    );
+  }
+
+  @IsTest
+  static void it_should_truncate_rest_request_uri_field_when_string_is_too_long() {
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().RestRequestUri__c);
+    String excessivelyLongUri = 'a'.repeat(Schema.LogEntryEvent__e.RestRequestUri__c.getDescribe().getLength() + 1);
+    System.RestRequest request = new System.RestRequest();
+    request.requestURI = excessivelyLongUri;
+
+    builder.setRestRequestDetails(request);
+
+    System.Assert.areEqual(
+      excessivelyLongUri.left(Schema.LogEntryEvent__e.RestRequestUri__c.getDescribe().getLength()),
+      builder.getLogEntryEvent().RestRequestUri__c
     );
   }
 
@@ -2190,11 +2467,43 @@ private class LogEntryEventBuilder_Tests {
 
     System.Assert.areEqual(
       excessivelyLongResponseBody.left(Schema.LogEntryEvent__e.RestResponseBody__c.getDescribe().getLength()),
-      builder.getLogEntryEvent().RestResponseBody__c,
-      'Expected string length ' +
-        Schema.LogEntryEvent__e.RestResponseBody__c.getDescribe().getLength() +
-        ' for field RestResponseBody__c, actual length is ' +
-        builder.getLogEntryEvent().RestResponseBody__c.length()
+      builder.getLogEntryEvent().RestResponseBody__c
+    );
+    System.Assert.isTrue(builder.getLogEntryEvent().RestResponseBodyTruncated__c);
+  }
+
+  @IsTest
+  static void it_should_truncate_rest_response_header_keys_field_when_string_is_too_long() {
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().RestResponseHeaderKeys__c);
+    String excessivelyLongHeaderKey = 'z'.repeat(Schema.LogEntryEvent__e.RestResponseHeaderKeys__c.getDescribe().getLength() + 1);
+    System.RestResponse response = new System.RestResponse();
+    response.addHeader(excessivelyLongHeaderKey, 'some value');
+
+    builder.setRestResponseDetails(response);
+
+    System.Assert.areEqual(
+      excessivelyLongHeaderKey.left(Schema.LogEntryEvent__e.RestResponseHeaderKeys__c.getDescribe().getLength()),
+      builder.getLogEntryEvent().RestResponseHeaderKeys__c
+    );
+  }
+
+  @IsTest
+  static void it_should_truncate_rest_response_headers_field_when_string_is_too_long() {
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'StoreRestResponseHeaderValues', Value__c = String.valueOf(true));
+    LoggerParameter.setMock(mockParameter);
+    System.Assert.isTrue(LoggerParameter.STORE_REST_RESPONSE_HEADER_VALUES);
+    LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
+    System.Assert.isNull(builder.getLogEntryEvent().RestResponseHeaders__c);
+    String excessivelyLongHeaderValue = 'a'.repeat(Schema.LogEntryEvent__e.RestResponseHeaders__c.getDescribe().getLength() + 1);
+    System.RestResponse response = new System.RestResponse();
+    response.addHeader('some-header', excessivelyLongHeaderValue);
+
+    builder.setRestResponseDetails(response);
+
+    System.Assert.areEqual(
+      ('some-header: ' + excessivelyLongHeaderValue).left(Schema.LogEntryEvent__e.RestResponseHeaders__c.getDescribe().getLength()),
+      builder.getLogEntryEvent().RestResponseHeaders__c
     );
   }
 

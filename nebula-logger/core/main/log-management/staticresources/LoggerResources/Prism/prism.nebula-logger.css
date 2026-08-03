@@ -1,0 +1,4 @@
+/* Prism CSS styles customized for Nebula Logger */
+.line-highlight {
+  background: hsla(24, 20%, 80%, 0.4);
+}

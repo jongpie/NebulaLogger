@@ -357,7 +357,7 @@
         </inputParameters>
         <nameSegment>FlowLogEntry</nameSegment>
     </actionCalls>
-    <apiVersion>65.0</apiVersion>
+    <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <decisions>
         <processMetadataValues>

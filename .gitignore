@@ -4,6 +4,7 @@
 .sf/
 .sfdx/
 .vscode/
+.gus/
 docs/apex/Miscellaneous/
 temp/
 test-coverage/
@@ -12,7 +13,12 @@ test-coverage/
 node_modules/
 yarn.lock
 
+# Claude
+.claude/
+CLAUDE.md
+
 # Files to exclude
+*.env
 *.log
 **/lwc/jsconfig.json
 .config

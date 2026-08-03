@@ -21,24 +21,12 @@
 Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackLoggingLevelThreshold&apos; will send a notification to Slack</value>
     </values>
     <values>
-        <field>ExecutionOrder__c</field>
-        <value xsi:nil="true"/>
-    </values>
-    <values>
         <field>IsEnabled__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>Link__c</field>
         <value xsi:type="xsd:string">https://github.com/jongpie/NebulaLogger/tree/main/nebula-logger/plugins/Slack</value>
-    </values>
-    <values>
-        <field>PluginApiName__c</field>
-        <value xsi:nil="true"/>
-    </values>
-    <values>
-        <field>PluginType__c</field>
-        <value xsi:type="xsd:string">Apex</value>
     </values>
     <values>
         <field>SObjectHandlerApexClass__c</field>
@@ -50,10 +38,6 @@ Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackL
     </values>
     <values>
         <field>SObjectHandlerFlowName__c</field>
-        <value xsi:nil="true"/>
-    </values>
-    <values>
-        <field>SObjectType__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>
