@@ -6,7 +6,7 @@
     <description>Deprecated: This field is no longer used.</description>
     <fieldManageability>DeveloperControlled</fieldManageability>
     <inlineHelpText>Deprecated: This field is no longer used.</inlineHelpText>
-    <label>Deprecated: Plugin Type</label>
+    <label>DEPRECATED: Plugin Type</label>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
     <type>Picklist</type>

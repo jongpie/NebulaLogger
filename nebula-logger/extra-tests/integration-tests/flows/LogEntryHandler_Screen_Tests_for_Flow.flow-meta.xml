@@ -89,7 +89,7 @@
         <nameSegment>FlowRecordLogEntry</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <apiVersion>65.0</apiVersion>
+    <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <description>A screen Flow used to help test the Apex class LogEntryHandler</description>
     <interviewLabel>LogEntryHandler Screen Tests for Flow {!$Flow.CurrentDateTime}</interviewLabel>
