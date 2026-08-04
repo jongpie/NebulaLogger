@@ -10845,9 +10845,16 @@ private class Logger_Tests {
 
     LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults, records);
 
-    System.Assert.areEqual(System.LoggingLevel.ERROR.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
-    System.Assert.areEqual('Size of Lists deleteResults and records does not Match', returnedBuilder.getLogEntryEvent().Message__c);
-    System.Assert.isNull(returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(deleteResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -11013,9 +11020,16 @@ private class Logger_Tests {
 
     LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, emptyRecycleBinResults, records);
 
-    System.Assert.areEqual(System.LoggingLevel.ERROR.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
-    System.Assert.areEqual('Size of Lists emptyRecycleBinResults and records does not Match', returnedBuilder.getLogEntryEvent().Message__c);
-    System.Assert.isNull(returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(emptyRecycleBinResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -11295,9 +11309,16 @@ private class Logger_Tests {
 
     LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, leadConvertResults, records);
 
-    System.Assert.areEqual(System.LoggingLevel.ERROR.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
-    System.Assert.areEqual('Size of Lists leadConvertResults and records does not Match', returnedBuilder.getLogEntryEvent().Message__c);
-    System.Assert.isNull(returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(leadConvertResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -11575,9 +11596,16 @@ private class Logger_Tests {
 
     LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults, records);
 
-    System.Assert.areEqual(System.LoggingLevel.ERROR.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
-    System.Assert.areEqual('Size of Lists mergeResults and records does not Match', returnedBuilder.getLogEntryEvent().Message__c);
-    System.Assert.isNull(returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(mergeResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -11855,9 +11883,16 @@ private class Logger_Tests {
 
     LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults, records);
 
-    System.Assert.areEqual(System.LoggingLevel.ERROR.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
-    System.Assert.areEqual('Size of Lists saveResults and records does not Match', returnedBuilder.getLogEntryEvent().Message__c);
-    System.Assert.isNull(returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(saveResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -12135,9 +12170,16 @@ private class Logger_Tests {
 
     LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults, records);
 
-    System.Assert.areEqual(System.LoggingLevel.ERROR.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
-    System.Assert.areEqual('Size of Lists upsertResults and records does not Match', returnedBuilder.getLogEntryEvent().Message__c);
-    System.Assert.isNull(returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(upsertResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -12415,9 +12457,16 @@ private class Logger_Tests {
 
     LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults, records);
 
-    System.Assert.areEqual(System.LoggingLevel.ERROR.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
-    System.Assert.areEqual('Size of Lists undeleteResults and records does not Match', returnedBuilder.getLogEntryEvent().Message__c);
-    System.Assert.isNull(returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
   }
   // End logDatabaseErrors() test methods
 

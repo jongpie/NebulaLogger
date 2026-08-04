@@ -3327,8 +3327,9 @@ global with sharing class Logger {
     List<SObject> records
   ) {
     if (deleteResults.size() != records.size()) {
-      return Logger.error('Size of Lists deleteResults and records does not Match');
+      return Logger.logDatabaseErrors(loggingLevel, message, deleteResults);
     }
+
     List<Database.DeleteResult> resultsToLog = new List<Database.DeleteResult>();
     // Clone the original list so the original list's SObjectType is preserved
     List<SObject> recordsToLog = records.clone();
@@ -3417,8 +3418,9 @@ global with sharing class Logger {
     List<SObject> records
   ) {
     if (emptyRecycleBinResults.size() != records.size()) {
-      return Logger.error('Size of Lists emptyRecycleBinResults and records does not Match');
+      return Logger.logDatabaseErrors(loggingLevel, message, emptyRecycleBinResults);
     }
+
     List<Database.EmptyRecycleBinResult> resultsToLog = new List<Database.EmptyRecycleBinResult>();
     // Clone the original list so the original list's SObjectType is preserved
     List<SObject> recordsToLog = records.clone();
@@ -3503,8 +3505,9 @@ global with sharing class Logger {
     List<SObject> records
   ) {
     if (leadConvertResults.size() != records.size()) {
-      return Logger.error('Size of Lists leadConvertResults and records does not Match');
+      return Logger.logDatabaseErrors(loggingLevel, message, leadConvertResults);
     }
+
     List<Database.LeadConvertResult> resultsToLog = new List<Database.LeadConvertResult>();
     // Clone the original list so the original list's SObjectType is preserved
     List<SObject> recordsToLog = records.clone();
@@ -3585,8 +3588,9 @@ global with sharing class Logger {
     List<SObject> records
   ) {
     if (mergeResults.size() != records.size()) {
-      return Logger.error('Size of Lists mergeResults and records does not Match');
+      return Logger.logDatabaseErrors(loggingLevel, message, mergeResults);
     }
+
     List<Database.MergeResult> resultsToLog = new List<Database.MergeResult>();
     // Clone the original list so the original list's SObjectType is preserved
     List<SObject> recordsToLog = records.clone();
@@ -3667,8 +3671,9 @@ global with sharing class Logger {
     List<SObject> records
   ) {
     if (saveResults.size() != records.size()) {
-      return Logger.error('Size of Lists saveResults and records does not Match');
+      return Logger.logDatabaseErrors(loggingLevel, message, saveResults);
     }
+
     List<Database.SaveResult> resultsToLog = new List<Database.SaveResult>();
     // Clone the original list so the original list's SObjectType is preserved
     List<SObject> recordsToLog = records.clone();
@@ -3749,8 +3754,9 @@ global with sharing class Logger {
     List<SObject> records
   ) {
     if (upsertResults.size() != records.size()) {
-      return Logger.error('Size of Lists upsertResults and records does not Match');
+      return Logger.logDatabaseErrors(loggingLevel, message, upsertResults);
     }
+
     List<Database.UpsertResult> resultsToLog = new List<Database.UpsertResult>();
     // Clone the original list so the original list's SObjectType is preserved
     List<SObject> recordsToLog = records.clone();
@@ -3831,8 +3837,9 @@ global with sharing class Logger {
     List<SObject> records
   ) {
     if (undeleteResults.size() != records.size()) {
-      return Logger.error('Size of Lists undeleteResults and records does not Match');
+      return Logger.logDatabaseErrors(loggingLevel, message, undeleteResults);
     }
+
     List<Database.UndeleteResult> resultsToLog = new List<Database.UndeleteResult>();
     // Clone the original list so the original list's SObjectType is preserved
     List<SObject> recordsToLog = records.clone();
