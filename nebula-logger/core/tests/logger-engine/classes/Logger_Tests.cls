@@ -10623,7 +10623,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -10680,7 +10680,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -10748,7 +10748,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -10821,7 +10821,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -10831,7 +10831,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_log_error_when_database_deleteResult_and_records_sizes_do_not_match() {
+  static void it_should_log_database_deleteResult_without_records_when_database_deleteResult_and_records_sizes_do_not_match() {
     System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
     String message = 'Some message';
     Id recordId = System.UserInfo.getUserId();
@@ -10921,7 +10921,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.EmptyRecycleBinResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -10994,7 +10994,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.EmptyRecycleBinResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -11004,7 +11004,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_log_error_when_database_emptyRecycleBinResult_and_records_sizes_do_not_match() {
+  static void it_should_log_database_emptyRecycleBinResult_without_records_when_database_emptyRecycleBinResult_and_records_sizes_do_not_match() {
     System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
     String message = 'Some message';
     Id recordId = System.UserInfo.getUserId();
@@ -11085,7 +11085,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.LeadConvertResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -11142,7 +11142,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.LeadConvertResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -11210,7 +11210,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.LeadConvertResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -11283,7 +11283,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.LeadConvertResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -11293,7 +11293,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_log_error_when_database_leadConvertResult_and_records_sizes_do_not_match() {
+  static void it_should_log_database_leadConvertResult_without_records_when_database_leadConvertResult_and_records_sizes_do_not_match() {
     System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
     String message = 'Some message';
     Id recordId = System.UserInfo.getUserId();
@@ -11374,7 +11374,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -11431,7 +11431,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -11499,7 +11499,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -11572,7 +11572,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -11582,7 +11582,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_log_error_when_database_mergeResult_and_records_sizes_do_not_match() {
+  static void it_should_log_database_mergeConvertResult_without_records_when_database_mergeConvertResult_and_records_sizes_do_not_match() {
     System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
     String message = 'Some message';
     Id recordId = System.UserInfo.getUserId();
@@ -11661,7 +11661,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -11718,7 +11718,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -11786,7 +11786,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -11859,7 +11859,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -11869,7 +11869,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_log_error_when_database_saveResult_and_records_sizes_do_not_match() {
+  static void it_should_log_database_saveResult_without_records_when_database_saveResult_and_records_sizes_do_not_match() {
     System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
     String message = 'Some message';
     Id recordId = System.UserInfo.getUserId();
@@ -11948,7 +11948,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -12005,7 +12005,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -12073,7 +12073,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -12146,7 +12146,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -12156,7 +12156,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_log_error_when_database_upsertResult_and_records_sizes_do_not_match() {
+  static void it_should_log_database_upsertResult_without_records_when_database_upsertResult_and_records_sizes_do_not_match() {
     System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
     String message = 'Some message';
     Id recordId = System.UserInfo.getUserId();
@@ -12235,7 +12235,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -12292,7 +12292,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -12360,7 +12360,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -12433,7 +12433,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
     String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
     System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
@@ -12443,7 +12443,7 @@ private class Logger_Tests {
   }
 
   @IsTest
-  static void it_should_log_error_when_database_undeleteResult_and_records_sizes_do_not_match() {
+  static void it_should_log_database_undeleteResult_without_records_when_database_undeleteResult_and_records_sizes_do_not_match() {
     System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
     String message = 'Some message';
     Id recordId = System.UserInfo.getUserId();
