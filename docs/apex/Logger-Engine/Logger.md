@@ -22,18 +22,6 @@ Enum used to control how LogEntryEvent\_\_e records are inserted
 
 ---
 
-### Properties
-
-#### `allOrNone` → `Boolean`
-
-Boolean used when saving records. If true, all records must save correctly or an exception is thrown. If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
-
-#### `records` → `List<SObject>`
-
-List of records to save.
-
----
-
 ### Methods
 
 #### `callStatusApi()` → `StatusApiResponse`
@@ -5256,6 +5244,29 @@ LogEntryEventBuilder
 
 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
 
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,LogMessage logMessage,List<Database.DeleteResult> deleteResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;DeleteResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param           | Description                                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `loggingLevel`  | The logging level to use for the log entry                                                                          |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field                                           |
+| `deleteResults` | The instance of `List&lt;Database.DeleteResult&gt;` to log                                                          |
+| `records`       | The instance of `List&lt;SObject&gt;` that correspond to the instance of `List&lt;Database.DeleteResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
 #### `logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
 Creates a log entry for any results within the provided `List&lt;DeleteResult&gt;` where `isSuccess() != true`
@@ -5267,6 +5278,29 @@ Creates a log entry for any results within the provided `List&lt;DeleteResult&gt
 | `loggingLevel`  | The logging level to use for the log entry                 |
 | `message`       | The string to use to set the entry&apos;s message field    |
 | `deleteResults` | The instance of `List&lt;Database.DeleteResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,String message,List<Database.DeleteResult> deleteResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;DeleteResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param           | Description                                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `loggingLevel`  | The logging level to use for the log entry                                                                          |
+| `message`       | The string to use to set the entry&apos;s message field                                                             |
+| `deleteResults` | The instance of `List&lt;Database.DeleteResult&gt;` to log                                                          |
+| `records`       | The instance of `List&lt;SObject&gt;` that correspond to the instance of `List&lt;Database.DeleteResult&gt;` to log |
 
 ##### Return
 
@@ -5300,6 +5334,29 @@ LogEntryEventBuilder
 
 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
 
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,LogMessage logMessage,List<Database.EmptyRecycleBinResult> emptyRecycleBinResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;EmptyRecycleBinResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param                    | Description                                                               |
+| ------------------------ | ------------------------------------------------------------------------- |
+| `loggingLevel`           | The logging level to use for the log entry                                |
+| `logMessage`             | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `emptyRecycleBinResults` | The instance of `List&lt;Database.EmptyRecycleBinResult&gt;` to log       |
+| `records`                | The instance of `List&lt;SObject&gt;` having info about the actual record |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
 #### `logDatabaseErrors(System.LoggingLevel loggingLevel,String message,List<Database.EmptyRecycleBinResult> emptyRecycleBinResults)` → `LogEntryEventBuilder`
 
 Creates a log entry for any results within the provided `List&lt;EmptyRecycleBinResult&gt;` where `isSuccess() != true`
@@ -5311,6 +5368,29 @@ Creates a log entry for any results within the provided `List&lt;EmptyRecycleBin
 | `loggingLevel`           | The logging level to use for the log entry                          |
 | `message`                | The string to use to set the entry&apos;s message field             |
 | `emptyRecycleBinResults` | The instance of `List&lt;Database.EmptyRecycleBinResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,String message,List<Database.EmptyRecycleBinResult> emptyRecycleBinResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;EmptyRecycleBinResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param                    | Description                                                               |
+| ------------------------ | ------------------------------------------------------------------------- |
+| `loggingLevel`           | The logging level to use for the log entry                                |
+| `message`                | The string to use to set the entry&apos;s message field                   |
+| `emptyRecycleBinResults` | The instance of `List&lt;Database.EmptyRecycleBinResult&gt;` to log       |
+| `records`                | The instance of `List&lt;SObject&gt;` having info about the actual record |
 
 ##### Return
 
@@ -5344,6 +5424,29 @@ LogEntryEventBuilder
 
 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
 
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,LogMessage logMessage,List<Database.LeadConvertResult> leadConvertResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;LeadConvertResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param                | Description                                                               |
+| -------------------- | ------------------------------------------------------------------------- |
+| `loggingLevel`       | The logging level to use for the log entry                                |
+| `logMessage`         | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `leadConvertResults` | The instance of `List&lt;Database.LeadConvertResult&gt;` to log           |
+| `records`            | The instance of `List&lt;SObject&gt;` having info about the actual record |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
 #### `logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.LeadConvertResult> leadConvertResults)` → `LogEntryEventBuilder`
 
 Creates a log entry for any results within the provided `List&lt;LeadConvertResult&gt;` where `isSuccess() != true`
@@ -5355,6 +5458,29 @@ Creates a log entry for any results within the provided `List&lt;LeadConvertResu
 | `loggingLevel`       | The logging level to use for the log entry                      |
 | `message`            | The string to use to set the entry&apos;s message field         |
 | `leadConvertResults` | The instance of `List&lt;Database.LeadConvertResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,String message,List<Database.LeadConvertResult> leadConvertResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;LeadConvertResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param                | Description                                                               |
+| -------------------- | ------------------------------------------------------------------------- |
+| `loggingLevel`       | The logging level to use for the log entry                                |
+| `message`            | The string to use to set the entry&apos;s message field                   |
+| `leadConvertResults` | The instance of `List&lt;Database.LeadConvertResult&gt;` to log           |
+| `records`            | The instance of `List&lt;SObject&gt;` having info about the actual record |
 
 ##### Return
 
@@ -5388,6 +5514,29 @@ LogEntryEventBuilder
 
 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
 
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,LogMessage logMessage,List<Database.MergeResult> mergeResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;MergeResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `loggingLevel` | The logging level to use for the log entry                                |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `mergeResults` | The instance of `List&lt;Database.MergeResult&gt;` to log                 |
+| `records`      | The instance of `List&lt;SObject&gt;` having info about the actual record |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
 #### `logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
 Creates a log entry for any results within the provided `List&lt;MergeResult&gt;` where `isSuccess() != true`
@@ -5399,6 +5548,29 @@ Creates a log entry for any results within the provided `List&lt;MergeResult&gt;
 | `loggingLevel` | The logging level to use for the log entry                |
 | `message`      | The string to use to set the entry&apos;s message field   |
 | `mergeResults` | The instance of `List&lt;Database.MergeResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,String message,List<Database.MergeResult> mergeResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;MergeResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `loggingLevel` | The logging level to use for the log entry                                |
+| `message`      | The string to use to set the entry&apos;s message field                   |
+| `mergeResults` | The instance of `List&lt;Database.MergeResult&gt;` to log                 |
+| `records`      | The instance of `List&lt;SObject&gt;` having info about the actual record |
 
 ##### Return
 
@@ -5432,6 +5604,29 @@ LogEntryEventBuilder
 
 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
 
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,LogMessage logMessage,List<Database.SaveResult> saveResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;SaveResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `loggingLevel` | The logging level to use for the log entry                                |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `saveResults`  | The instance of `List&lt;Database.SaveResult&gt;` to log                  |
+| `records`      | The instance of `List&lt;SObject&gt;` having info about the actual record |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
 #### `logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
 Creates a log entry for any results within the provided `List&lt;SaveResult&gt;` where `isSuccess() != true`
@@ -5443,6 +5638,29 @@ Creates a log entry for any results within the provided `List&lt;SaveResult&gt;`
 | `loggingLevel` | The logging level to use for the log entry               |
 | `message`      | The string to use to set the entry&apos;s message field  |
 | `saveResults`  | The instance of `List&lt;Database.SaveResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,String message,List<Database.SaveResult> saveResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;SaveResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `loggingLevel` | The logging level to use for the log entry                                |
+| `message`      | The string to use to set the entry&apos;s message field                   |
+| `saveResults`  | The instance of `List&lt;Database.SaveResult&gt;` to log                  |
+| `records`      | The instance of `List&lt;SObject&gt;` having info about the actual record |
 
 ##### Return
 
@@ -5476,6 +5694,29 @@ LogEntryEventBuilder
 
 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
 
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,LogMessage logMessage,List<Database.UpsertResult> upsertResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;UpsertResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param           | Description                                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `loggingLevel`  | The logging level to use for the log entry                                                                          |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field                                           |
+| `upsertResults` | The instance of `List&lt;Database.UpsertResult&gt;` to log                                                          |
+| `records`       | The instance of `List&lt;SObject&gt;` that correspond to the instance of `List&lt;Database.UpsertResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
 #### `logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
 Creates a log entry for any results within the provided `List&lt;UpsertResult&gt;` where `isSuccess() != true`
@@ -5487,6 +5728,29 @@ Creates a log entry for any results within the provided `List&lt;UpsertResult&gt
 | `loggingLevel`  | The logging level to use for the log entry                 |
 | `message`       | The string to use to set the entry&apos;s message field    |
 | `upsertResults` | The instance of `List&lt;Database.UpsertResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,String message,List<Database.UpsertResult> upsertResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;UpsertResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param           | Description                                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `loggingLevel`  | The logging level to use for the log entry                                                                          |
+| `message`       | The string to use to set the entry&apos;s message field                                                             |
+| `upsertResults` | The instance of `List&lt;Database.UpsertResult&gt;` to log                                                          |
+| `records`       | The instance of `List&lt;SObject&gt;` that correspond to the instance of `List&lt;Database.UpsertResult&gt;` to log |
 
 ##### Return
 
@@ -5520,6 +5784,29 @@ LogEntryEventBuilder
 
 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
 
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,LogMessage logMessage,List<Database.UndeleteResult> undeleteResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;UndeleteResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param             | Description                                                               |
+| ----------------- | ------------------------------------------------------------------------- |
+| `loggingLevel`    | The logging level to use for the log entry                                |
+| `logMessage`      | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `undeleteResults` | The instance of `List&lt;Database.UndeleteResult&gt;` to log              |
+| `records`         | The instance of `List&lt;SObject&gt;` having info about the actual record |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
 #### `logDatabaseErrors(System.LoggingLevel loggingLevel, String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
 Creates a log entry for any results within the provided `List&lt;UndeleteResult&gt;` where `isSuccess() != true`
@@ -5531,6 +5818,29 @@ Creates a log entry for any results within the provided `List&lt;UndeleteResult&
 | `loggingLevel`    | The logging level to use for the log entry                   |
 | `message`         | The string to use to set the entry&apos;s message field      |
 | `undeleteResults` | The instance of `List&lt;Database.UndeleteResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(System.LoggingLevel loggingLevel,String message,List<Database.UndeleteResult> undeleteResults,List<SObject> records)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided `List&lt;UndeleteResult&gt;` where `isSuccess() != true`
+
+##### Parameters
+
+| Param             | Description                                                               |
+| ----------------- | ------------------------------------------------------------------------- |
+| `loggingLevel`    | The logging level to use for the log entry                                |
+| `message`         | The string to use to set the entry&apos;s message field                   |
+| `undeleteResults` | The instance of `List&lt;Database.UndeleteResult&gt;` to log              |
+| `records`         | The instance of `List&lt;SObject&gt;` having info about the actual record |
 
 ##### Return
 
@@ -6707,14 +7017,6 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 ---
 
-##### Methods
-
-###### `AsyncContext(Database.BatchableContext batchableContext)` → `public`
-
-###### `AsyncContext(System.FinalizerContext finalizerContext)` → `public`
-
----
-
 #### Logger.QueueableSaver class
 
 Inner class for publishing log entries via the System.Queueable interface.
@@ -6722,10 +7024,6 @@ Inner class for publishing log entries via the System.Queueable interface.
 ---
 
 ##### Methods
-
-###### `AsyncContext(System.QueueableContext queueableContext)` → `public`
-
-###### `AsyncContext(System.SchedulableContext schedulableContext)` → `public`
 
 ###### `execute(System.QueueableContext queueableContext)` → `void`
 
@@ -6736,16 +7034,6 @@ Asynchronoulsy publishes the list of `LogEntryEvent__e` records
 | Param              | Description                                                |
 | ------------------ | ---------------------------------------------------------- |
 | `queueableContext` | The context of the current queue, provided by the platform |
-
-###### `insertRecords(List<SObject> records)` → `void`
-
-Inserts records via the REST api.
-
-####### Parameters
-
-| Param     | Description          |
-| --------- | -------------------- |
-| `records` | The records to save. |
 
 ---
 
@@ -6773,6 +7061,10 @@ Inserts records via the REST api.
 
 ##### Properties
 
+###### `allOrNone` → `Boolean`
+
+Boolean used when saving records. If true, all records must save correctly or an exception is thrown. If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
+
 ###### `childJobId` → `String`
 
 ###### `finalizerException` → `Exception`
@@ -6787,8 +7079,34 @@ Inserts records via the REST api.
 
 ###### `parentJobId` → `String`
 
+###### `records` → `List<SObject>`
+
+List of records to save.
+
 ###### `triggerId` → `String`
 
 ###### `type` → `String`
+
+---
+
+##### Methods
+
+###### `AsyncContext(Database.BatchableContext batchableContext)` → `public`
+
+###### `AsyncContext(System.FinalizerContext finalizerContext)` → `public`
+
+###### `AsyncContext(System.QueueableContext queueableContext)` → `public`
+
+###### `AsyncContext(System.SchedulableContext schedulableContext)` → `public`
+
+###### `insertRecords(List<SObject> records)` → `void`
+
+Inserts records via the REST api.
+
+####### Parameters
+
+| Param     | Description          |
+| --------- | -------------------- |
+| `records` | The records to save. |
 
 ---

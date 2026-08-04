@@ -1185,10 +1185,7 @@ private class LogEntryEventBuilder_Tests {
 
   @IsTest
   static void it_should_set_database_result_fields_for_list_of_deleteResult() {
-    List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>();
-    for (Integer i = 0; i < 5; i++) {
-      deleteResults.add(LoggerMockDataCreator.createDatabaseDeleteResult(false));
-    }
+    List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ LoggerMockDataCreator.createDatabaseDeleteResult(false) };
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
     builder.setDatabaseResult(deleteResults);
@@ -1201,10 +1198,9 @@ private class LogEntryEventBuilder_Tests {
 
   @IsTest
   static void it_should_set_database_result_fields_for_list_of_emptyRecycleBinResult() {
-    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new List<Database.EmptyRecycleBinResult>();
-    for (Integer i = 0; i < 5; i++) {
-      emptyRecycleBinResults.add(LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(false));
-    }
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new List<Database.EmptyRecycleBinResult>{
+      LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(false)
+    };
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
     builder.setDatabaseResult(emptyRecycleBinResults);
@@ -1217,10 +1213,7 @@ private class LogEntryEventBuilder_Tests {
 
   @IsTest
   static void it_should_set_database_result_fields_for_list_of_leadConvertResult() {
-    List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>();
-    for (Integer i = 0; i < 5; i++) {
-      leadConvertResults.add(LoggerMockDataCreator.createDatabaseLeadConvertResult(false));
-    }
+    List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>{ LoggerMockDataCreator.createDatabaseLeadConvertResult(false) };
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
     builder.setDatabaseResult(leadConvertResults);
@@ -1233,10 +1226,7 @@ private class LogEntryEventBuilder_Tests {
 
   @IsTest
   static void it_should_set_database_result_fields_for_list_of_mergeResult() {
-    List<Database.MergeResult> mergeResults = new List<Database.MergeResult>();
-    for (Integer i = 0; i < 5; i++) {
-      mergeResults.add(LoggerMockDataCreator.createDatabaseMergeResult(false));
-    }
+    List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ LoggerMockDataCreator.createDatabaseMergeResult(false) };
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
     builder.setDatabaseResult(mergeResults);
@@ -1249,10 +1239,7 @@ private class LogEntryEventBuilder_Tests {
 
   @IsTest
   static void it_should_set_database_result_fields_for_list_of_saveResult() {
-    List<Database.SaveResult> saveResults = new List<Database.SaveResult>();
-    for (Integer i = 0; i < 5; i++) {
-      saveResults.add(LoggerMockDataCreator.createDatabaseSaveResult(false));
-    }
+    List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
     builder.setDatabaseResult(saveResults);
@@ -1265,10 +1252,7 @@ private class LogEntryEventBuilder_Tests {
 
   @IsTest
   static void it_should_set_database_result_fields_for_list_of_undeleteResult() {
-    List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>();
-    for (Integer i = 0; i < 5; i++) {
-      undeleteResults.add(LoggerMockDataCreator.createDatabaseUndeleteResult(false));
-    }
+    List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ LoggerMockDataCreator.createDatabaseUndeleteResult(false) };
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
     builder.setDatabaseResult(undeleteResults);
@@ -1281,10 +1265,7 @@ private class LogEntryEventBuilder_Tests {
 
   @IsTest
   static void it_should_set_database_result_fields_for_list_of_upsertResult() {
-    List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>();
-    for (Integer i = 0; i < 5; i++) {
-      upsertResults.add(LoggerMockDataCreator.createDatabaseUpsertResult(false, false));
-    }
+    List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ LoggerMockDataCreator.createDatabaseUpsertResult(false, false) };
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true);
     builder.setDatabaseResult(upsertResults);

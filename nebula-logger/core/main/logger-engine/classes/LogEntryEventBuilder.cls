@@ -203,7 +203,7 @@ global with sharing class LogEntryEventBuilder {
    * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setApprovalResult(Approval.LockResult lockResult) {
-    return this.setDatabaseDetails(new List<Approval.LockResult>{ lockResult }, Approval.LockResult.class, lockResult?.getId());
+    return this.setDatabaseDetails(lockResult, Approval.LockResult.class, lockResult?.getId());
   }
 
   /**
@@ -212,7 +212,7 @@ global with sharing class LogEntryEventBuilder {
    * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setApprovalResult(Approval.ProcessResult processResult) {
-    return this.setDatabaseDetails(new List<Approval.ProcessResult>{ processResult }, Approval.ProcessResult.class, processResult?.getEntityId());
+    return this.setDatabaseDetails(processResult, Approval.ProcessResult.class, processResult?.getEntityId());
   }
 
   /**
@@ -221,7 +221,7 @@ global with sharing class LogEntryEventBuilder {
    * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setApprovalResult(Approval.UnlockResult unlockResult) {
-    return this.setDatabaseDetails(new List<Approval.UnlockResult>{ unlockResult }, Approval.UnlockResult.class, unlockResult?.getId());
+    return this.setDatabaseDetails(unlockResult, Approval.UnlockResult.class, unlockResult?.getId());
   }
 
   /**
@@ -260,7 +260,7 @@ global with sharing class LogEntryEventBuilder {
    * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.DeleteResult deleteResult) {
-    return this.setDatabaseDetails(new List<Database.DeleteResult>{ deleteResult }, Database.DeleteResult.class, deleteResult?.getId());
+    return this.setDatabaseDetails(deleteResult, Database.DeleteResult.class, deleteResult?.getId());
   }
 
   /**
@@ -269,11 +269,7 @@ global with sharing class LogEntryEventBuilder {
    * @return                       The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-    return this.setDatabaseDetails(
-      new List<Database.EmptyRecycleBinResult>{ emptyRecycleBinResult },
-      Database.EmptyRecycleBinResult.class,
-      emptyRecycleBinResult?.getId()
-    );
+    return this.setDatabaseDetails(emptyRecycleBinResult, Database.EmptyRecycleBinResult.class, emptyRecycleBinResult?.getId());
   }
 
   /**
@@ -282,7 +278,7 @@ global with sharing class LogEntryEventBuilder {
    * @return                   The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.LeadConvertResult leadConvertResult) {
-    return this.setDatabaseDetails(new List<Database.LeadConvertResult>{ leadConvertResult }, Database.LeadConvertResult.class, leadConvertResult?.getLeadId());
+    return this.setDatabaseDetails(leadConvertResult, Database.LeadConvertResult.class, leadConvertResult?.getLeadId());
   }
 
   /**
@@ -291,7 +287,7 @@ global with sharing class LogEntryEventBuilder {
    * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.MergeResult mergeResult) {
-    return this.setDatabaseDetails(new List<Database.MergeResult>{ mergeResult }, Database.MergeResult.class, mergeResult?.getId());
+    return this.setDatabaseDetails(mergeResult, Database.MergeResult.class, mergeResult?.getId());
   }
 
   /**
@@ -300,7 +296,7 @@ global with sharing class LogEntryEventBuilder {
    * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.SaveResult saveResult) {
-    return this.setDatabaseDetails(new List<Database.SaveResult>{ saveResult }, Database.SaveResult.class, saveResult?.getId());
+    return this.setDatabaseDetails(saveResult, Database.SaveResult.class, saveResult?.getId());
   }
 
   /**
@@ -309,7 +305,7 @@ global with sharing class LogEntryEventBuilder {
    * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.UpsertResult upsertResult) {
-    this.setDatabaseDetails(new List<Database.UpsertResult>{ upsertResult }, Database.UpsertResult.class, upsertResult?.getId());
+    this.setDatabaseDetails(upsertResult, Database.UpsertResult.class, upsertResult?.getId());
     if (upsertResult != null) {
       String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
       this.logEntryEvent.DatabaseResultType__c += '.' + subtype;
@@ -323,7 +319,7 @@ global with sharing class LogEntryEventBuilder {
    * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.UndeleteResult undeleteResult) {
-    return this.setDatabaseDetails(new List<Database.UndeleteResult>{ undeleteResult }, Database.UndeleteResult.class, undeleteResult?.getId());
+    return this.setDatabaseDetails(undeleteResult, Database.UndeleteResult.class, undeleteResult?.getId());
   }
 
   /**
@@ -988,14 +984,28 @@ global with sharing class LogEntryEventBuilder {
     return this;
   }
 
+  private LogEntryEventBuilder setDatabaseDetails(Object databaseResult, System.Type resultType, Id possibleRecordId) {
+    if (this.shouldSave() == false) {
+      return this;
+    }
+
+    this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
+    this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
+    String serializedResult = System.JSON.serializePretty(databaseResult);
+    this.logEntryEvent.DatabaseResultJson__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, serializedResult);
+    this.logEntryEvent.DatabaseResultType__c = resultType.getName();
+
+    return this.setRecordId(possibleRecordId);
+  }
+
   private LogEntryEventBuilder setDatabaseDetails(List<Object> databaseResults, System.Type resultType, Id possibleRecordId) {
     if (this.shouldSave() == false) {
       return this;
     }
 
     this.logEntryEvent.DatabaseResultCollectionSize__c = databaseResults.size();
-    this.logEntryEvent.DatabaseResultCollectionType__c = this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? 'Single' : 'List';
-    String serializedResult = System.JSON.serializePretty(this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? databaseResults.get(0) : databaseResults);
+    this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+    String serializedResult = System.JSON.serializePretty(databaseResults);
     this.logEntryEvent.DatabaseResultJson__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, serializedResult);
     this.logEntryEvent.DatabaseResultType__c = resultType.getName();
 
