@@ -75,6 +75,25 @@ describe('c-logger-code-viewer', () => {
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
+  it('preserves angle-bracketed generics and other HTML-significant characters in the rendered code', async () => {
+    const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
+    element.language = 'apex';
+    element.startingLineNumber = '1';
+    element.targetLineNumber = '1';
+    const codeWithAngleBrackets =
+      "    this.surveyAnswers = (List<ASA_Survey>) JSON.deserialize((String) state.get('answers'), List<ASA_Survey>.class);\n" +
+      '    Map<String, Object> state = new Map<String, Object>();\n' +
+      "    if (a < b && b > c) { return '<value>'; }";
+    element.code = codeWithAngleBrackets;
+
+    document.body.appendChild(element);
+    await flushPromises();
+
+    const renderedCode = element.shadowRoot.querySelector('div.prism-viewer pre code');
+    expect(renderedCode).toBeTruthy();
+    expect(renderedCode.textContent).toBe(codeWithAngleBrackets);
+  });
+
   it('renders code and logs an aggregated error when loadScript rejects', async () => {
     mockLoadScriptImpl = jest.fn(() => Promise.reject(new Error('script-load-failed')));
     const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
