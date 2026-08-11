@@ -26,6 +26,45 @@ public class LoggerParameter {
   }
 
   /**
+   * @description The max number of characters fed to a single `replaceAll`/`Matcher` evaluation
+   *              when applying data masking rules. The default value `4000` is a deliberately conservative
+   *              fixed value, trading a higher chunk count for a wide safety margin below the measured
+   *              failure point. Lower it if a custom rule's regex still throws `RegEx too complicated` at the default;
+   *              raise it (carefully) to reduce chunk count.
+   *              Controlled by the custom metadata record `LoggerParameter.DataMaskRegExChunkSize`,
+   *              or `4000` as the default
+   */
+  public static final Integer DATA_MASK_REGEX_CHUNK_SIZE {
+    get {
+      if (DATA_MASK_REGEX_CHUNK_SIZE == null) {
+        DATA_MASK_REGEX_CHUNK_SIZE = getInteger('DataMaskRegExChunkSize', 4000);
+      }
+      return DATA_MASK_REGEX_CHUNK_SIZE;
+    }
+    private set;
+  }
+
+  /**
+   * @description The number of characters checked in adjacent chunks for overlap during data masking
+   *              so a sensitive value that straddles a chunk boundary is still fully contained within
+   *              at least one chunk. This value MUST be >= the longest sensitive value any data-mask rule
+   *              can match; 20 covers the built-in rules (SSN ~11 chars, credit card ~19 chars with
+   *              separators). It cannot be derived from the rule regexes (a pattern's max match length
+   *              is not generally computable), so it is configurable for orgs whose custom rules match longer values.
+   *              Controlled by the custom metadata record `LoggerParameter.DataMaskRegExOverlapSize`,
+   *              or `20` as the default
+   */
+  public static final Integer DATA_MASK_REGEX_OVERLAP_SIZE {
+    get {
+      if (DATA_MASK_REGEX_OVERLAP_SIZE == null) {
+        DATA_MASK_REGEX_OVERLAP_SIZE = getInteger('DataMaskRegExOverlapSize', 20);
+      }
+      return DATA_MASK_REGEX_OVERLAP_SIZE;
+    }
+    private set;
+  }
+
+  /**
    * @description The name of the `LogEntry__c` field set to use as the default field set when configuring
    *              the LWC `<c-related-log-entries>` within App Builder.
    *              Controlled by the custom metadata record `LoggerParameter.DefaultLogEntryRelatedListFieldSet`,

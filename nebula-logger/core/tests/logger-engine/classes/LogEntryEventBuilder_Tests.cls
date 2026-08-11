@@ -470,7 +470,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = false;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
     Schema.Account account = new Schema.Account(Name = message);
     String accountJson = System.JSON.serializePretty(account);
@@ -490,7 +490,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = false;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
     Schema.Account account = new Schema.Account(Name = message);
     String accountJson = System.JSON.serializePretty(account);
@@ -510,7 +510,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
     String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
 
@@ -528,7 +528,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     Integer fieldMaxLength = LogEntryEvent__e.Message__c.getDescribe().getLength();
     String sensitiveStringThatWillBeExpandedByDataMasking =
       'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
@@ -557,7 +557,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
     String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
     Schema.Account account = new Schema.Account(Name = sensitiveString);
@@ -578,7 +578,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     Integer fieldMaxLength = LogEntryEvent__e.RecordJson__c.getDescribe().getLength();
     String sensitiveStringThatWillBeExpandedByDataMasking =
       'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
@@ -609,7 +609,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
     String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
     List<Schema.Account> accounts = new List<Schema.Account>{ new Schema.Account(Name = sensitiveString) };
@@ -630,7 +630,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     Integer fieldMaxLength = LogEntryEvent__e.RecordJson__c.getDescribe().getLength();
     String sensitiveStringThatWillBeExpandedByDataMasking =
       'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
@@ -661,7 +661,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
     String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
     Id mockAccountId = LoggerMockDataCreator.createId(Schema.Account.SObjectType);
@@ -685,7 +685,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     Integer fieldMaxLength = LogEntryEvent__e.RecordJson__c.getDescribe().getLength();
     String sensitiveStringThatWillBeExpandedByDataMasking =
       'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
@@ -721,7 +721,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
     String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
     System.HttpRequest httpRequest = LoggerMockDataCreator.createHttpRequest();
@@ -741,7 +741,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     Integer fieldMaxLength = LogEntryEvent__e.HttpRequestBody__c.getDescribe().getLength();
     String sensitiveStringThatWillBeExpandedByDataMasking =
       'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
@@ -772,7 +772,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
     String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
     System.HttpResponse httpResponse = LoggerMockDataCreator.createHttpResponse();
@@ -792,7 +792,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     Integer fieldMaxLength = LogEntryEvent__e.HttpResponseBody__c.getDescribe().getLength();
     String sensitiveStringThatWillBeExpandedByDataMasking =
       'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
@@ -823,7 +823,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
     String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
     System.RestRequest restRequest = new System.RestRequest();
@@ -843,7 +843,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     Integer fieldMaxLength = LogEntryEvent__e.RestRequestBody__c.getDescribe().getLength();
     String sensitiveStringThatWillBeExpandedByDataMasking =
       'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
@@ -874,7 +874,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
     String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
     System.RestResponse restResponse = new System.RestResponse();
@@ -894,7 +894,7 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     Integer fieldMaxLength = LogEntryEvent__e.RestResponseBody__c.getDescribe().getLength();
     String sensitiveStringThatWillBeExpandedByDataMasking =
       'Here is my fake social 400119999. Since it doesn\'t have dashes or spaces, and the regex will add dashes, the resulting string would have been too long in previous releases. ' +
@@ -2815,9 +2815,9 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // Build a large multi-line string that exceeds the chunk threshold, with SSNs at start, middle, and end
-    String paddingLine = 'A'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE);
+    String paddingLine = 'A'.repeat(LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE);
     String message = 'SSN at start: 400 11 9999\n' + paddingLine + '\nSSN in middle: 123 45 6789\n' + paddingLine + '\nSSN at end: 987 65 4321';
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
@@ -2839,9 +2839,9 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // Build a large single-line string (no newlines) that exceeds the chunk threshold
-    String padding = 'A'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE);
+    String padding = 'A'.repeat(LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE);
     String message = 'SSN here: 400 11 9999 ' + padding + ' another SSN: 123 45 6789';
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
@@ -2861,11 +2861,11 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // Place a space-separated SSN so it straddles a chunk boundary.
     // The overlapping-chunk Matcher approach ensures the full pattern is found
     // even when it spans two adjacent chunks.
-    Integer ssnPosition = LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - 5;
+    Integer ssnPosition = LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE - 5;
     String message = 'B'.repeat(ssnPosition) + ' 400 11 9999 ' + 'C'.repeat(100);
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
@@ -2882,18 +2882,19 @@ private class LogEntryEventBuilder_Tests {
     LoggerSettings__c userSettings = getUserSettings();
     userSettings.IsDataMaskingEnabled__c = true;
     // Register all 4 bundled data mask rules — in production all enabled rules run sequentially
-    LogEntryEventBuilder.setMockDataMaskRule(getSocialSecurityNumberDataMaskRule());
-    LogEntryEventBuilder.setMockDataMaskRule(getVisaCreditCardNumberDataMaskRule());
-    LogEntryEventBuilder.setMockDataMaskRule(getMastercardCreditCardNumberDataMaskRule());
-    LogEntryEventBuilder.setMockDataMaskRule(getAmericanExpressCreditCardNumberDataMaskRule());
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(getSocialSecurityNumberDataMaskRule());
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(getVisaCreditCardNumberDataMaskRule());
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(getMastercardCreditCardNumberDataMaskRule());
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(getAmericanExpressCreditCardNumberDataMaskRule());
     // Simulate serialized SObject JSON — the scenario from issue #639 where a 35K+ string
-    // of serialized Asset records triggered System.LimitException: Regex too complicated.
+    // of serialized Asset records triggered System.LimitException: RegEx too complicated.
     // Each fake record mimics a real Asset with multiple fields, Salesforce IDs, dates, and numbers.
-    String fakeAssetRecord = '{"attributes":{"type":"Asset","url":"/services/data/v64.0/sobjects/Asset/02iDm00000ABCdEFG"},'
-      + '"Id":"02iDm00000ABCdEFG","AccountId":"001Dm00000XYZ1234","ContactId":"003Dm00000LMN5678",'
-      + '"Name":"Asset-2024-09-001","Status":"Installed","Quantity":250.00,"Price":14999.95,'
-      + '"PurchaseDate":"2024-09-15","InstallDate":"2024-09-20","UsageEndDate":"2025-09-15",'
-      + '"SerialNumber":"SN-8842719305","Description":"Enterprise license  unit 42 of 250"}';
+    String fakeAssetRecord =
+      '{"attributes":{"type":"Asset","url":"/services/data/v64.0/sobjects/Asset/02iDm00000ABCdEFG"},' +
+      '"Id":"02iDm00000ABCdEFG","AccountId":"001Dm00000XYZ1234","ContactId":"003Dm00000LMN5678",' +
+      '"Name":"Asset-2024-09-001","Status":"Installed","Quantity":250.00,"Price":14999.95,' +
+      '"PurchaseDate":"2024-09-15","InstallDate":"2024-09-20","UsageEndDate":"2025-09-15",' +
+      '"SerialNumber":"SN-8842719305","Description":"Enterprise license  unit 42 of 250"}';
     Integer fieldMaxLength = LogEntryEvent__e.Message__c.getDescribe().getLength();
     Integer repetitions = fieldMaxLength / fakeAssetRecord.length();
     String message = fakeAssetRecord.repeat(repetitions) + ' 400 11 9999';
@@ -2913,11 +2914,11 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // Place compact SSN "400119999" (9 chars) starting at position 3985
     // — fully inside overlap zone [3980, 4000), found by both chunk 0 and chunk 1.
     // The seenStarts dedup must prevent it from being masked twice.
-    Integer ssnPosition = LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - LogEntryEventBuilder.DATA_MASK_REGEX_OVERLAP_SIZE + 5;
+    Integer ssnPosition = LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE - LoggerParameter.DATA_MASK_REGEX_OVERLAP_SIZE + 5;
     String message = 'B'.repeat(ssnPosition) + ' 400119999 ' + 'C'.repeat(100);
     Integer originalLength = message.length();
 
@@ -2939,10 +2940,10 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // Place first SSN ending just before the overlap zone, second SSN starting inside the overlap zone.
     // Both are near the chunk boundary — verifies multiple matches in the boundary region are all masked.
-    Integer firstSsnPosition = LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - LogEntryEventBuilder.DATA_MASK_REGEX_OVERLAP_SIZE - 12;
+    Integer firstSsnPosition = LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE - LoggerParameter.DATA_MASK_REGEX_OVERLAP_SIZE - 12;
     String message = 'B'.repeat(firstSsnPosition) + ' 400119999 ' + ' 123456789 ' + 'C'.repeat(100);
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
@@ -2962,10 +2963,10 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // Build string just over chunk size, SSN at the very end with no trailing chars.
     // The final chunk will be shorter than DATA_MASK_REGEX_CHUNK_SIZE — verifies the tail chunk processes correctly.
-    String message = 'B'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE + 100) + ' 400119999';
+    String message = 'B'.repeat(LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE + 100) + ' 400119999';
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
     builder.setMessage(message);
@@ -2983,11 +2984,11 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // Place SSN starting exactly at position step (3980) — the exact start of chunk 1
     // and the exact start of the overlap zone for chunk 0.
     // Tests the boundary arithmetic at the most sensitive position.
-    Integer step = LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - LogEntryEventBuilder.DATA_MASK_REGEX_OVERLAP_SIZE;
+    Integer step = LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE - LoggerParameter.DATA_MASK_REGEX_OVERLAP_SIZE;
     String message = 'B'.repeat(step) + ' 400119999 ' + 'C'.repeat(100);
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
@@ -3005,11 +3006,11 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getVisaCreditCardNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // Place a Visa CC " 4111-1111-1111-1111" (20 chars with leading space) starting at position 3981,
     // so it ends at 4001 — beyond chunk 0's boundary. Chunk 0 can't match it (only 19 chars visible).
     // Chunk 1 finds it correctly.
-    Integer ccPosition = LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - LogEntryEventBuilder.DATA_MASK_REGEX_OVERLAP_SIZE + 1;
+    Integer ccPosition = LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE - LoggerParameter.DATA_MASK_REGEX_OVERLAP_SIZE + 1;
     String message = 'B'.repeat(ccPosition) + ' 4111-1111-1111-1111 ' + 'C'.repeat(100);
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
@@ -3028,7 +3029,7 @@ private class LogEntryEventBuilder_Tests {
     // and begins before the default chunk-1 start (4000 - 20 = 3980): with the default
     // overlap neither chunk contains it whole, so it could not be masked. Raising the
     // overlap via the LoggerParameter__mdt override widens chunk 1 enough to capture it.
-    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'DataMaskRegexOverlapSize', Value__c = '60'));
+    LoggerConfigurationSelector.mockLoggerParameters.put('DataMaskRegExOverlapSize', new LoggerParameter__mdt(Value__c = '60'));
     LoggerSettings__c userSettings = getUserSettings();
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = new LogEntryDataMaskRule__mdt(
@@ -3037,7 +3038,7 @@ private class LogEntryEventBuilder_Tests {
       SensitiveDataRegEx__c = 'SECRET\\d{34}',
       ReplacementRegEx__c = 'REDACTED'
     );
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // Secret occupies [3970, 4010): truncated in chunk 0 and in the default-overlap
     // chunk 1 (starts 3980), but fully inside chunk 1 once overlap is raised to 60
     // (chunk 1 then starts at 3940).
@@ -3059,10 +3060,10 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // 4000-char string with SSN — verifies the <= guard routes to replaceAll directly (no chunking)
     String ssn = ' 400 11 9999 ';
-    String message = 'A'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - ssn.length()) + ssn;
+    String message = 'A'.repeat(LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE - ssn.length()) + ssn;
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
     builder.setMessage(message);
@@ -3079,10 +3080,10 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // 4001-char string with SSN — verifies the chunking path activates at the minimum qualifying length
     String ssn = ' 400 11 9999 ';
-    String message = 'A'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE + 1 - ssn.length()) + ssn;
+    String message = 'A'.repeat(LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE + 1 - ssn.length()) + ssn;
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
     builder.setMessage(message);
@@ -3099,11 +3100,11 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // Multi-line input where one line is exactly 4000 chars with an SSN.
     // Verifies the per-line <= check works at the boundary.
     String ssn = ' 400 11 9999 ';
-    String exactLine = 'A'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE - ssn.length()) + ssn;
+    String exactLine = 'A'.repeat(LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE - ssn.length()) + ssn;
     String message = 'First line\n' + exactLine + '\nLast line';
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
@@ -3121,10 +3122,10 @@ private class LogEntryEventBuilder_Tests {
     userSettings.IsDataMaskingEnabled__c = true;
     LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
     rule.IsEnabled__c = true;
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // SSN at the very start of a string that exceeds chunk size.
     // Tests the first-chunk handling when pos=0 and the first match starts at a small offset.
-    String message = '400 11 9999 ' + 'B'.repeat(LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE);
+    String message = '400 11 9999 ' + 'B'.repeat(LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE);
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);
     builder.setMessage(message);
@@ -3146,7 +3147,7 @@ private class LogEntryEventBuilder_Tests {
       SensitiveDataRegEx__c = '(X+)',
       ReplacementRegEx__c = '[MASKED]'
     );
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // 30 X's starting at position 3985 straddle the chunk boundary (chunk size = 4000).
     // Chunk 0 [0,4000) sees 15 X's → match (3985,4000).
     // Chunk 1 [3980,...) sees all 30 → match (3985,4015).
@@ -3172,7 +3173,7 @@ private class LogEntryEventBuilder_Tests {
       SensitiveDataRegEx__c = '(X{5})',
       ReplacementRegEx__c = '[M]'
     );
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // Match A at position 100 (chunk 0 only), match B at position 4080 (chunk 1 only).
     // Map.keySet() has no guaranteed order in Apex — the sort ensures left-to-right processing.
     String message = 'A'.repeat(100) + 'XXXXX' + 'A'.repeat(3975) + 'XXXXX' + 'B'.repeat(100);
@@ -3199,7 +3200,7 @@ private class LogEntryEventBuilder_Tests {
       SensitiveDataRegEx__c = '(X{10,})',
       ReplacementRegEx__c = '[MASKED]'
     );
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // 30 X's starting at position 3970. Chunk 0 matches (3970,4000)=30 X's.
     // Chunk 1 matches (3980,4000)=20 X's — a subset. After processing the first match
     // (pos=4000), the second match's start (3980) < pos, triggering the `continue` skip.
@@ -3226,17 +3227,18 @@ private class LogEntryEventBuilder_Tests {
       SensitiveDataRegEx__c = '(\\w+:\\$\\d+)(DONE)( ?)',
       ReplacementRegEx__c = '[$1/$2]'
     );
-    LogEntryEventBuilder.setMockDataMaskRule(rule);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(rule);
     // Group 1 = 'PRICE:$3', group 2 = 'DONE', group 3 = ' '.
     // The old iterative String.replace() would process $3 inside group 1's value,
     // replacing it with group 3 (space) → '[PRICE: /DONE]'. The new single-pass
     // expandReplacement processes $N only in the template, preserving the literal $3.
-    String fakeAssetRecord = '{"attributes":{"type":"Asset","url":"/services/data/v64.0/sobjects/Asset/02iDm00000ABCdEFG"},'
-      + '"Id":"02iDm00000ABCdEFG","AccountId":"001Dm00000XYZ1234","ContactId":"003Dm00000LMN5678",'
-      + '"Name":"Asset-2024-09-001","Status":"Installed","Quantity":250.00,"Price":14999.95,'
-      + '"PurchaseDate":"2024-09-15","InstallDate":"2024-09-20","UsageEndDate":"2025-09-15",'
-      + '"SerialNumber":"SN-8842719305","Description":"Enterprise license  unit 42 of 250"}';
-    Integer repetitions = (LogEntryEventBuilder.DATA_MASK_REGEX_CHUNK_SIZE / fakeAssetRecord.length()) + 1;
+    String fakeAssetRecord =
+      '{"attributes":{"type":"Asset","url":"/services/data/v64.0/sobjects/Asset/02iDm00000ABCdEFG"},' +
+      '"Id":"02iDm00000ABCdEFG","AccountId":"001Dm00000XYZ1234","ContactId":"003Dm00000LMN5678",' +
+      '"Name":"Asset-2024-09-001","Status":"Installed","Quantity":250.00,"Price":14999.95,' +
+      '"PurchaseDate":"2024-09-15","InstallDate":"2024-09-20","UsageEndDate":"2025-09-15",' +
+      '"SerialNumber":"SN-8842719305","Description":"Enterprise license  unit 42 of 250"}';
+    Integer repetitions = (LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE / fakeAssetRecord.length()) + 1;
     String message = fakeAssetRecord.repeat(repetitions) + ' PRICE:$3DONE ';
 
     LogEntryEventBuilder builder = new LogEntryEventBuilder(userSettings, System.LoggingLevel.INFO, true);

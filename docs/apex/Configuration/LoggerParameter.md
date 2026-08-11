@@ -14,6 +14,14 @@ Provides a centralized way to load parameters for SObject handlers &amp; plugins
 
 Indicates if Nebula Logger will make an async callout to `https://api.status.salesforce.com` to get additional details about the current org, which is then stored on the Log\_\_c record. Controlled by the custom metadata record `LoggerParameter.CallStatusApi`, or `false` as the default
 
+#### `DATA_MASK_REGEX_CHUNK_SIZE` → `Integer`
+
+The max number of characters fed to a single `replaceAll`/`Matcher` evaluation when applying data masking rules. The default value `4000` is a deliberately conservative fixed value, trading a higher chunk count for a wide safety margin below the measured failure point. Lower it if a custom rule&apos;s regex still throws `RegEx too complicated` at the default; raise it (carefully) to reduce chunk count. Controlled by the custom metadata record `LoggerParameter.DataMaskRegExChunkSize`, or `4000` as the default
+
+#### `DATA_MASK_REGEX_OVERLAP_SIZE` → `Integer`
+
+The number of characters checked in adjacent chunks for overlap during data masking so a sensitive value that straddles a chunk boundary is still fully contained within at least one chunk. This value MUST be &gt;= the longest sensitive value any data-mask rule can match; 20 covers the built-in rules (SSN ~11 chars, credit card ~19 chars with separators). It cannot be derived from the rule regexes (a pattern&apos;s max match length is not generally computable), so it is configurable for orgs whose custom rules match longer values. Controlled by the custom metadata record `LoggerParameter.DataMaskRegExOverlapSize`, or `20` as the default
+
 #### `DEFAULT_LOG_ENTRY_RELATED_LIST_FIELD_SET` → `String`
 
 The name of the `LogEntry__c` field set to use as the default field set when configuring the LWC `&lt;c-related-log-entries&gt;` within App Builder. Controlled by the custom metadata record `LoggerParameter.DefaultLogEntryRelatedListFieldSet`, or `Related_List_Defaults` as the default

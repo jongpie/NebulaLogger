@@ -48,6 +48,56 @@ private class LoggerParameter_Tests {
   }
 
   @IsTest
+  static void it_should_return_configured_value_as_constant_value_for_data_mask_regex_chunk_size_when_parameter_exists() {
+    Integer mockValue = 12345;
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'DataMaskRegExChunkSize', Value__c = System.JSON.serialize(mockValue));
+    LoggerConfigurationSelector.mockLoggerParameters.put(mockParameter.DeveloperName, mockParameter);
+    System.Assert.areEqual(
+      mockParameter,
+      LoggerConfigurationSelector.getInstance().getLoggerParameters().get(mockParameter.DeveloperName),
+      'Test has started under the wrong conditions!'
+    );
+
+    Integer returnedValue = LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE;
+
+    System.Assert.areEqual(mockValue, returnedValue);
+  }
+
+  @IsTest
+  static void it_should_return_fallback_value_as_constant_value_for_data_mask_regex_chunk_size_when_parameter_does_not_exist() {
+    System.Assert.areEqual(0, LoggerConfigurationSelector.getInstance().getLoggerParameters().size(), 'Test has started under the wrong conditions!');
+
+    Integer returnedValue = LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE;
+
+    System.Assert.areEqual(4000, returnedValue);
+  }
+
+  @IsTest
+  static void it_should_return_configured_value_as_constant_value_for_data_mask_regex_overlap_when_parameter_exists() {
+    Integer mockValue = 9876;
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'DataMaskRegExOverlapSize', Value__c = System.JSON.serialize(mockValue));
+    LoggerConfigurationSelector.mockLoggerParameters.put(mockParameter.DeveloperName, mockParameter);
+    System.Assert.areEqual(
+      mockParameter,
+      LoggerConfigurationSelector.getInstance().getLoggerParameters().get(mockParameter.DeveloperName),
+      'Test has started under the wrong conditions!'
+    );
+
+    Integer returnedValue = LoggerParameter.DATA_MASK_REGEX_OVERLAP_SIZE;
+
+    System.Assert.areEqual(mockValue, returnedValue);
+  }
+
+  @IsTest
+  static void it_should_return_fallback_value_as_constant_value_for_data_mask_regex_overlap_size_when_parameter_does_not_exist() {
+    System.Assert.areEqual(0, LoggerConfigurationSelector.getInstance().getLoggerParameters().size(), 'Test has started under the wrong conditions!');
+
+    Integer returnedValue = LoggerParameter.DATA_MASK_REGEX_OVERLAP_SIZE;
+
+    System.Assert.areEqual(20, returnedValue);
+  }
+
+  @IsTest
   static void it_should_return_constant_value_for_default_log_entry_related_list_field_set() {
     String mockValue = 'SomeValue';
     LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'DefaultLogEntryRelatedListFieldSet', Value__c = mockValue);
