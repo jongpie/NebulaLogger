@@ -1,0 +1,33 @@
+---
+title: Nebula Logger
+description: The most robust observability solution for Salesforce experts.
+template: splash
+hero:
+  tagline: The most robust observability solution for Salesforce experts. Built 100% natively on the platform, and designed to work seamlessly with Apex, Lightning Components, Flow, OmniStudio, and integrations.
+  actions:
+    - text: Get started
+      link: /getting-started/install-unlocked/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/jongpie/NebulaLogger
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+  <Card title="Log everywhere" icon="pencil">
+    A unified logging API for Apex, Lightning Web Components, Aura, Flow, and OmniStudio.
+  </Card>
+  <Card title="Investigate faster" icon="magnifier">
+    The Logger Console app, related-list navigation, and rich log record pages surface what admins and engineers need first.
+  </Card>
+  <Card title="Configure declaratively" icon="setting">
+    Customize logging levels, feature flags, retention, and data masking with hierarchy settings and custom metadata - no code redeploys.
+  </Card>
+  <Card title="Extend with plugins" icon="puzzle">
+    Slack, Big Object archiving, notifications, retention rules, and a plugin framework you can build against.
+  </Card>
+</CardGrid>

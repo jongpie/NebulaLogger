@@ -1,0 +1,5 @@
+/* Nebula Logger docs - theme overrides live here. */
+
+:root {
+  --sl-font: 'InterVariable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
