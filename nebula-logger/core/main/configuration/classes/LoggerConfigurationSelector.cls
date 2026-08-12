@@ -97,7 +97,14 @@ public without sharing class LoggerConfigurationSelector {
    * @return   `List<LogEntryDataMaskRule__mdt>` containing records in the org
    */
   public List<LogEntryDataMaskRule__mdt> getLogEntryDataMaskRules() {
-    return mockLogEntryDataMaskRules ?? LogEntryDataMaskRule__mdt.getAll().values().deepClone();
+    List<LogEntryDataMaskRule__mdt> enabledDataMaskRules = new List<LogEntryDataMaskRule__mdt>();
+    for (LogEntryDataMaskRule__mdt dataMaskRule : mockLogEntryDataMaskRules ?? LogEntryDataMaskRule__mdt.getAll().values()) {
+      if (dataMaskRule.IsEnabled__c) {
+        enabledDataMaskRules.add(dataMaskRule);
+      }
+    }
+
+    return enabledDataMaskRules;
   }
 
   /**

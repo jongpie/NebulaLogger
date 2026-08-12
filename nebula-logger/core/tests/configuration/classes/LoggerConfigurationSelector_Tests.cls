@@ -31,7 +31,12 @@ private class LoggerConfigurationSelector_Tests {
 
   @IsTest
   static void it_returns_log_entry_data_mask_rules_from_database() {
-    List<LogEntryDataMaskRule__mdt> expectedValues = LogEntryDataMaskRule__mdt.getAll().values().deepClone();
+    List<LogEntryDataMaskRule__mdt> expectedValues = new List<LogEntryDataMaskRule__mdt>();
+    for (LogEntryDataMaskRule__mdt dataMaskRule : LogEntryDataMaskRule__mdt.getAll().values()) {
+      if (dataMaskRule.IsEnabled__c) {
+        expectedValues.add(dataMaskRule);
+      }
+    }
 
     List<LogEntryDataMaskRule__mdt> returnedValues = LoggerConfigurationSelector.getInstance().getLogEntryDataMaskRules();
 
@@ -40,11 +45,13 @@ private class LoggerConfigurationSelector_Tests {
 
   @IsTest
   static void it_returns_log_entry_data_mask_rules_from_provided_mocks() {
-    LoggerConfigurationSelector.mockLogEntryDataMaskRules = new List<LogEntryDataMaskRule__mdt>{ new LogEntryDataMaskRule__mdt(DeveloperName = 'SomeDevName') };
+    LogEntryDataMaskRule__mdt enabledMockRule = new LogEntryDataMaskRule__mdt(DeveloperName = 'SomeDevName', IsEnabled__c = true);
+    LogEntryDataMaskRule__mdt disabledMockRule = new LogEntryDataMaskRule__mdt(DeveloperName = 'SomeDevName', IsEnabled__c = false);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules = new List<LogEntryDataMaskRule__mdt>{ enabledMockRule, disabledMockRule };
 
     List<LogEntryDataMaskRule__mdt> returnedValues = LoggerConfigurationSelector.getInstance().getLogEntryDataMaskRules();
 
-    System.Assert.areEqual(LoggerConfigurationSelector.mockLogEntryDataMaskRules, returnedValues);
+    System.Assert.areEqual(new List<LogEntryDataMaskRule__mdt>{ enabledMockRule }, returnedValues);
   }
 
   @IsTest
