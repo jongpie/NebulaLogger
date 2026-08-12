@@ -22,6 +22,8 @@ Create the field in Setup or via source metadata. Any data type supported by pla
 
 Example: a text field `SomeCustomField__c` on `LogEntryEvent__e`.
 
+![Custom field on LogEntryEvent__e](/images/custom-field-log-entry-event.png)
+
 ## Step 2: Set the value from your code
 
 Two granularities in every runtime:
@@ -85,6 +87,8 @@ Same two granularities:
 
 If you want the value to end up on `Log__c`, `LogEntry__c`, or `LoggerScenario__c` in addition to `LogEntryEvent__e`, add a matching field on the target custom object. Only those three objects are supported as targets.
 
+![Custom field on Log__c](/images/custom-field-log.png)
+
 Common patterns:
 
 - Field lives on `Log__c` for transaction-wide values (via `Logger.setField(...)`).
@@ -103,6 +107,8 @@ To make Nebula Logger auto-populate the custom-object field from the platform ev
 - Target field: the custom field you added in Step 3.
 
 Nebula Logger reads these mapping records during the platform event trigger and copies values across automatically. No trigger customization required.
+
+![Custom field mapping CMDT record](/images/custom-field-mapping.png)
 
 ## What this pattern is not
 

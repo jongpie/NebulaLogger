@@ -48,5 +48,5 @@ If storage is genuinely tight, the levers in descending order of impact:
 ## Where next
 
 - [LoggerSettings\_\_c hierarchy](/configuration/logger-settings/) - the settings surface.
-- [Log levels](/configuration/log-levels/) - precedence and semantics.
+- [Logging levels](/configuration/logging-levels/) - precedence and semantics.
 - [Retention & Purging](/retention/retention-dates/) - retention configuration in depth.

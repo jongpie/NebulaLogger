@@ -80,6 +80,6 @@ Individual calls can override this via `Logger.saveLog(SaveMethod.QUEUEABLE)`.
 ## Where next
 
 - [LoggerParameter\_\_mdt feature flags](/configuration/logger-parameters/) - global framework flags.
-- [Log levels](/configuration/log-levels/) - level precedence in depth.
+- [Logging levels](/configuration/logging-levels/) - level precedence in depth.
 - [Retention date semantics](/retention/retention-dates/) - retention field behavior.
 - [`LoggerSettings__c` reference](/reference/custom-objects/loggersettings__c/) - full field list.

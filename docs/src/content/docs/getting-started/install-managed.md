@@ -51,6 +51,12 @@ sf package installed list --target-org <alias>
 
 You should see the managed package listed with the `Nebula` namespace prefix.
 
+## Uninstalling
+
+Uninstall from Setup > Installed Packages > **Uninstall** next to the Nebula Logger row. Salesforce will warn you about dependencies and confirm before removing metadata and data.
+
+Uninstalling deletes every `Nebula__Log__c`, `Nebula__LogEntry__c`, `Nebula__LoggerScenario__c`, `Nebula__LoggerTag__c`, and `Nebula__LogEntryTag__c` record along with the metadata. Export anything you want to keep first.
+
 ## Where next
 
 - [Post-install setup](/getting-started/post-install-setup/) - permissions, `LoggerSettings__c`, and verification.

@@ -92,7 +92,7 @@ gtag('config', 'G-TD37SS03XP');`
           items: [
             { label: 'LoggerSettings__c hierarchy', slug: 'configuration/logger-settings' },
             { label: 'LoggerParameter__mdt feature flags', slug: 'configuration/logger-parameters' },
-            { label: 'Log levels', slug: 'configuration/log-levels' },
+            { label: 'Logging levels', slug: 'configuration/logging-levels' },
             { label: 'Data mask rules', slug: 'configuration/data-mask-rules' },
             { label: 'Environment-aware defaults', slug: 'configuration/environment-defaults' }
           ]

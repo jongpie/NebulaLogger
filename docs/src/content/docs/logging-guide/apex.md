@@ -33,6 +33,10 @@ Guidelines:
 - Reserve `ERROR`, `WARN`, `INFO` for operationally significant information.
 - Use `DEBUG` / `FINE` / `FINER` / `FINEST` for high-volume diagnostic detail - `LoggerSettings__c.LoggingLevel__c` filters them out until you need them.
 
+The result in the console: one `Log__c` record with a `LogEntry__c` per level.
+
+![Apex log results](/images/apex-log.png)
+
 ## Level methods
 
 Each of the seven levels has a corresponding method on `Logger`. Each method returns a `LogEntryEventBuilder` so you can chain enrichment calls.

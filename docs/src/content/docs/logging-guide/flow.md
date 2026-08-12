@@ -5,6 +5,8 @@ description: Logging from Flow and Process Builder using the four shipped invoca
 
 Nebula Logger ships four invocable actions in the **Logging** category. Every Flow type that supports invocable actions can call them.
 
+![Flow logger actions](/images/flow-logger-actions.png)
+
 ## The four actions
 
 | Action                                           | Purpose                                                                                  |
@@ -21,6 +23,20 @@ The pattern is the same as Apex: add entries, then save.
 1. Add one or more `Add Log Entry*` actions at the points in the Flow where you want a log entry.
 2. Add a single `Save Log` action at the end of every Flow path that added entries.
 3. Fill in the action inputs.
+
+![Flow builder: logging invocable actions](/images/flow-builder-logging-invocable-actions.png)
+
+Example: a Flow that logs a Case record with the `Add Log Entry for an SObject Record` action.
+
+![Flow builder: logging a Case](/images/flow-builder-log-case.png)
+
+Example: an `Add Log Entry` action with tags applied.
+
+![Flow builder: log entry with tags](/images/flow-builder-log-with-tags.png)
+
+The resulting `Log__c` and `LogEntry__c` records in the console:
+
+![Flow log results](/images/flow-log.png)
 
 Every `Add Log Entry*` action accepts these inputs (some optional):
 

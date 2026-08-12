@@ -9,6 +9,10 @@ Every Nebula Logger runtime context uses the same three-step model.
 2. **Enrich** each entry optionally with a record, exception, scenario, or tags.
 3. **Persist** the buffered entries once at the end of the transaction with `saveLog()`.
 
+Because every runtime writes to the same `Log__c` / `LogEntry__c` schema, a single transaction can span multiple runtimes and the console shows all of it in one place:
+
+![Combined Apex + Flow log](/images/combined-apex-flow-log.png)
+
 The runtime-specific pages that follow this one ([Apex](/logging-guide/apex/), [LWC](/logging-guide/lwc/), [Aura](/logging-guide/aura/), [Flow](/logging-guide/flow/), [OmniStudio](/logging-guide/omnistudio/)) show what this looks like in each context.
 
 ## Logging levels
@@ -17,7 +21,7 @@ Every context supports the same seven levels:
 
 `ERROR`, `WARN`, `INFO`, `DEBUG`, `FINE`, `FINER`, `FINEST`.
 
-Which levels actually persist depends on the effective `LoggerSettings__c.LoggingLevel__c` for the user. If the user's effective level is `WARN`, then `INFO` / `DEBUG` / `FINE` / `FINER` / `FINEST` calls are dropped at the framework level - no CPU spent, no record inserted. See [Configuration - Log levels](/configuration/log-levels/) for the full precedence.
+Which levels actually persist depends on the effective `LoggerSettings__c.LoggingLevel__c` for the user. If the user's effective level is `WARN`, then `INFO` / `DEBUG` / `FINE` / `FINER` / `FINEST` calls are dropped at the framework level - no CPU spent, no record inserted. See [Configuration - Logging levels](/configuration/logging-levels/) for the full precedence.
 
 Rule of thumb:
 

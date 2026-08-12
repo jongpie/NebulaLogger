@@ -5,6 +5,8 @@ description: A tour of the Logger Console Lightning app that ships with Nebula L
 
 The **Logger Console** is a Salesforce Lightning app that ships with Nebula Logger. It gives admins, support engineers, and developers a purpose-built place to browse logs without hand-writing SOQL against `Log__c` and `LogEntry__c` every time something happens in production.
 
+![Logger Console app](/images/logger-console-app.png)
+
 ## Finding the app
 
 - App API name: `LoggerConsole`.
@@ -32,6 +34,9 @@ A **Logger Settings** utility bar item (from the `LoggerConsoleUtilityBar` Flexi
 The console's home page (`LoggerHomePage` FlexiPage) is where the console's most operational tools live:
 
 - **`logEntryEventStream`** - subscribes to the `LogEntryEvent__e` platform event and shows log entries in real time. This is the fastest way to confirm logging is firing during a test scenario without waiting for the async save path.
+
+  ![Log Entry Event Stream](/images/log-entry-event-stream.png)
+
 - **`logBatchPurge`** - triggers the log purge batch on demand and reports counts.
 - **`loggerSettings`** - the same settings editor exposed in the utility bar, on a full-page canvas.
 - **`loggerHomeHeader`** - navigation header with quick links to release notes, GitHub, and the docs.

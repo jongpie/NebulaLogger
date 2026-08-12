@@ -1,5 +1,5 @@
 ---
-title: Log levels
+title: Logging levels
 description: How Nebula Logger decides which entries persist based on the effective logging level.
 ---
 

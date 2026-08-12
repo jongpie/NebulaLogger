@@ -51,6 +51,16 @@ Common namespaces:
 
 Prefixing keeps the taxonomy scannable and lets a list view filter cover a whole namespace at once.
 
+## Auto-tagging via `LogEntryTagRule__mdt`
+
+For tags that should attach to entries automatically based on their content, define a `LogEntryTagRule__mdt` record. Each rule matches on a field's value (`Message__c`, `OriginLocation__c`, etc.) and applies one or more tags when it matches.
+
+Useful when a tag should be applied consistently across every entry meeting a condition - e.g. auto-tag anything logged from `PaymentService.processPayment` with `feature:payments`, or auto-tag anything whose message contains `Rate limit` with `incident:rate-limiting`.
+
+![LogEntryTagRule example](/images/tag-rule-example.png)
+
+Auto-applied tags stack with any tags added at the point of logging - they don't replace them.
+
 ## Tags vs scenarios vs logging level
 
 Three orthogonal axes.

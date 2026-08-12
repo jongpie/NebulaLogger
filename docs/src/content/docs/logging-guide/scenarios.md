@@ -69,4 +69,4 @@ Logger.saveLog();
 
 - [Tags](/logging-guide/tags/) - the fine-grained counterpart to scenarios.
 - [Retention & Purging](/retention/retention-dates/) - per-scenario retention overrides.
-- [Configuration - Log levels](/configuration/log-levels/) - per-scenario logging level overrides.
+- [Configuration - Logging levels](/configuration/logging-levels/) - per-scenario logging level overrides.
