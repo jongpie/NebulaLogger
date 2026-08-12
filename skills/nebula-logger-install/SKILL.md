@@ -37,22 +37,17 @@ Always confirm the latest version on:
 
 - https://github.com/jongpie/NebulaLogger/releases
 
-### Browser install links
+### Unlocked Package - v4.19.2
 
-- Unlocked sandbox: `https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000HNrRAAW`
-- Unlocked production: `https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000HNrRAAW`
-- Managed sandbox: `https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tg7000000GZbJAAW`
-- Managed production: `https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tg7000000GZbJAAW`
+- Sandbox install link: `https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000HNrRAAW`
+- Production install link: `https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000HNrRAAW`
+- Salesforce CLI: `sf package install --wait 20 --security-type AdminsOnly --package 04tg7000000HNrRAAW`
 
-### Salesforce CLI install
+### Managed Package - v4.19.0
 
-```bash
-# Unlocked package
-sf package install --wait 20 --security-type AdminsOnly --package 04tg7000000HNrRAAW
-
-# Managed package
-sf package install --wait 30 --security-type AdminsOnly --package 04tg7000000GZbJAAW
-```
+- Sandbox install link: `https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tg7000000GZbJAAW`
+- Production install link: `https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04tg7000000GZbJAAW`
+- Salesforce CLI: `sf package install --wait 30 --security-type AdminsOnly --package 04tg7000000GZbJAAW`
 
 ## Permission Sets to Assign
 
