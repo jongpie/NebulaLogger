@@ -15,7 +15,7 @@
 global with sharing class Logger {
   // There's no reliable way to get the version number dynamically in Apex
   @TestVisible
-  private static final String CURRENT_VERSION_NUMBER = 'v4.18.4';
+  private static final String CURRENT_VERSION_NUMBER = 'v4.19.2';
   private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
   private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
   private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
@@ -3277,6 +3277,24 @@ global with sharing class Logger {
   /**
    * @description Creates a log entry for any results within the provided `List<DeleteResult>` where `isSuccess() != true`
    * @param  loggingLevel  The logging level to use for the log entry
+   * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+   * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+   * @param  records       The instance of `List<SObject>` that correspond to the instance of `List<Database.DeleteResult>` to log
+   * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.DeleteResult> deleteResults,
+    List<SObject> records
+  ) {
+    return logDatabaseErrors(loggingLevel, logMessage.getMessage(), deleteResults, records);
+  }
+
+  /**
+   * @description Creates a log entry for any results within the provided `List<DeleteResult>` where `isSuccess() != true`
+   * @param  loggingLevel  The logging level to use for the log entry
    * @param  message       The string to use to set the entry's message field
    * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
    * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
@@ -3294,6 +3312,41 @@ global with sharing class Logger {
   }
 
   /**
+   * @description Creates a log entry for any results within the provided `List<DeleteResult>` where `isSuccess() != true`
+   * @param  loggingLevel  The logging level to use for the log entry
+   * @param  message       The string to use to set the entry's message field
+   * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+   * @param  records       The instance of `List<SObject>` that correspond to the instance of `List<Database.DeleteResult>` to log
+   * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.DeleteResult> deleteResults,
+    List<SObject> records
+  ) {
+    if (deleteResults.size() != records.size()) {
+      return Logger.logDatabaseErrors(loggingLevel, message, deleteResults);
+    }
+
+    List<Database.DeleteResult> resultsToLog = new List<Database.DeleteResult>();
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
+    for (Integer i = 0; i < deleteResults.size(); i++) {
+      Database.DeleteResult deleteResult = deleteResults.get(i);
+      if (deleteResult.isSuccess() == false) {
+        resultsToLog.add(deleteResult);
+        recordsToLog.add(records.get(i));
+      }
+    }
+
+    Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
+    return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog).setRecord(recordsToLog);
+  }
+
+  /**
    * @description Creates a log entry for any results within the provided `List<EmptyRecycleBinResult>` where `isSuccess() != true`
    * @param  loggingLevel           The logging level to use for the log entry
    * @param  logMessage             The instance of `LogMessage` to use to set the entry's message field
@@ -3306,6 +3359,24 @@ global with sharing class Logger {
     List<Database.EmptyRecycleBinResult> emptyRecycleBinResults
   ) {
     return logDatabaseErrors(loggingLevel, logMessage.getMessage(), emptyRecycleBinResults);
+  }
+
+  /**
+   * @description Creates a log entry for any results within the provided `List<EmptyRecycleBinResult>` where `isSuccess() != true`
+   * @param  loggingLevel           The logging level to use for the log entry
+   * @param  logMessage             The instance of `LogMessage` to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @param  records                The instance of `List<SObject>` having info about the actual record
+   * @return                        The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults,
+    List<SObject> records
+  ) {
+    return logDatabaseErrors(loggingLevel, logMessage.getMessage(), emptyRecycleBinResults, records);
   }
 
   /**
@@ -3332,6 +3403,41 @@ global with sharing class Logger {
   }
 
   /**
+   * @description Creates a log entry for any results within the provided `List<EmptyRecycleBinResult>` where `isSuccess() != true`
+   * @param  loggingLevel           The logging level to use for the log entry
+   * @param  message                The string to use to set the entry's message field
+   * @param  emptyRecycleBinResults The instance of `List<Database.EmptyRecycleBinResult>` to log
+   * @param  records                The instance of `List<SObject>` having info about the actual record
+   * @return                        The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults,
+    List<SObject> records
+  ) {
+    if (emptyRecycleBinResults.size() != records.size()) {
+      return Logger.logDatabaseErrors(loggingLevel, message, emptyRecycleBinResults);
+    }
+
+    List<Database.EmptyRecycleBinResult> resultsToLog = new List<Database.EmptyRecycleBinResult>();
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
+    for (Integer i = 0; i < emptyRecycleBinResults.size(); i++) {
+      Database.EmptyRecycleBinResult emptyRecycleBinResult = emptyRecycleBinResults.get(i);
+      if (emptyRecycleBinResult.isSuccess() == false) {
+        resultsToLog.add(emptyRecycleBinResult);
+        recordsToLog.add(records.get(i));
+      }
+    }
+
+    Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
+    return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog).setRecord(recordsToLog);
+  }
+
+  /**
    * @description Creates a log entry for any results within the provided `List<LeadConvertResult>` where `isSuccess() != true`
    * @param  loggingLevel       The logging level to use for the log entry
    * @param  logMessage         The instance of `LogMessage` to use to set the entry's message field
@@ -3344,6 +3450,24 @@ global with sharing class Logger {
     List<Database.LeadConvertResult> leadConvertResults
   ) {
     return logDatabaseErrors(loggingLevel, logMessage.getMessage(), leadConvertResults);
+  }
+
+  /**
+   * @description Creates a log entry for any results within the provided `List<LeadConvertResult>` where `isSuccess() != true`
+   * @param  loggingLevel       The logging level to use for the log entry
+   * @param  logMessage         The instance of `LogMessage` to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @param  records            The instance of `List<SObject>` having info about the actual record
+   * @return                    The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.LeadConvertResult> leadConvertResults,
+    List<SObject> records
+  ) {
+    return logDatabaseErrors(loggingLevel, logMessage.getMessage(), leadConvertResults, records);
   }
 
   /**
@@ -3366,6 +3490,41 @@ global with sharing class Logger {
   }
 
   /**
+   * @description Creates a log entry for any results within the provided `List<LeadConvertResult>` where `isSuccess() != true`
+   * @param  loggingLevel       The logging level to use for the log entry
+   * @param  message            The string to use to set the entry's message field
+   * @param  leadConvertResults The instance of `List<Database.LeadConvertResult>` to log
+   * @param  records            The instance of `List<SObject>` having info about the actual record
+   * @return                    The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.LeadConvertResult> leadConvertResults,
+    List<SObject> records
+  ) {
+    if (leadConvertResults.size() != records.size()) {
+      return Logger.logDatabaseErrors(loggingLevel, message, leadConvertResults);
+    }
+
+    List<Database.LeadConvertResult> resultsToLog = new List<Database.LeadConvertResult>();
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
+    for (Integer i = 0; i < leadConvertResults.size(); i++) {
+      Database.LeadConvertResult leadConvertResult = leadConvertResults.get(i);
+      if (leadConvertResult.isSuccess() == false) {
+        resultsToLog.add(leadConvertResult);
+        recordsToLog.add(records.get(i));
+      }
+    }
+
+    Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
+    return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog).setRecord(recordsToLog);
+  }
+
+  /**
    * @description Creates a log entry for any results within the provided `List<MergeResult>` where `isSuccess() != true`
    * @param  loggingLevel The logging level to use for the log entry
    * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
@@ -3374,6 +3533,24 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.MergeResult> mergeResults) {
     return logDatabaseErrors(loggingLevel, logMessage.getMessage(), mergeResults);
+  }
+
+  /**
+   * @description Creates a log entry for any results within the provided `List<MergeResult>` where `isSuccess() != true`
+   * @param  loggingLevel The logging level to use for the log entry
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+   * @param  records      The instance of `List<SObject>` having info about the actual record
+   * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.MergeResult> mergeResults,
+    List<SObject> records
+  ) {
+    return logDatabaseErrors(loggingLevel, logMessage.getMessage(), mergeResults, records);
   }
 
   /**
@@ -3396,6 +3573,41 @@ global with sharing class Logger {
   }
 
   /**
+   * @description Creates a log entry for any results within the provided `List<MergeResult>` where `isSuccess() != true`
+   * @param  loggingLevel The logging level to use for the log entry
+   * @param  message      The string to use to set the entry's message field
+   * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+   * @param  records      The instance of `List<SObject>` having info about the actual record
+   * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.MergeResult> mergeResults,
+    List<SObject> records
+  ) {
+    if (mergeResults.size() != records.size()) {
+      return Logger.logDatabaseErrors(loggingLevel, message, mergeResults);
+    }
+
+    List<Database.MergeResult> resultsToLog = new List<Database.MergeResult>();
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
+    for (Integer i = 0; i < mergeResults.size(); i++) {
+      Database.MergeResult mergeResult = mergeResults.get(i);
+      if (mergeResult.isSuccess() == false) {
+        resultsToLog.add(mergeResult);
+        recordsToLog.add(records.get(i));
+      }
+    }
+
+    Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
+    return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog).setRecord(recordsToLog);
+  }
+
+  /**
    * @description Creates a log entry for any results within the provided `List<SaveResult>` where `isSuccess() != true`
    * @param  loggingLevel The logging level to use for the log entry
    * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
@@ -3404,6 +3616,24 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.SaveResult> saveResults) {
     return logDatabaseErrors(loggingLevel, logMessage.getMessage(), saveResults);
+  }
+
+  /**
+   * @description Creates a log entry for any results within the provided `List<SaveResult>` where `isSuccess() != true`
+   * @param  loggingLevel The logging level to use for the log entry
+   * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+   * @param  saveResults  The instance of `List<Database.SaveResult>` to log
+   * @param  records      The instance of `List<SObject>` having info about the actual record
+   * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.SaveResult> saveResults,
+    List<SObject> records
+  ) {
+    return logDatabaseErrors(loggingLevel, logMessage.getMessage(), saveResults, records);
   }
 
   /**
@@ -3426,6 +3656,41 @@ global with sharing class Logger {
   }
 
   /**
+   * @description Creates a log entry for any results within the provided `List<SaveResult>` where `isSuccess() != true`
+   * @param  loggingLevel The logging level to use for the log entry
+   * @param  message      The string to use to set the entry's message field
+   * @param  saveResults  The instance of `List<Database.SaveResult>` to log
+   * @param  records      The instance of `List<SObject>` having info about the actual record
+   * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.SaveResult> saveResults,
+    List<SObject> records
+  ) {
+    if (saveResults.size() != records.size()) {
+      return Logger.logDatabaseErrors(loggingLevel, message, saveResults);
+    }
+
+    List<Database.SaveResult> resultsToLog = new List<Database.SaveResult>();
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
+    for (Integer i = 0; i < saveResults.size(); i++) {
+      Database.SaveResult saveResult = saveResults.get(i);
+      if (saveResult.isSuccess() == false) {
+        resultsToLog.add(saveResult);
+        recordsToLog.add(records.get(i));
+      }
+    }
+
+    Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
+    return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog).setRecord(recordsToLog);
+  }
+
+  /**
    * @description Creates a log entry for any results within the provided `List<UpsertResult>` where `isSuccess() != true`
    * @param  loggingLevel  The logging level to use for the log entry
    * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
@@ -3434,6 +3699,24 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
     return logDatabaseErrors(loggingLevel, logMessage.getMessage(), upsertResults);
+  }
+
+  /**
+   * @description Creates a log entry for any results within the provided `List<UpsertResult>` where `isSuccess() != true`
+   * @param  loggingLevel  The logging level to use for the log entry
+   * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+   * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+   * @param  records       The instance of `List<SObject>` that correspond to the instance of `List<Database.UpsertResult>` to log
+   * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.UpsertResult> upsertResults,
+    List<SObject> records
+  ) {
+    return logDatabaseErrors(loggingLevel, logMessage.getMessage(), upsertResults, records);
   }
 
   /**
@@ -3456,6 +3739,41 @@ global with sharing class Logger {
   }
 
   /**
+   * @description Creates a log entry for any results within the provided `List<UpsertResult>` where `isSuccess() != true`
+   * @param  loggingLevel  The logging level to use for the log entry
+   * @param  message       The string to use to set the entry's message field
+   * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+   * @param  records       The instance of `List<SObject>` that correspond to the instance of `List<Database.UpsertResult>` to log
+   * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.UpsertResult> upsertResults,
+    List<SObject> records
+  ) {
+    if (upsertResults.size() != records.size()) {
+      return Logger.logDatabaseErrors(loggingLevel, message, upsertResults);
+    }
+
+    List<Database.UpsertResult> resultsToLog = new List<Database.UpsertResult>();
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
+    for (Integer i = 0; i < upsertResults.size(); i++) {
+      Database.UpsertResult upsertResult = upsertResults.get(i);
+      if (upsertResult.isSuccess() == false) {
+        resultsToLog.add(upsertResult);
+        recordsToLog.add(records.get(i));
+      }
+    }
+
+    Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
+    return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog).setRecord(recordsToLog);
+  }
+
+  /**
    * @description Creates a log entry for any results within the provided `List<UndeleteResult>` where `isSuccess() != true`
    * @param  loggingLevel    The logging level to use for the log entry
    * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
@@ -3464,6 +3782,24 @@ global with sharing class Logger {
    */
   global static LogEntryEventBuilder logDatabaseErrors(System.LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
     return logDatabaseErrors(loggingLevel, logMessage.getMessage(), undeleteResults);
+  }
+
+  /**
+   * @description Creates a log entry for any results within the provided `List<UndeleteResult>` where `isSuccess() != true`
+   * @param  loggingLevel    The logging level to use for the log entry
+   * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+   * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+   * @param  records         The instance of `List<SObject>` having info about the actual record
+   * @return                 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    LogMessage logMessage,
+    List<Database.UndeleteResult> undeleteResults,
+    List<SObject> records
+  ) {
+    return logDatabaseErrors(loggingLevel, logMessage.getMessage(), undeleteResults, records);
   }
 
   /**
@@ -3483,6 +3819,41 @@ global with sharing class Logger {
 
     Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
     return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
+  }
+
+  /**
+   * @description Creates a log entry for any results within the provided `List<UndeleteResult>` where `isSuccess() != true`
+   * @param  loggingLevel    The logging level to use for the log entry
+   * @param  message         The string to use to set the entry's message field
+   * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+   * @param  records         The instance of `List<SObject>` having info about the actual record
+   * @return                 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+   */
+  @SuppressWarnings('PMD.ExcessiveParameterList')
+  global static LogEntryEventBuilder logDatabaseErrors(
+    System.LoggingLevel loggingLevel,
+    String message,
+    List<Database.UndeleteResult> undeleteResults,
+    List<SObject> records
+  ) {
+    if (undeleteResults.size() != records.size()) {
+      return Logger.logDatabaseErrors(loggingLevel, message, undeleteResults);
+    }
+
+    List<Database.UndeleteResult> resultsToLog = new List<Database.UndeleteResult>();
+    // Clone the original list so the original list's SObjectType is preserved
+    List<SObject> recordsToLog = records.clone();
+    recordsToLog.clear();
+    for (Integer i = 0; i < undeleteResults.size(); i++) {
+      Database.UndeleteResult undeleteResult = undeleteResults.get(i);
+      if (undeleteResult.isSuccess() == false) {
+        resultsToLog.add(undeleteResult);
+        recordsToLog.add(records.get(i));
+      }
+    }
+
+    Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel);
+    return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog).setRecord(recordsToLog);
   }
 
   /**

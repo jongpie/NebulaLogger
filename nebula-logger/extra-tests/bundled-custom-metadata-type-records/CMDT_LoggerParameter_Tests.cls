@@ -25,6 +25,28 @@ private class CMDT_LoggerParameter_Tests {
   }
 
   @IsTest
+  static void it_has_correct_record_for_data_mask_regex_chunk_size() {
+    LoggerParameter__mdt bundledRecord = LoggerParameter__mdt.getInstance('DataMaskRegExChunkSize');
+
+    System.Assert.isNotNull(bundledRecord, 'Record is missing');
+    System.Assert.isNull(bundledRecord.Comments__c, 'Comments should be null/blank');
+    System.Assert.isNotNull(bundledRecord.Description__c, 'Description is missing');
+    System.Assert.areEqual('Data Mask RegEx: Chunk Size', bundledRecord.Label);
+    System.Assert.areEqual('4000', bundledRecord.Value__c);
+  }
+
+  @IsTest
+  static void it_has_correct_record_for_data_mask_regex_overlap_size() {
+    LoggerParameter__mdt bundledRecord = LoggerParameter__mdt.getInstance('DataMaskRegExOverlapSize');
+
+    System.Assert.isNotNull(bundledRecord, 'Record is missing');
+    System.Assert.isNull(bundledRecord.Comments__c, 'Comments should be null/blank');
+    System.Assert.isNotNull(bundledRecord.Description__c, 'Description is missing');
+    System.Assert.areEqual('Data Mask RegEx: Overlap Size', bundledRecord.Label);
+    System.Assert.areEqual('20', bundledRecord.Value__c);
+  }
+
+  @IsTest
   static void it_has_correct_record_for_default_log_entry_related_list_field_set() {
     LoggerParameter__mdt bundledRecord = LoggerParameter__mdt.getInstance('DefaultLogEntryRelatedListFieldSet');
 

@@ -81,11 +81,16 @@ export default class LoggerCodeViewer extends LightningElement {
      */
 
     const container = this.template.querySelector('.prism-viewer');
-    // eslint-disable-next-line
-    container.innerHTML =
-      `<pre class="line-numbers" data-start="${this.startingLineNumber}" data-line="${this.targetLineNumber}" data-line-offset="${this.targetLineNumber}">` +
-      `<code class="language-${this.language}">${this.code ?? ''}</code>` +
-      `</pre>`;
+    const preElement = document.createElement('pre');
+    preElement.classList.add('line-numbers');
+    preElement.dataset.start = this.startingLineNumber;
+    preElement.dataset.line = this.targetLineNumber;
+    preElement.dataset.lineOffset = this.targetLineNumber;
+    const codeElement = document.createElement('code');
+    codeElement.classList.add(`language-${this.language}`);
+    codeElement.textContent = this.code ?? '';
+    preElement.appendChild(codeElement);
+    container.replaceChildren(preElement);
   }
 
   _serializeLoadFailure(failure) {

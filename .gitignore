@@ -4,15 +4,18 @@
 .sf/
 .sfdx/
 .vscode/
-.claude/
+.gus/
 docs/apex/Miscellaneous/
 temp/
 test-coverage/
-.claude/
 
 # NPM
 node_modules/
 yarn.lock
+
+# Claude
+.claude/
+CLAUDE.md
 
 # Files to exclude
 *.env

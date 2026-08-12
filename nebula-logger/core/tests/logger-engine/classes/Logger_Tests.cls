@@ -10623,7 +10623,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -10680,8 +10680,356 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_deleteResult_with_records_for_logMessage_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
+    Database.DeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(false, recordId);
+    List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(deleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, deleteResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_deleteResult_with_records_for_logMessage_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
+    Database.DeleteResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
+    List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(deleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, deleteResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_deleteResult_with_records_for_logMessage_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
+    Database.DeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(false, recordId);
+    List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(deleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, deleteResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_deleteResult_with_records_for_string_message_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
+    Database.DeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(false, recordId);
+    List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(deleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_deleteResult_with_records_for_string_message_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
+    Database.DeleteResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
+    List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(deleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_deleteResult_with_records_for_string_message_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
+    Database.DeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(false, recordId);
+    List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(deleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_log_database_deleteResult_without_records_when_database_deleteResult_and_records_sizes_do_not_match() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ LoggerMockDataCreator.createDatabaseDeleteResult(false, recordId) };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areNotEqual(deleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(deleteResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_emptyRecycleBinResult_with_records_for_logMessage_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.EmptyRecycleBinResult successfulResult = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true, recordId);
+    Database.EmptyRecycleBinResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(false, recordId);
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new List<Database.EmptyRecycleBinResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(emptyRecycleBinResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, emptyRecycleBinResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_emptyRecycleBinResult_with_records_for_logMessage_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.EmptyRecycleBinResult successfulResult = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true, recordId);
+    Database.EmptyRecycleBinResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true, recordId);
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new List<Database.EmptyRecycleBinResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(emptyRecycleBinResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, emptyRecycleBinResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_emptyRecycleBinResult_with_records_for_logMessage_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.EmptyRecycleBinResult successfulResult = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true, recordId);
+    Database.EmptyRecycleBinResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(false, recordId);
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new List<Database.EmptyRecycleBinResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(emptyRecycleBinResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, emptyRecycleBinResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.EmptyRecycleBinResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_emptyRecycleBinResult_with_records_for_string_message_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.EmptyRecycleBinResult successfulResult = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true, recordId);
+    Database.EmptyRecycleBinResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(false, recordId);
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new List<Database.EmptyRecycleBinResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(emptyRecycleBinResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, emptyRecycleBinResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_emptyRecycleBinResult_with_records_for_string_message_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.EmptyRecycleBinResult successfulResult = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true, recordId);
+    Database.EmptyRecycleBinResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true, recordId);
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new List<Database.EmptyRecycleBinResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(emptyRecycleBinResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, emptyRecycleBinResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_emptyRecycleBinResult_with_records_for_string_message_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.EmptyRecycleBinResult successfulResult = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true, recordId);
+    Database.EmptyRecycleBinResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(false, recordId);
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new List<Database.EmptyRecycleBinResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(emptyRecycleBinResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, emptyRecycleBinResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.EmptyRecycleBinResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_log_database_emptyRecycleBinResult_without_records_when_database_emptyRecycleBinResult_and_records_sizes_do_not_match() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    List<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new List<Database.EmptyRecycleBinResult>{
+      LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(false, recordId)
+    };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areNotEqual(emptyRecycleBinResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, emptyRecycleBinResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(emptyRecycleBinResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -10737,7 +11085,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.LeadConvertResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -10794,8 +11142,183 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.LeadConvertResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_leadConvertResult_with_records_for_logMessage_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
+    Database.LeadConvertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(false, recordId);
+    List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(leadConvertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, leadConvertResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_leadConvertResult_with_records_for_logMessage_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
+    Database.LeadConvertResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
+    List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(leadConvertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, leadConvertResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_leadConvertResult_with_records_for_logMessage_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
+    Database.LeadConvertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(false, recordId);
+    List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(leadConvertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, leadConvertResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.LeadConvertResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_leadConvertResult_with_records_for_string_message_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
+    Database.LeadConvertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(false, recordId);
+    List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(leadConvertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, leadConvertResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_leadConvertResult_with_records_for_string_message_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
+    Database.LeadConvertResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
+    List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(leadConvertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, leadConvertResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_leadConvertResult_with_records_for_string_message_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.LeadConvertResult successfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(true, recordId);
+    Database.LeadConvertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseLeadConvertResult(false, recordId);
+    List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(leadConvertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, leadConvertResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.LeadConvertResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_log_database_leadConvertResult_without_records_when_database_leadConvertResult_and_records_sizes_do_not_match() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    List<Database.LeadConvertResult> leadConvertResults = new List<Database.LeadConvertResult>{
+      LoggerMockDataCreator.createDatabaseLeadConvertResult(false, recordId)
+    };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areNotEqual(leadConvertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, leadConvertResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(leadConvertResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -10851,7 +11374,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -10908,8 +11431,181 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_mergeResult_with_records_for_logMessage_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
+    Database.MergeResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(false, recordId);
+    List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(mergeResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, mergeResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_mergeResult_with_records_for_logMessage_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
+    Database.MergeResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
+    List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(mergeResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, mergeResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_mergeResult_with_records_for_logMessage_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
+    Database.MergeResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(false, recordId);
+    List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(mergeResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, mergeResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_mergeResult_with_records_for_string_message_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
+    Database.MergeResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(false, recordId);
+    List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(mergeResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_mergeResult_with_records_for_string_message_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
+    Database.MergeResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
+    List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(mergeResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_mergeResult_with_records_for_string_message_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
+    Database.MergeResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(false, recordId);
+    List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(mergeResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_log_database_mergeConvertResult_without_records_when_database_mergeConvertResult_and_records_sizes_do_not_match() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ LoggerMockDataCreator.createDatabaseMergeResult(false, recordId) };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areNotEqual(mergeResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(mergeResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -10965,7 +11661,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -11022,8 +11718,181 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_saveResult_with_records_for_logMessage_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
+    Database.SaveResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(false, recordId);
+    List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(saveResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, saveResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_saveResult_with_records_for_logMessage_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
+    Database.SaveResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
+    List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(saveResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, saveResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_saveResult_with_records_for_logMessage_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
+    Database.SaveResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(false, recordId);
+    List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(saveResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, saveResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_saveResult_with_records_for_string_message_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
+    Database.SaveResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(false, recordId);
+    List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(saveResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_saveResult_with_records_for_string_message_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
+    Database.SaveResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
+    List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(saveResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_saveResult_with_records_for_string_message_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
+    Database.SaveResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(false, recordId);
+    List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(saveResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_log_database_saveResult_without_records_when_database_saveResult_and_records_sizes_do_not_match() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false, recordId) };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areNotEqual(saveResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(saveResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -11079,7 +11948,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -11136,8 +12005,181 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_upsertResult_with_records_for_logMessage_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
+    Database.UpsertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true, recordId);
+    List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(upsertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, upsertResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_upsertResult_with_records_for_logMessage_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
+    Database.UpsertResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
+    List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(upsertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, upsertResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_upsertResult_with_records_for_logMessage_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
+    Database.UpsertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true, recordId);
+    List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(upsertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, upsertResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_upsertResult_with_records_for_string_message_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
+    Database.UpsertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true, recordId);
+    List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(upsertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_upsertResult_with_records_for_string_message_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
+    Database.UpsertResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
+    List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(upsertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_upsertResult_with_records_for_string_message_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
+    Database.UpsertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true, recordId);
+    List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(upsertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_log_database_upsertResult_without_records_when_database_upsertResult_and_records_sizes_do_not_match() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ LoggerMockDataCreator.createDatabaseUpsertResult(false, true, recordId) };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areNotEqual(upsertResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(upsertResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
   }
 
   @IsTest
@@ -11193,7 +12235,7 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
   }
 
@@ -11250,8 +12292,181 @@ private class Logger_Tests {
     System.Assert.isTrue(returnedBuilder.shouldSave());
     System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
     System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
-    String expectedDatabaseResultJson = System.JSON.serializePretty(unsuccessfulResult);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
     System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_undeleteResult_with_records_for_logMessage_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
+    Database.UndeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(false, recordId);
+    List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(undeleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, undeleteResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_undeleteResult_with_records_for_logMessage_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
+    Database.UndeleteResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
+    List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(undeleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, undeleteResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_undeleteResult_with_records_for_logMessage_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+    Id recordId = System.UserInfo.getUserId();
+    Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
+    Database.UndeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(false, recordId);
+    List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(undeleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, undeleteResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_undeleteResult_with_records_for_string_message_when_logging_level_is_disabled() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
+    Database.UndeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(false, recordId);
+    List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, unsuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(undeleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_skip_logging_database_undeleteResult_with_records_for_string_message_when_no_errors_found() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
+    Database.UndeleteResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
+    List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, anotherSuccessfulResult };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areEqual(undeleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults, records);
+
+    System.Assert.areEqual(0, Logger.getBufferSize());
+    System.Assert.isFalse(returnedBuilder.shouldSave());
+  }
+
+  @IsTest
+  static void it_should_log_database_undeleteResult_with_records_for_string_message_when_isSuccess_is_false() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
+    Database.UndeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(false, recordId);
+    List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, unsuccessfulResult };
+    Schema.User successfulRecord = new Schema.User(Id = recordId, FirstName = 'First');
+    Schema.User unsuccessfulRecord = new Schema.User(Id = recordId, FirstName = 'Second');
+    List<Schema.User> records = new List<Schema.User>{ successfulRecord, unsuccessfulRecord };
+    System.Assert.areEqual(undeleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    String expectedDatabaseResultJson = System.JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
+    System.Assert.areEqual(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    String expectedRecordJson = System.JSON.serializePretty(new List<SObject>{ unsuccessfulRecord });
+    System.Assert.areEqual(expectedRecordJson, returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.areEqual('List', returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.areEqual('User', returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
+  }
+
+  @IsTest
+  static void it_should_log_database_undeleteResult_without_records_when_database_undeleteResult_and_records_sizes_do_not_match() {
+    System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
+    String message = 'Some message';
+    Id recordId = System.UserInfo.getUserId();
+    List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ LoggerMockDataCreator.createDatabaseUndeleteResult(false, recordId) };
+    List<Schema.User> records = new List<Schema.User>{
+      new Schema.User(Id = recordId, FirstName = 'First'),
+      new Schema.User(Id = recordId, FirstName = 'Second')
+    };
+    System.Assert.areNotEqual(undeleteResults.size(), records.size());
+    System.Assert.areEqual(0, Logger.getBufferSize());
+
+    LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults, records);
+
+    System.Assert.areEqual(1, Logger.getBufferSize());
+    System.Assert.isTrue(returnedBuilder.shouldSave());
+    System.Assert.areEqual(logEntryLevel.name(), returnedBuilder.getLogEntryEvent().LoggingLevel__c);
+    System.Assert.areEqual(message, returnedBuilder.getLogEntryEvent().Message__c);
+    System.Assert.areEqual(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
+    System.Assert.areEqual(System.JSON.serializePretty(undeleteResults), returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordJson__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionSize__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordCollectionType__c);
+    System.Assert.isNull(returnedBuilder.getLogEntryEvent().RecordSObjectType__c);
   }
   // End logDatabaseErrors() test methods
 

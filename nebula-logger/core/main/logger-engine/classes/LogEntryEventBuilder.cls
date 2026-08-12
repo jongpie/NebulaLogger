@@ -17,6 +17,11 @@ global with sharing class LogEntryEventBuilder {
 
   private static final Map<String, String> CACHED_SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
   private static final Schema.User CURRENT_USER = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+  // Matches a `$N` capture-group reference (N = one or more digits) inside a replacement
+  // template, used by `DataMasker.expandReplacement`. Compiled once at the outer class
+  // because Apex inner classes cannot hold static fields; safe to regex directly since
+  // replacement templates are short config values, never the long log payload.
+  private static final System.Pattern DATA_MASK_REPLACEMENT_TOKEN_PATTERN = System.Pattern.compile('\\$([0-9]+)');
   private static final String HTTP_HEADER_FORMAT = '{0}: {1}';
   private static final String NEW_LINE_DELIMITER = '\n';
 
@@ -47,10 +52,10 @@ global with sharing class LogEntryEventBuilder {
     set;
   }
 
-  private static final Map<String, LogEntryDataMaskRule__mdt> CACHED_DATA_MASK_RULES {
+  private static final List<LogEntryDataMaskRule__mdt> CACHED_DATA_MASK_RULES {
     get {
       if (CACHED_DATA_MASK_RULES == null) {
-        CACHED_DATA_MASK_RULES = loadDataMaskRules();
+        CACHED_DATA_MASK_RULES = LoggerConfigurationSelector.getInstance().getLogEntryDataMaskRules();
       }
       return CACHED_DATA_MASK_RULES;
     }
@@ -203,7 +208,7 @@ global with sharing class LogEntryEventBuilder {
    * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setApprovalResult(Approval.LockResult lockResult) {
-    return this.setDatabaseDetails(new List<Approval.LockResult>{ lockResult }, Approval.LockResult.class, lockResult?.getId());
+    return this.setDatabaseDetails(lockResult, Approval.LockResult.class, lockResult?.getId());
   }
 
   /**
@@ -212,7 +217,7 @@ global with sharing class LogEntryEventBuilder {
    * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setApprovalResult(Approval.ProcessResult processResult) {
-    return this.setDatabaseDetails(new List<Approval.ProcessResult>{ processResult }, Approval.ProcessResult.class, processResult?.getEntityId());
+    return this.setDatabaseDetails(processResult, Approval.ProcessResult.class, processResult?.getEntityId());
   }
 
   /**
@@ -221,7 +226,7 @@ global with sharing class LogEntryEventBuilder {
    * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setApprovalResult(Approval.UnlockResult unlockResult) {
-    return this.setDatabaseDetails(new List<Approval.UnlockResult>{ unlockResult }, Approval.UnlockResult.class, unlockResult?.getId());
+    return this.setDatabaseDetails(unlockResult, Approval.UnlockResult.class, unlockResult?.getId());
   }
 
   /**
@@ -260,7 +265,7 @@ global with sharing class LogEntryEventBuilder {
    * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.DeleteResult deleteResult) {
-    return this.setDatabaseDetails(new List<Database.DeleteResult>{ deleteResult }, Database.DeleteResult.class, deleteResult?.getId());
+    return this.setDatabaseDetails(deleteResult, Database.DeleteResult.class, deleteResult?.getId());
   }
 
   /**
@@ -269,11 +274,7 @@ global with sharing class LogEntryEventBuilder {
    * @return                       The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.EmptyRecycleBinResult emptyRecycleBinResult) {
-    return this.setDatabaseDetails(
-      new List<Database.EmptyRecycleBinResult>{ emptyRecycleBinResult },
-      Database.EmptyRecycleBinResult.class,
-      emptyRecycleBinResult?.getId()
-    );
+    return this.setDatabaseDetails(emptyRecycleBinResult, Database.EmptyRecycleBinResult.class, emptyRecycleBinResult?.getId());
   }
 
   /**
@@ -282,7 +283,7 @@ global with sharing class LogEntryEventBuilder {
    * @return                   The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.LeadConvertResult leadConvertResult) {
-    return this.setDatabaseDetails(new List<Database.LeadConvertResult>{ leadConvertResult }, Database.LeadConvertResult.class, leadConvertResult?.getLeadId());
+    return this.setDatabaseDetails(leadConvertResult, Database.LeadConvertResult.class, leadConvertResult?.getLeadId());
   }
 
   /**
@@ -291,7 +292,7 @@ global with sharing class LogEntryEventBuilder {
    * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.MergeResult mergeResult) {
-    return this.setDatabaseDetails(new List<Database.MergeResult>{ mergeResult }, Database.MergeResult.class, mergeResult?.getId());
+    return this.setDatabaseDetails(mergeResult, Database.MergeResult.class, mergeResult?.getId());
   }
 
   /**
@@ -300,7 +301,7 @@ global with sharing class LogEntryEventBuilder {
    * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.SaveResult saveResult) {
-    return this.setDatabaseDetails(new List<Database.SaveResult>{ saveResult }, Database.SaveResult.class, saveResult?.getId());
+    return this.setDatabaseDetails(saveResult, Database.SaveResult.class, saveResult?.getId());
   }
 
   /**
@@ -309,7 +310,7 @@ global with sharing class LogEntryEventBuilder {
    * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.UpsertResult upsertResult) {
-    this.setDatabaseDetails(new List<Database.UpsertResult>{ upsertResult }, Database.UpsertResult.class, upsertResult?.getId());
+    this.setDatabaseDetails(upsertResult, Database.UpsertResult.class, upsertResult?.getId());
     if (upsertResult != null) {
       String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
       this.logEntryEvent.DatabaseResultType__c += '.' + subtype;
@@ -323,7 +324,7 @@ global with sharing class LogEntryEventBuilder {
    * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
    */
   global LogEntryEventBuilder setDatabaseResult(Database.UndeleteResult undeleteResult) {
-    return this.setDatabaseDetails(new List<Database.UndeleteResult>{ undeleteResult }, Database.UndeleteResult.class, undeleteResult?.getId());
+    return this.setDatabaseDetails(undeleteResult, Database.UndeleteResult.class, undeleteResult?.getId());
   }
 
   /**
@@ -613,9 +614,12 @@ global with sharing class LogEntryEventBuilder {
       Schema.LogEntryEvent__e.HttpRequestEndpointAddress__c,
       request.getEndpoint()
     );
-    this.logEntryEvent.HttpRequestHeaderKeys__c = formattedHeaderKeysString;
+    this.logEntryEvent.HttpRequestHeaderKeys__c = LoggerDataStore.truncateFieldValue(
+      Schema.LogEntryEvent__e.HttpRequestHeaderKeys__c,
+      formattedHeaderKeysString
+    );
     this.logEntryEvent.HttpRequestHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestHeaders__c, formattedHeadersString);
-    this.logEntryEvent.HttpRequestMethod__c = request.getMethod();
+    this.logEntryEvent.HttpRequestMethod__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpRequestMethod__c, request.getMethod());
     return this;
   }
 
@@ -631,11 +635,12 @@ global with sharing class LogEntryEventBuilder {
 
     String formattedHeadersString;
     if (LoggerParameter.STORE_HTTP_RESPONSE_HEADER_VALUES) {
-      List<String> headers = new List<String>();
+      List<String> sortedHeaders = new List<String>();
       for (String headerKey : response.getHeaderKeys()) {
-        headers.add(String.format(HTTP_HEADER_FORMAT, new List<String>{ headerKey, response.getHeader(headerKey) }));
+        sortedHeaders.add(String.format(HTTP_HEADER_FORMAT, new List<String>{ headerKey, response.getHeader(headerKey) }));
       }
-      formattedHeadersString = String.join(headers, NEW_LINE_DELIMITER);
+      sortedHeaders.sort();
+      formattedHeadersString = String.join(sortedHeaders, NEW_LINE_DELIMITER);
     }
 
     TextFieldValueCleaner textCleaner = new TextFieldValueCleaner(this.userSettings, Schema.LogEntryEvent__e.HttpResponseBody__c, response.getBody());
@@ -643,9 +648,14 @@ global with sharing class LogEntryEventBuilder {
     this.logEntryEvent.HttpResponseBody__c = textCleaner.textValue;
     this.logEntryEvent.HttpResponseBodyMasked__c = textCleaner.wasMasked;
     this.logEntryEvent.HttpResponseBodyTruncated__c = textCleaner.wasTruncated;
-    this.logEntryEvent.HttpResponseHeaderKeys__c = String.join(response.getHeaderKeys(), NEW_LINE_DELIMITER);
+    List<String> sortedHeaderKeys = response.getHeaderKeys();
+    sortedHeaderKeys.sort();
+    this.logEntryEvent.HttpResponseHeaderKeys__c = LoggerDataStore.truncateFieldValue(
+      Schema.LogEntryEvent__e.HttpResponseHeaderKeys__c,
+      String.join(sortedHeaderKeys, NEW_LINE_DELIMITER)
+    );
     this.logEntryEvent.HttpResponseHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpResponseHeaders__c, formattedHeadersString);
-    this.logEntryEvent.HttpResponseStatus__c = response.getStatus();
+    this.logEntryEvent.HttpResponseStatus__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.HttpResponseStatus__c, response.getStatus());
     this.logEntryEvent.HttpResponseStatusCode__c = response.getStatusCode();
     return this;
   }
@@ -690,13 +700,25 @@ global with sharing class LogEntryEventBuilder {
     this.logEntryEvent.RestRequestBody__c = textCleaner.textValue;
     this.logEntryEvent.RestRequestBodyMasked__c = textCleaner.wasMasked;
     this.logEntryEvent.RestRequestBodyTruncated__c = textCleaner.wasTruncated;
-    this.logEntryEvent.RestRequestHeaderKeys__c = formattedHeaderKeysString;
+    this.logEntryEvent.RestRequestHeaderKeys__c = LoggerDataStore.truncateFieldValue(
+      Schema.LogEntryEvent__e.RestRequestHeaderKeys__c,
+      formattedHeaderKeysString
+    );
     this.logEntryEvent.RestRequestHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestRequestHeaders__c, formattedHeadersString);
-    this.logEntryEvent.RestRequestMethod__c = request.httpMethod;
-    this.logEntryEvent.RestRequestParameters__c = formattedParametersString;
-    this.logEntryEvent.RestRequestRemoteAddress__c = request.remoteAddress;
-    this.logEntryEvent.RestRequestResourcePath__c = request.resourcePath;
-    this.logEntryEvent.RestRequestUri__c = request.requestURI;
+    this.logEntryEvent.RestRequestMethod__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestRequestMethod__c, request.httpMethod);
+    this.logEntryEvent.RestRequestParameters__c = LoggerDataStore.truncateFieldValue(
+      Schema.LogEntryEvent__e.RestRequestParameters__c,
+      formattedParametersString
+    );
+    this.logEntryEvent.RestRequestRemoteAddress__c = LoggerDataStore.truncateFieldValue(
+      Schema.LogEntryEvent__e.RestRequestRemoteAddress__c,
+      request.remoteAddress
+    );
+    this.logEntryEvent.RestRequestResourcePath__c = LoggerDataStore.truncateFieldValue(
+      Schema.LogEntryEvent__e.RestRequestResourcePath__c,
+      request.resourcePath
+    );
+    this.logEntryEvent.RestRequestUri__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestRequestUri__c, request.requestURI);
     return this;
   }
 
@@ -732,7 +754,10 @@ global with sharing class LogEntryEventBuilder {
     this.logEntryEvent.RestResponseBody__c = textCleaner.textValue;
     this.logEntryEvent.RestResponseBodyMasked__c = textCleaner.wasMasked;
     this.logEntryEvent.RestResponseBodyTruncated__c = textCleaner.wasTruncated;
-    this.logEntryEvent.RestResponseHeaderKeys__c = formattedHeaderKeysString;
+    this.logEntryEvent.RestResponseHeaderKeys__c = LoggerDataStore.truncateFieldValue(
+      Schema.LogEntryEvent__e.RestResponseHeaderKeys__c,
+      formattedHeaderKeysString
+    );
     this.logEntryEvent.RestResponseHeaders__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.RestResponseHeaders__c, formattedHeadersString);
     this.logEntryEvent.RestResponseStatusCode__c = response.statusCode;
     return this;
@@ -964,14 +989,28 @@ global with sharing class LogEntryEventBuilder {
     return this;
   }
 
+  private LogEntryEventBuilder setDatabaseDetails(Object databaseResult, System.Type resultType, Id possibleRecordId) {
+    if (this.shouldSave() == false) {
+      return this;
+    }
+
+    this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
+    this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
+    String serializedResult = System.JSON.serializePretty(databaseResult);
+    this.logEntryEvent.DatabaseResultJson__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, serializedResult);
+    this.logEntryEvent.DatabaseResultType__c = resultType.getName();
+
+    return this.setRecordId(possibleRecordId);
+  }
+
   private LogEntryEventBuilder setDatabaseDetails(List<Object> databaseResults, System.Type resultType, Id possibleRecordId) {
     if (this.shouldSave() == false) {
       return this;
     }
 
     this.logEntryEvent.DatabaseResultCollectionSize__c = databaseResults.size();
-    this.logEntryEvent.DatabaseResultCollectionType__c = this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? 'Single' : 'List';
-    String serializedResult = System.JSON.serializePretty(this.logEntryEvent.DatabaseResultCollectionSize__c == 1 ? databaseResults.get(0) : databaseResults);
+    this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+    String serializedResult = System.JSON.serializePretty(databaseResults);
     this.logEntryEvent.DatabaseResultJson__c = LoggerDataStore.truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, serializedResult);
     this.logEntryEvent.DatabaseResultType__c = resultType.getName();
 
@@ -1138,25 +1177,6 @@ global with sharing class LogEntryEventBuilder {
     templateLogEntryEvent.UserType__c = System.UserInfo.getUserType();
   }
 
-  // Private static helper methods
-  @TestVisible
-  private static void setMockDataMaskRule(LogEntryDataMaskRule__mdt dataMaskRule) {
-    CACHED_DATA_MASK_RULES.put(dataMaskRule.DeveloperName, dataMaskRule);
-  }
-
-  private static String applyDataMaskRules(Boolean isDataMaskingEnabled, String dataInput) {
-    if (isDataMaskingEnabled == false || String.isBlank(dataInput)) {
-      return dataInput;
-    }
-
-    for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES.values()) {
-      if (dataMaskRule.IsEnabled__c) {
-        dataInput = dataInput.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
-      }
-    }
-    return dataInput;
-  }
-
   private static String getJson(SObject record, Boolean isRecordFieldStrippingEnabled) {
     List<SObject> records = new List<SObject>{ record };
     records = isRecordFieldStrippingEnabled == false ? records : stripInaccessible(records);
@@ -1245,7 +1265,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     // Finally, if we still don't have a classification, assume it's a standard object
-    if (String.isBlank(sobjectClassification) && SObjectType.getDescribe().isCustom() == false) {
+    if (String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
       sobjectClassification = 'Standard Object';
     }
 
@@ -1282,7 +1302,7 @@ global with sharing class LogEntryEventBuilder {
 
   private static String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
     String sobjectFullName = sobjectType.toString();
-    String sobjectLocalName = SObjectType.getDescribe().getLocalName();
+    String sobjectLocalName = sobjectType.getDescribe().getLocalName();
 
     // Remove the trailing '__' if present
     String namespace = sobjectFullName.replace(sobjectLocalName, '').replace('__', '');
@@ -1310,21 +1330,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     return true;
-  }
-
-  private static Map<String, LogEntryDataMaskRule__mdt> loadDataMaskRules() {
-    Map<String, LogEntryDataMaskRule__mdt> activeDataMaskRules = new Map<String, LogEntryDataMaskRule__mdt>();
-    for (LogEntryDataMaskRule__mdt dataMaskRule : LoggerConfigurationSelector.getInstance().getLogEntryDataMaskRules()) {
-      if (dataMaskRule.IsEnabled__c) {
-        activeDataMaskRules.put(dataMaskRule.DeveloperName, dataMaskRule);
-      }
-    }
-    if (System.Test.isRunningTest()) {
-      // Tests shouldn't rely on the actual CMDT rules in the org
-      // Clear the org's loaded records during tests, and mock via setMockDataMaskRule()
-      activeDataMaskRules.clear();
-    }
-    return activeDataMaskRules;
   }
 
   private static SObject stripInaccessible(SObject record) {
@@ -1385,7 +1390,7 @@ global with sharing class LogEntryEventBuilder {
 
       String cleanedValue = LoggerDataStore.truncateFieldValue(this.textField, originalTextValue);
       if (this.isDataMaskingEnabled) {
-        String maskedValue = this.applyDataMaskRules(cleanedValue);
+        String maskedValue = new DataMasker().mask(cleanedValue);
         this.wasMasked = cleanedValue != maskedValue;
         // Some data masking rules could increase the string length (like adding dashes to SSN: '444119999' --> 'XXX-XX-9999'),
         // so truncate again just to be sure that it will fit.
@@ -1396,20 +1401,233 @@ global with sharing class LogEntryEventBuilder {
 
       this.textValue = cleanedValue;
     }
+  }
 
-    private String applyDataMaskRules(String textValueToMask) {
+  /**
+   * Applies enabled `LogEntryDataMaskRule__mdt` regexes to a string, chunking long
+   * inputs to sidestep an uncatchable Apex platform limit.
+   *
+   * The problem (see issue #639): Salesforce's regex engine has an undocumented step
+   * budget per `String.replaceAll` / `Matcher` evaluation. When a single evaluation
+   * exceeds it, the engine throws `System.LimitException: Regex too complicated`,
+   * which is UNCATCHABLE - a try/catch around `replaceAll` does not trap it - so
+   * one oversized log message would otherwise fail the entire logging call
+   * unrecoverably.
+   *
+   * The threshold is a STEP budget, not an input-size limit: content shape matters
+   * more than raw length. Dense structured tokens survive to ~220K chars; realistic
+   * log content (mostly inert text with occasional near-matches) fails around 110K.
+   * Each enabled rule runs its own `replaceAll` with its own step budget, so the
+   * single most expensive rule (currently the Mastercard pattern with its long
+   * alternation and `\3` backreference) sets the cliff; adding more rules only
+   * accumulates CPU, it does not lower the per-rule cliff.
+   *
+   * The workaround: scan long inputs in overlapping windows sized well below the
+   * cliff. Two knobs, both defaulted in `LoggerParameter` and overridable at
+   * runtime via `LoggerParameter__mdt` records (no deploy required):
+   *
+   *   DataMaskRegexChunkSize    - max characters fed to a single Matcher evaluation
+   *                               (default 4000, ~27x below the worst-case cliff).
+   *                               A safety knob, not a performance lever: CPU is
+   *                               flat across chunk sizes 1K-64K, so raising it
+   *                               only moves toward the cliff.
+   *
+   *   DataMaskRegexOverlapSize  - overlap between adjacent chunks (default 20).
+   *                               MUST be >= the longest sensitive value any
+   *                               enabled rule can match, or a value straddling a
+   *                               chunk boundary can escape masking. Cannot be
+   *                               derived from the rule regexes automatically (a
+   *                               pattern's max match length is not generally
+   *                               computable), so orgs with custom rules matching
+   *                               longer values must override it.
+   *
+   * `String.replaceAll`'s `$1` / `$2` backreferences don't apply to matches found
+   * via `System.Matcher.find()`, so `expandReplacement` reproduces that behavior
+   * manually.
+   */
+  private class DataMasker {
+    public String mask(String textValueToMask) {
       if (String.isBlank(textValueToMask)) {
         return textValueToMask;
       }
 
       String maskedTextValue = textValueToMask;
-      for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES.values()) {
+      for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES) {
         if (dataMaskRule.IsEnabled__c) {
-          maskedTextValue = maskedTextValue.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
+          maskedTextValue = this.applyDataMaskRuleToChunkedText(maskedTextValue, dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
+        }
+      }
+      return maskedTextValue;
+    }
+
+    /**
+     * Applies one rule's regex to `text` using the simplest path that fits the input:
+     *
+     *   1. Short input (<= chunk size): one direct `String.replaceAll`, no chunking.
+     *
+     *   2. Multi-line input where every line is <= chunk size: split on `\n`,
+     *      `replaceAll` each line, rejoin. A match can only ever straddle a chunk
+     *      boundary within a single line, never across a newline, so `\n` is a free
+     *      natural boundary. This covers the common shapes (stack traces,
+     *      pretty-printed JSON) without paying for an overlapping-window scan.
+     *
+     *   3. Any line longer than the chunk size: hand that line to
+     *      `applyRuleToLongLine` for the overlapping-window scan.
+     *
+     * Example - a 12K-character stack trace with three newlines and no single line
+     * over 4K splits into four ~3K lines, each `replaceAll`'d directly, then
+     * rejoined. No overlapping-window scan needed.
+     */
+    private String applyDataMaskRuleToChunkedText(String text, String sensitiveDataRegEx, String replacementRegEx) {
+      if (text == null) {
+        return text;
+      }
+
+      // Short enough to mask in a single pass — no chunking needed.
+      if (text.length() <= LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE) {
+        return text.replaceAll(sensitiveDataRegEx, replacementRegEx);
+      }
+
+      List<String> lines = text.split('\n', -1);
+      if (lines.size() > 1) {
+        List<String> processedLines = new List<String>();
+        for (String line : lines) {
+          if (line.length() <= LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE) {
+            processedLines.add(line.replaceAll(sensitiveDataRegEx, replacementRegEx));
+          } else {
+            processedLines.add(this.applyDataMaskRuleToLongLine(line, sensitiveDataRegEx, replacementRegEx));
+          }
+        }
+        return String.join(processedLines, '\n');
+      }
+
+      return this.applyDataMaskRuleToLongLine(text, sensitiveDataRegEx, replacementRegEx);
+    }
+
+    /**
+     * Applies a single data-mask rule to one line that is too long to regex in a single pass.
+     *
+     * `String.replaceAll` cannot be called on the whole line (it would throw the
+     * `Regex too complicated` LimitException), so the line is scanned in overlapping
+     * windows of `chunkSize` characters (the caller-resolved value of
+     * DATA_MASK_REGEX_CHUNK_SIZE / its LoggerParameter override), advancing by `step`
+     * (= chunk size - overlap) each iteration. The overlap guarantees that any sensitive
+     * value sitting on a chunk boundary is fully visible in at least one window.
+     *
+     * Because windows overlap, the same match can be discovered more than once, and
+     * `Matcher` indexes are window-relative — so matches are collected with absolute
+     * positions, deduplicated, sorted, then applied left-to-right in a second pass.
+     *
+     * Worked example (chunk size 10, overlap 4, step 6) masking the SSN `123-45-6789`
+     * with replacement `***`:
+     *
+     *   line  = "name 123-45-6789 end"   (length 20)
+     *   chunk0 = line[0..10)  = "name 123-4"      -> no full SSN match
+     *   chunk1 = line[6..16)  = "23-45-6789"      -> matches at window 0  => absStart 6
+     *   chunk2 = line[12..20) = "6789 end"        -> no match
+     *   collected: { start 6 -> end 16 }
+     *   result = line[0..6) + "***" + line[16..20) = "name *** end"
+     *
+     * Keeping the *longest* match for a given start (rather than the first one found)
+     * matters because an earlier window may truncate the value at its right edge,
+     * yielding a shorter, less accurate match than a later window with more context.
+     */
+    private String applyDataMaskRuleToLongLine(String line, String sensitiveDataRegEx, String replacementRegEx) {
+      System.Pattern regex = System.Pattern.compile(sensitiveDataRegEx);
+      // Overlap defaults to DATA_MASK_REGEX_OVERLAP_SIZE but can be raised without a deploy
+      // via the optional LoggerParameter__mdt.DataMaskRegexOverlapSize record, for orgs whose
+      // custom data-mask rules match values longer than the built-in rules.
+      Integer step = LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE - LoggerParameter.DATA_MASK_REGEX_OVERLAP_SIZE;
+
+      // Pass 1: scan overlapping windows and record every match by its ABSOLUTE start
+      // position. endByStart maps an absolute start index -> absolute end index; groupsByStart
+      // keeps that match's capture groups (group 0 = full match) so the replacement template
+      // can be expanded later without re-running the regex.
+      Map<Integer, Integer> endByStart = new Map<Integer, Integer>();
+      Map<Integer, List<String>> groupsByStart = new Map<Integer, List<String>>();
+
+      for (Integer i = 0; i < line.length(); i += step) {
+        Integer chunkEnd = Math.min(i + LoggerParameter.DATA_MASK_REGEX_CHUNK_SIZE, line.length());
+        System.Matcher m = regex.matcher(line.substring(i, chunkEnd));
+        while (m.find()) {
+          // Matcher indexes are window-relative; add the window offset `i` to get
+          // absolute positions within the full line.
+          Integer absStart = i + m.start();
+          Integer absEnd = i + m.end();
+          // First time we see this start, OR a later (overlapping) window found a longer
+          // match starting at the same place — keep the longer one, it has more context.
+          if (!endByStart.containsKey(absStart) || absEnd > endByStart.get(absStart)) {
+            endByStart.put(absStart, absEnd);
+            List<String> groups = new List<String>();
+            for (Integer g = 0; g <= m.groupCount(); g++) {
+              groups.add(m.group(g));
+            }
+            groupsByStart.put(absStart, groups);
+          }
         }
       }
 
-      return maskedTextValue;
+      if (endByStart.isEmpty()) {
+        return line;
+      }
+
+      // Apex Map.keySet() has no guaranteed iteration order, so explicitly sort the start
+      // positions to process matches strictly left-to-right in Pass 2.
+      List<Integer> sortedStarts = new List<Integer>(endByStart.keySet());
+      sortedStarts.sort();
+
+      // Pass 2: walk the matches left-to-right, copying the untouched text between matches
+      // ("gaps") verbatim and substituting each match with its expanded replacement.
+      // `pos` tracks how far into the original line has been consumed.
+      String result = '';
+      Integer pos = 0;
+      for (Integer start : sortedStarts) {
+        // This match starts inside a region already replaced by an earlier (longer)
+        // match — skip it to avoid double-masking overlapping hits.
+        if (start < pos) {
+          continue;
+        }
+        result += line.substring(pos, start);
+        result += this.expandReplacement(replacementRegEx, groupsByStart.get(start));
+        pos = endByStart.get(start);
+      }
+      result += line.substring(pos);
+      return result;
+    }
+
+    /**
+     * Expands `$N` capture-group references in a replacement template, equivalent to
+     * Java's `Matcher.appendReplacement`.
+     *
+     * Only `$N` tokens that appear in the original `replacement` template are expanded;
+     * a `$N` sequence that happens to occur *inside a captured group's value* is copied
+     * through verbatim (this is why the result is built from the template, not produced by
+     * `String.replace` on the group values). An unresolvable token (`$0`, an out-of-range
+     * group, or a null group) is left as the literal text `$N`.
+     *
+     * Example: replacement `"[$1]-$2"`, groups [full, "A", "B"] -> `"[A]-B"`.
+     * Example: replacement `"$1"`, group 1 = `"price=$3"` -> `"price=$3"` (the `$3` in the
+     * captured value is NOT re-expanded).
+     */
+    private String expandReplacement(String replacement, List<String> groups) {
+      System.Matcher tokenMatcher = DATA_MASK_REPLACEMENT_TOKEN_PATTERN.matcher(replacement);
+      String result = '';
+      Integer pos = 0;
+      while (tokenMatcher.find()) {
+        // Copy the literal template text preceding this `$N` token.
+        result += replacement.substring(pos, tokenMatcher.start());
+        Integer groupNum = Integer.valueOf(tokenMatcher.group(1));
+        if (groupNum >= 1 && groupNum < groups.size() && groups[groupNum] != null) {
+          result += groups[groupNum];
+        } else {
+          // Not a resolvable group reference — preserve the token text literally.
+          result += tokenMatcher.group();
+        }
+        pos = tokenMatcher.end();
+      }
+      // Copy any literal template text after the last token.
+      result += replacement.substring(pos);
+      return result;
     }
   }
 

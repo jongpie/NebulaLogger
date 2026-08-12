@@ -2,8 +2,12 @@
   "arrowParens": "avoid",
   "overrides": [
     {
-      "files": "*.{apex,cls,trigger}",
+      "files": "*.{cls,trigger}",
       "options": { "parser": "apex" }
+    },
+    {
+      "files": "*.apex",
+      "options": { "parser": "apex-anonymous" }
     },
     {
       "files": "**/lwc/**/*.html",
