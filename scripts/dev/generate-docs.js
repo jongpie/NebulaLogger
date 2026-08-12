@@ -8,6 +8,7 @@ const { parseArgs } = require('node:util');
 const REPO_ROOT = resolve(__dirname, '..', '..');
 const APEX_OUTPUT_DIR = 'docs/src/content/docs/reference';
 const LWC_OUTPUT_DIR = 'docs/src/content/docs/reference/lwc';
+const PLUGINS_OUTPUT_DIR = 'docs/src/content/docs/reference/plugins';
 const LWC_SOURCES = [
   {
     source: 'nebula-logger/core/main/logger-engine/lwc/logger/logger.js',
@@ -21,6 +22,16 @@ const LWC_SOURCES = [
     title: 'logEntryBuilder',
     description: 'LogEntryBuilder chainable API used by the LWC logger.'
   }
+];
+
+// Plugins to document under docs/src/content/docs/reference/plugins/<name>.
+// logger-admin-dashboard is intentionally omitted - it has no Apex classes.
+// The `plugin/` root folder pattern matches how the plugins are organized.
+const PLUGIN_SOURCES = [
+  { name: 'async-failure-additions', sourceDir: 'nebula-logger/plugins/async-failure-additions/plugin' },
+  { name: 'big-object-archiving', sourceDir: 'nebula-logger/plugins/big-object-archiving/plugin' },
+  { name: 'log-retention-rules', sourceDir: 'nebula-logger/plugins/log-retention-rules/plugin' },
+  { name: 'slack', sourceDir: 'nebula-logger/plugins/slack/plugin' }
 ];
 
 function run(command, args, options = {}) {
@@ -62,10 +73,43 @@ function cleanApexOutput() {
 }
 
 function generateApexDocs() {
-  console.log('[docs] Generating Apex + custom object reference via @cparra/apexdocs.');
+  console.log('[docs] Generating core Apex + custom object reference via @cparra/apexdocs.');
   cleanApexOutput();
   ensureDir(APEX_OUTPUT_DIR);
-  run('npx', ['--yes', 'apexdocs', 'markdown']);
+  run('npx', ['--yes', 'apexdocs', 'markdown'], {
+    env: { ...process.env, NEBULA_DOCS_CONTEXT: 'core' }
+  });
+}
+
+function generatePluginDocs() {
+  console.log('[docs] Generating plugin reference via @cparra/apexdocs.');
+  const pluginsRoot = join(REPO_ROOT, PLUGINS_OUTPUT_DIR);
+  rmSync(pluginsRoot, { recursive: true, force: true });
+  mkdirSync(pluginsRoot, { recursive: true });
+
+  for (const plugin of PLUGIN_SOURCES) {
+    console.log(`[docs]   ${plugin.name}`);
+    const targetDir = `${PLUGINS_OUTPUT_DIR}/${plugin.name}`;
+    run(
+      'npx',
+      [
+        '--yes',
+        'apexdocs',
+        'markdown',
+        '--sourceDir',
+        plugin.sourceDir,
+        '--targetDir',
+        targetDir,
+        '--scope',
+        'public',
+        '--referenceGuideTitle',
+        `${plugin.name} plugin reference`
+      ],
+      {
+        env: { ...process.env, NEBULA_DOCS_CONTEXT: `plugin:${plugin.name}` }
+      }
+    );
+  }
 }
 
 function generateLwcDocs() {
@@ -134,6 +178,7 @@ function main() {
 
   if (runApex) {
     generateApexDocs();
+    generatePluginDocs();
   }
   if (runLwc) {
     generateLwcDocs();

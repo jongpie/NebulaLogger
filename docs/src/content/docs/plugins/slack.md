@@ -38,5 +38,6 @@ After installation, assign the `LoggerSlackPluginAdmin` permission set to admins
 
 ## Where next
 
+- [Slack plugin reference](/reference/plugins/slack/) - auto-generated `SlackLoggerPlugin` API reference.
 - [Plugin framework overview](/plugins/overview/) - how plugins hook in.
 - [Building your own plugin](/plugins/building-your-own/) - write a similar outbound integration.

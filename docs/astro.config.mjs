@@ -56,14 +56,25 @@ gtag('config', 'G-TD37SS03XP');`
           label: 'Logging Guide',
           items: [
             { label: 'Concepts', slug: 'logging-guide/concepts' },
-            { label: 'Apex', slug: 'logging-guide/apex' },
-            { label: 'Lightning Web Components', slug: 'logging-guide/lwc' },
-            { label: 'Aura', slug: 'logging-guide/aura' },
-            { label: 'Flow', slug: 'logging-guide/flow' },
-            { label: 'OmniStudio', slug: 'logging-guide/omnistudio' },
-            { label: 'Scenarios', slug: 'logging-guide/scenarios' },
-            { label: 'Tags', slug: 'logging-guide/tags' },
-            { label: 'Data masking', slug: 'logging-guide/data-masking' },
+            {
+              label: 'Runtime Support',
+              items: [
+                { label: 'Apex', slug: 'logging-guide/apex' },
+                { label: 'Lightning Web Components', slug: 'logging-guide/lwc' },
+                { label: 'Aura', slug: 'logging-guide/aura' },
+                { label: 'Flow', slug: 'logging-guide/flow' },
+                { label: 'OmniStudio', slug: 'logging-guide/omnistudio' }
+              ]
+            },
+            {
+              label: 'Enrichment & Features',
+              items: [
+                { label: 'Scenarios', slug: 'logging-guide/scenarios' },
+                { label: 'Tags', slug: 'logging-guide/tags' },
+                { label: 'Data masking', slug: 'logging-guide/data-masking' },
+                { label: 'Extending the data model', slug: 'logging-guide/extending-the-data-model' }
+              ]
+            },
             { label: 'Testing your instrumentation', slug: 'logging-guide/testing' }
           ]
         },
@@ -98,13 +109,23 @@ gtag('config', 'G-TD37SS03XP');`
         {
           label: 'Plugins',
           items: [
-            { label: 'Plugin framework overview', slug: 'plugins/overview' },
-            { label: 'Slack', slug: 'plugins/slack' },
-            { label: 'Big Object Archiving', slug: 'plugins/big-object-archiving' },
-            { label: 'Log Retention Rules', slug: 'plugins/log-retention-rules' },
-            { label: 'Logger Admin Dashboard', slug: 'plugins/logger-admin-dashboard' },
-            { label: 'Async Failure Additions', slug: 'plugins/async-failure-additions' },
-            { label: 'Building your own plugin', slug: 'plugins/building-your-own' }
+            {
+              label: 'Plugin Framework',
+              items: [
+                { label: 'Overview', slug: 'plugins/overview' },
+                { label: 'Building your own plugin', slug: 'plugins/building-your-own' }
+              ]
+            },
+            {
+              label: 'Official Plugins',
+              items: [
+                { label: 'Slack', slug: 'plugins/slack' },
+                { label: 'Big Object Archiving', slug: 'plugins/big-object-archiving' },
+                { label: 'Log Retention Rules', slug: 'plugins/log-retention-rules' },
+                { label: 'Logger Admin Dashboard', slug: 'plugins/logger-admin-dashboard' },
+                { label: 'Async Failure Additions', slug: 'plugins/async-failure-additions' }
+              ]
+            }
           ]
         },
         {

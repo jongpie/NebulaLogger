@@ -13,6 +13,7 @@ Groupings:
 - **custom-objects** - `Log__c`, `LogEntry__c`, and every custom metadata type Nebula Logger ships.
 - **triggers** - platform-event and object triggers that materialize entries and drive plugins.
 - **lwc** - `logger` and `logEntryBuilder` client-side APIs.
+- **plugins** - reference for each official plugin under `nebula-logger/plugins/`. Public API, unlocked-package only.
 
 For narrative and code examples, see the [Logging Guide](/logging-guide/concepts/).
 
