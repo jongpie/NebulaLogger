@@ -27,12 +27,32 @@ export default defineMarkdownConfig({
     '**/log-management/classes/**',
     '**/configuration/classes/**'
   ],
-  transformReferenceGuide: guide => ({
-    frontmatter: {
-      title: 'Reference',
-      description: 'Nebula Logger reference for Apex classes, Lightning Web Components, and custom objects.'
-    }
-  }),
+  transformReferenceGuide: guide => {
+    const intro = [
+      'Auto-generated reference for Nebula Logger.',
+      '',
+      'Groupings:',
+      '',
+      '- **logger-engine** - global Apex classes for adding entries, building payloads, and orchestrating saves.',
+      '- **custom-objects** - `Log__c`, `LogEntry__c`, and every custom metadata type Nebula Logger ships.',
+      '- **triggers** - platform-event and object triggers that materialize entries and drive plugins.',
+      '- **lwc** - `logger` and `logEntryBuilder` client-side APIs.',
+      '',
+      'For narrative and code examples, see the [Logging Guide](/logging-guide/concepts/).',
+      '',
+      '---',
+      '',
+      guide.content
+    ].join('\n');
+
+    return {
+      frontmatter: {
+        title: 'Reference',
+        description: 'Auto-generated reference for Nebula Logger Apex classes, custom objects, triggers, and LWCs.'
+      },
+      content: intro
+    };
+  },
   transformDocPage: doc => {
     const title = doc.source?.name ?? doc.frontmatter?.title ?? 'Reference';
     const typeLabel = doc.source?.type ? ` ${doc.source.type}` : '';

@@ -3,31 +3,44 @@ title: Nebula Logger
 description: The most robust observability solution for Salesforce experts.
 template: splash
 hero:
-  tagline: The most robust observability solution for Salesforce experts. Built 100% natively on the platform, and designed to work seamlessly with Apex, Lightning Components, Flow, OmniStudio, and integrations.
+  tagline: A unified logging framework for Apex, Lightning Web Components, Aura, Flow, and OmniStudio. Built 100% natively on Salesforce.
   actions:
-    - text: Get started
+    - text: Install Nebula Logger
       link: /getting-started/install-unlocked/
       icon: right-arrow
       variant: primary
+    - text: Read the logging guide
+      link: /logging-guide/concepts/
+      icon: open-book
+      variant: secondary
     - text: View on GitHub
       link: https://github.com/jongpie/NebulaLogger
       icon: external
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 <CardGrid>
   <Card title="Log everywhere" icon="pencil">
-    A unified logging API for Apex, Lightning Web Components, Aura, Flow, and OmniStudio.
+    One logging API for Apex, Lightning Web Components, Aura, Flow, and OmniStudio. Same levels, same scenarios, same tags.
   </Card>
   <Card title="Investigate faster" icon="magnifier">
-    The Logger Console app, related-list navigation, and rich log record pages surface what admins and engineers need first.
+    The Logger Console app, prebuilt list views, related-list navigation, and a rich log record page surface what admins and engineers need first.
   </Card>
   <Card title="Configure declaratively" icon="setting">
-    Customize logging levels, feature flags, retention, and data masking with hierarchy settings and custom metadata - no code redeploys.
+    Tune logging level, save method, retention, and data masking through the LoggerSettings__c hierarchy and custom metadata. No redeploys.
   </Card>
   <Card title="Extend with plugins" icon="puzzle">
-    Slack, Big Object archiving, notifications, retention rules, and a plugin framework you can build against.
+    Slack notifications, big object archiving, retention rules, admin dashboard, and a plugin framework you can build against.
   </Card>
+</CardGrid>
+
+## Where to start
+
+<CardGrid>
+  <LinkCard title="Getting Started" href="/getting-started/install-unlocked/" description="Install the package and finish first-time configuration." />
+  <LinkCard title="Logging Guide" href="/logging-guide/concepts/" description="Understand the core model, then log from Apex, LWC, Aura, Flow, or OmniStudio." />
+  <LinkCard title="Console & Operations" href="/console/logger-console-app/" description="Browse and investigate logs in the Logger Console app." />
+  <LinkCard title="Reference" href="/reference/" description="Auto-generated Apex, LWC, and custom object reference." />
 </CardGrid>
