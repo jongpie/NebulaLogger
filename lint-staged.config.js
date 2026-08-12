@@ -3,7 +3,7 @@ module.exports = {
     return `npm run package:version:number:fix`;
   },
   '*.{apex,cls,cmp,component,css,html,js,json,md,page,trigger,yaml,yml}': filenames => filenames.map(filename => `prettier --write "${filename}"`),
-  '**/lwc/**': filenames => {
+  'nebula-logger/**/lwc/**': filenames => {
     // Scan only the staged LWC files, not the whole repo. Run the code-analyzer's ESLint rules
     // against the staged paths and then run the SLDS linter one file at a time (the SLDS CLI
     // accepts exactly one path argument per invocation; passing multiple emits "too many arguments

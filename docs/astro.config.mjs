@@ -18,12 +18,32 @@ export default defineConfig({
         baseUrl: 'https://github.com/jongpie/NebulaLogger/edit/main/docs/'
       },
       customCss: ['./src/styles/custom.css'],
+      head: [
+        {
+          tag: 'script',
+          attrs: {
+            async: true,
+            src: 'https://www.googletagmanager.com/gtag/js?id=G-TD37SS03XP'
+          }
+        },
+        {
+          tag: 'script',
+          content: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-TD37SS03XP');`
+        }
+      ],
       lastUpdated: true,
       pagination: true,
       sidebar: [
         {
           label: 'Getting Started',
           items: [{ label: 'Install the unlocked package', slug: 'getting-started/install-unlocked' }]
+        },
+        {
+          label: 'Reference',
+          autogenerate: { directory: 'reference' }
         },
         {
           label: 'Release Notes',
