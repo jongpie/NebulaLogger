@@ -16,11 +16,32 @@ The `LogRecordPage` FlexiPage powers the `Log__c` record view. It surfaces:
 
 ### Manage Log quick action
 
-All editable fields on `Log__c` (owner, priority, status, comments) can be updated in one place via the **Manage Log** quick action.
+All editable fields on `Log__c` (owner, priority, status, comments) can be updated in one place via the **Manage Log** quick action. Useful in production, QA, and UAT for tracking ongoing investigation work on each transaction.
 
 ![Manage Log quick action](/images/manage-log-quickaction.png)
 
-`Log__c.Status__c` picklist values are driven by `LogStatus__mdt` records, which also flag which statuses are considered "closed" and which are "resolved". Editing that CMDT customizes the picklist and the auto-populated fields (`ClosedBy__c`, `ClosedDate__c`, `IsClosed__c`, `IsResolved__c`).
+Nebula Logger auto-populates four related fields when `Log__c.Status__c` changes:
+
+| Field                  | Populated when                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------- |
+| `Log__c.ClosedBy__c`   | The status is moved to any "closed" status. Records who closed the log.               |
+| `Log__c.ClosedDate__c` | Same. Records when.                                                                   |
+| `Log__c.IsClosed__c`   | Same. Boolean flag driven by which statuses are marked as closed in `LogStatus__mdt`. |
+| `Log__c.IsResolved__c` | Reached a status that is both "closed" AND "resolved" (required work is done).        |
+
+### Customizing statuses via `LogStatus__mdt`
+
+`Log__c.Status__c` picklist values are driven by `LogStatus__mdt` records. Each record defines a status name and two flags:
+
+- `IsClosed__c` - closed statuses stop the log from appearing in the "open" list views.
+- `IsResolved__c` - resolved statuses indicate the underlying issue was fixed (not just dismissed).
+
+To add or rename statuses:
+
+1. Update the picklist values on `Log__c.Status__c`.
+2. Create or edit the matching `LogStatus__mdt` record so `IsClosed__c` and `IsResolved__c` are set correctly for the new status.
+
+Nebula Logger reads the CMDT at runtime, so status semantics don't require code changes.
 
 ### View JSON quick action
 

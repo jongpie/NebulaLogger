@@ -38,6 +38,21 @@ In OmniStudio, pass `tags` as a `List<String>` input to a `newEntry` Remote Acti
 
 The console renders tags on the log entry record page and lets you filter list views by them.
 
+## Choosing a tagging mode (unlocked package only)
+
+The default storage above (`LoggerTag__c` + `LogEntryTag__c`) is one of two supported modes. The unlocked package also supports storing tags as Salesforce **Chatter Topics** on each `LogEntry__c` record via the standard `Topic` and `TopicAssignment` objects.
+
+| Aspect                   | Default: `LoggerTag__c` + `LogEntryTag__c`                                                   | Alternative: `Topic` + `TopicAssignment`                                                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Availability**         | Both packages                                                                                | Unlocked package only                                                                                                                             |
+| **Data location**        | Custom objects                                                                               | Standard Chatter objects                                                                                                                          |
+| **Data visibility**      | Sharing/OWD on `LoggerTag__c`. Junction records inherit access from the related entry + tag. | Every Chatter user can see all `Topic` records org-wide. `TopicAssignment` records are gated by access to the entry.                              |
+| **Reports & dashboards** | Full custom-object reporting.                                                                | Chatter Topics [have partial reporting support](https://trailblazer.salesforce.com/ideaView?id=08730000000l12wAAA).                               |
+| **List view filtering**  | Standard `LoggerTag__c` filters.                                                             | Chatter Topics filter list views [natively](http://releasenotes.docs.salesforce.com/en-us/winter20/release-notes/rn_lex_lists_topic_filters.htm). |
+| **Best for**             | Most orgs. Full control, private-by-default, reportable.                                     | Orgs already invested in Chatter Topics and comfortable with tag names being globally visible.                                                    |
+
+Choose the mode that matches your access-control posture. Neither mode is available for admins to switch on the fly - the choice is a configuration decision made once per org.
+
 ## Taxonomy conventions
 
 Because tag names are free-text, teams need a convention or the taxonomy sprawls. Adopt a prefix-per-namespace pattern early.

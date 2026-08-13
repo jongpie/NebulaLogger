@@ -32,6 +32,11 @@ Nebula Logger gives teams a consistent, queryable logging model that survives pa
 - **Admins** who want to see who did what, when, in the same UI they already use.
 - **ISVs and package developers** who want to emit rich telemetry in customer orgs when Nebula Logger is installed, without hard-requiring it.
 
+## Further reading
+
+- [Advanced Logging Using Nebula Logger](https://www.joysofapex.com/advanced-logging-using-nebula-logger/) - Joys of Apex blog post covering the design and history of the project.
+- [Salesforce Platform Events Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm) - the underlying platform-event mechanism the default save method uses.
+
 ## Where next
 
 - [How it works](/introduction/how-it-works/) - the architecture.

@@ -220,6 +220,12 @@ public with sharing class SomeBatch implements Database.Batchable<SObject>, Data
 
 `Database.Stateful` preserves `originalTransactionId` across batch chunks. Each chunk still runs in its own transaction, so `setParentLogTransactionId(...)` must be called at the top of each `execute` invocation.
 
+## `System.debug()` auto-invocation
+
+**Unlocked package only.** Nebula Logger's unlocked package automatically calls `System.debug()` for every log entry, so entries also show up in your Developer Console debug log. The managed package does not do this - `System.debug()` calls from a managed package don't route to the subscriber org's debug log, so you'd need to add your own `System.debug()` calls alongside `Logger.*(...)` for the same behavior.
+
+Customize the format of the auto-emitted debug string via `LoggerSettings__c.SystemLogMessageFormat__c`. The field accepts a template that interpolates any field on `LogEntryEvent__e`. Default output includes the level, message, and origin.
+
 ## Where next
 
 - [Testing your instrumentation](/logging-guide/testing/) - asserting on buffered and persisted entries in tests.
