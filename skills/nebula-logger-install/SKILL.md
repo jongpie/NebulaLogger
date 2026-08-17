@@ -80,6 +80,28 @@ Prioritize these settings during onboarding:
 
 Note: older references may mention `DefaultLoggingLevel__c`; in this codebase the active field is `LoggingLevel__c`.
 
+## Review and Customize `LoggerParameter__mdt`
+
+Nebula Logger ships a `LoggerParameter__mdt` CMDT populated with ~40 records that control cross-cutting runtime behavior - things like which supporting objects are queried, how tags are stored, whether the stack trace is parsed, and whether transaction limits get captured. The out-of-the-box values are the recommended defaults for most orgs, but they are opinionated defaults, and some orgs will want to adjust them. Review the list after install and change the ones that matter for your org. A few representative examples of the kinds of tradeoffs these records expose:
+
+- **SOQL-sensitive orgs**: if the extra queries Nebula Logger makes are a concern (e.g. very complex codebases that are already close to the 100-SOQL transaction limit), the `Query*Synchronously` records - `QueryUserDataSynchronously`, `QueryNetworkDataSynchronously`, `QueryOrganizationDataSynchronously`, `QueryAuthSessionDataSynchronously` - can be flipped to `false` so the enrichment queries only run async on the `Log__c` insert side. Setting the corresponding `Query*Data` record to `false` disables the query entirely if the extra fields aren't needed at all.
+- **CPU-sensitive orgs**: `EnableStackTraceParsing` and `StoreHeapSizeLimit` are `true` by default. Flipping them to `false` skips the per-entry stack-trace parse and heap-limit capture, which trades some observability for lower CPU consumption on high-volume log paths.
+- **Callout-restricted orgs**: `CallStatusApi` (async callout to `api.status.salesforce.com` for release info) can be set to `false` if outbound callouts to the Salesforce status endpoint aren't allowed or aren't wanted.
+- **Feature toggles**: `EnableTagging`, `EnableLogEntryEventStream`, `NormalizeScenarioData`, `NormalizeTagData`, and similar records switch entire subsystems on or off - useful when a feature isn't needed and the associated storage / trigger work should be avoided.
+
+Every `LoggerParameter__mdt` record has an inline `Description__c` field explaining what it controls and how to change it; open the record in Setup or the Logger Console to see the guidance rather than trying to memorize the catalog. Treat any change to these records as a behavior change and re-run the affected tests afterwards - see the "Nebula Logger's CMDT Records Are Live in Tests" section of [nebula-logger-testing-your-code](../nebula-logger-testing-your-code/SKILL.md).
+
+## Review Data Masking with `LogEntryDataMaskRule__mdt`
+
+Nebula Logger also ships a small starter catalog of `LogEntryDataMaskRule__mdt` records that regex-mask sensitive data before it gets persisted: `SocialSecurityNumber`, `VisaCreditCardNumber`, `MastercardCreditCardNumber`, and `AmericanExpressCreditCardNumber`. Each record has:
+
+- `SensitiveDataRegEx__c` - the regex that matches the sensitive substring.
+- `ReplacementRegEx__c` - the replacement pattern (typically preserves surrounding context and masks the middle digits).
+- `ApplyToMessage__c` / `ApplyToRecordJson__c` - whether the rule runs against the log entry message text, against the `RecordJson__c` captured by `.setRecord(...)`, or both.
+- `IsEnabled__c` - toggle without deleting the record.
+
+The shipped rules are a reasonable baseline but they're not exhaustive. Any org that logs domain data with its own sensitive patterns (customer IDs, national ID numbers outside the US, API tokens, internal case numbers, etc.) should deploy additional `LogEntryDataMaskRule__mdt` records for those patterns rather than relying on developers to remember to strip the values manually before calling `Logger.info(...)`. Test the regex against representative strings before shipping - a too-greedy pattern can mangle unrelated substrings, and a too-narrow pattern lets the sensitive value through.
+
 ## First Troubleshooting Check
 
 If logs are not created after deployment, check permission set assignment first, especially `LoggerEndUser` (or `LoggerLogCreator` for component/integration contexts). Missing permissions are the most common post-install issue.

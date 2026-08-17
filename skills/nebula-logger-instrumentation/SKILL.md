@@ -149,6 +149,7 @@ Code that wants to log to Nebula Logger _when it's installed_ but not hard-depen
 
 ```apex
 public with sharing class OptionalLogger {
+  // An example of how to dynamically check first for the managed package ('Nebula' namespace), then the unlocked package (no namespace)
   private static final System.Type CALLABLE_LOGGER_TYPE = System.Type.forName('Nebula', 'CallableLogger') ?? System.Type.forName('CallableLogger');
 
   public static void info(String message) {

@@ -15,12 +15,14 @@ Note that `LoggerPlugin`, `LoggerPlugin.Triggerable`, `LoggerPlugin.Batchable`, 
 
 ## Plugin Framework Overview
 
-Nebula Logger's plugin framework lets you register Apex classes (or Flows) to run inside two extension points:
+Nebula Logger's plugin framework lets you register Apex classes to run inside two extension points:
 
 1. **Trigger extension point** - Runs during `LoggerSObjectHandler` execution on `LogEntryEvent__e`, `Log__c`, `LogEntry__c`, `LogEntryTag__c`, `LoggerScenario__c`, and `LoggerTag__c` triggers. Use this to add fields, enrich data, or send external notifications when a log is created.
 2. **Batch extension point** - Runs during `LogBatchPurger` execution. Use this to archive logs to an external system, apply custom purge policies, or emit metrics on purged records before they're deleted.
 
-Both extension points are driven by `LoggerPlugin__mdt` records. Adding a plugin means: writing an Apex class that implements the right interface, then creating a `LoggerPlugin__mdt` record that points at it.
+Both extension points are driven by `LoggerPlugin__mdt` records. Adding a plugin means: writing an Apex class that implements the right interface (or both, if the plugin has trigger and batch responsibilities), then creating a `LoggerPlugin__mdt` record that points at it.
+
+**Strongly prefer Apex over Flow for both extension points.** The framework technically supports Flow-based plugins via `SObjectHandlerFlowName__c` / `BatchPurgerFlowName__c`, but Flow support currently has known issues with no fixed ETA - it may be deprecated altogether in a future release. New plugins should implement the Apex interfaces below and leave the Flow fields on the `LoggerPlugin__mdt` record blank.
 
 ## The Two Interfaces
 
@@ -53,19 +55,19 @@ void finish(LoggerPlugin__mdt configuration, LoggerBatchableContext input);
 
 Every plugin gets one `LoggerPlugin__mdt` record. Key fields:
 
-| Field                                             | Purpose                                                                                                               |
-| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `DeveloperName` / `Label`                         | Identify the plugin.                                                                                                  |
-| `IsEnabled__c`                                    | Toggle without deleting the record. Marked as `SubscriberControlled` so admins can flip it in installed orgs.         |
-| `SObjectHandlerApexClass__c`                      | Apex class name implementing `LoggerPlugin.Triggerable`. Use this OR `SObjectHandlerFlowName__c`, not both.           |
-| `SObjectHandlerFlowName__c`                       | Flow API name for a Flow-based trigger plugin.                                                                        |
-| `SObjectHandlerExecutionOrder__c`                 | Integer that orders multiple plugins on the same handler. Lower numbers run first. Ties are broken by developer name. |
-| `BatchPurgerApexClass__c`                         | Apex class name implementing `LoggerPlugin.Batchable`. Runs inside `LogBatchPurger`.                                  |
-| `BatchPurgerFlowName__c`                          | Flow API name for a Flow-based batch plugin.                                                                          |
-| `BatchPurgerExecutionOrder__c`                    | Ordering across multiple batch plugins.                                                                               |
-| `Description__c` / `Link__c` / `VersionNumber__c` | Metadata surfaced in the Logger Console for admin awareness.                                                          |
+| Field                                             | Purpose                                                                                                                 |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `DeveloperName` / `Label`                         | Identify the plugin.                                                                                                    |
+| `IsEnabled__c`                                    | Toggle without deleting the record. Marked as `SubscriberControlled` so admins can flip it in installed orgs.           |
+| `SObjectHandlerApexClass__c`                      | Apex class name implementing `LoggerPlugin.Triggerable`. Set this to register the class at the trigger extension point. |
+| `SObjectHandlerFlowName__c`                       | Flow API name for a Flow-based trigger plugin. Leave null - see the "prefer Apex" note above.                           |
+| `SObjectHandlerExecutionOrder__c`                 | Integer that orders multiple plugins on the same handler. Lower numbers run first. Ties are broken by developer name.   |
+| `BatchPurgerApexClass__c`                         | Apex class name implementing `LoggerPlugin.Batchable`. Set this to register the class at the batch extension point.     |
+| `BatchPurgerFlowName__c`                          | Flow API name for a Flow-based batch plugin. Leave null - see the "prefer Apex" note above.                             |
+| `BatchPurgerExecutionOrder__c`                    | Ordering across multiple batch plugins.                                                                                 |
+| `Description__c` / `Link__c` / `VersionNumber__c` | Metadata surfaced in the Logger Console for admin awareness.                                                            |
 
-Leave whichever fields are not relevant (Apex vs Flow, trigger vs batch) as null.
+Set whichever combination of the Apex class fields matches what the class implements: `SObjectHandlerApexClass__c` for a `LoggerPlugin.Triggerable`, `BatchPurgerApexClass__c` for a `LoggerPlugin.Batchable`, or both fields pointing at the same class when it implements both interfaces (like `LogEntryArchivePlugin`). Leave the Flow fields null.
 
 ## Plugin Folder Layout
 
@@ -74,21 +76,22 @@ Existing plugins under `nebula-logger/plugins/<name>/` follow a consistent layou
 ```
 nebula-logger/plugins/<name>/
   plugin/
-    <name>/
-      classes/               # Apex classes (impl + tests)
-      customMetadata/        # LoggerPlugin.<Name>.md-meta.xml
-      objects/               # Any plugin-specific custom objects/fields
-      permissionsets/        # <Name>PluginAdmin.permissionset-meta.xml
-  tests/                     # Additional test artifacts (test suite, test permsets)
+    classes/               # Apex classes (both implementation and *_Tests.cls test classes)
+    customMetadata/        # LoggerPlugin.<Name>.md-meta.xml
+    objects/               # Any plugin-specific custom objects/fields (optional)
+    permissionsets/        # <Name>PluginAdmin.permissionset-meta.xml (optional)
+    testSuites/            # <Name>Plugin.testSuite-meta.xml grouping the plugin's test classes
   README.md
 ```
 
-The `LoggerPlugin.<Name>.md-meta.xml` file is the registration record - point `SObjectHandlerApexClass__c` (or `BatchPurgerApexClass__c`) at your class name. Existing plugins to reference:
+Test classes live in the same `plugin/classes/` folder as the code under test - they aren't split into a separate top-level `tests/` folder. The Slack plugin's `plugin/slack/` subfolder is a plugin-specific quirk from packaging around some shared `core/main` metadata; new plugins should drop the extra nesting and put everything directly under `plugin/`.
+
+The `LoggerPlugin.<Name>.md-meta.xml` file is the registration record - populate `SObjectHandlerApexClass__c` and/or `BatchPurgerApexClass__c` per the guidance above. Existing plugins to reference:
 
 - `nebula-logger/plugins/slack/` - trigger plugin that sends Slack notifications.
 - `nebula-logger/plugins/log-retention-rules/` - trigger plugin that sets `LogRetentionDate__c` based on CMDT rules.
-- `nebula-logger/plugins/big-object-archiving/` - batch plugin that copies logs to a big object before purge.
-- `nebula-logger/plugins/async-failure-additions/` - trigger plugin that enriches async-failure log entries.
+- `nebula-logger/plugins/big-object-archiving/` - implements BOTH interfaces on a single class (`LogEntryArchivePlugin`) - the trigger side captures records to the big object, the batch side archives before purge.
+- `nebula-logger/plugins/async-failure-additions/` - adds logging for `FlowExecutionErrorEvent`, unexpected batch failures, and Queueable finalizers.
 
 ## Ordering and Composition
 
@@ -98,8 +101,8 @@ The `LoggerPlugin.<Name>.md-meta.xml` file is the registration record - point `S
 
 ## Testing Plugins
 
-- Ship each plugin with a matching `<PluginClass>_Tests.cls` under `plugin/<name>/classes/`.
-- Add the plugin's test class to a Logger test suite so `npm run test:apex:suite:<name>` covers it.
+- Ship each plugin with a matching `<PluginClass>_Tests.cls` alongside the implementation class in `plugin/classes/`.
+- Add the plugin's test classes to a `<Name>Plugin.testSuite-meta.xml` under `plugin/testSuites/` (see `LoggerLogEntryArchivePlugin.testSuite-meta.xml` and `LoggerLogRetentionRulesPlugin.testSuite-meta.xml` for the pattern). The suite becomes the target of a `sf apex run test --suite-names <Name>Plugin` invocation. Only the core package currently has a dedicated `npm run test:apex:suite:core` script; plugin suites are exercised through `npm run test:apex` (which runs `RunLocalTests`) or an ad-hoc `sf apex run test --suite-names` call.
 - For trigger plugins, construct a `LoggerTriggerableContext` manually with the trigger records you want to exercise, then call `execute(configuration, input)` directly. Do not require a real trigger fire in tests.
 - For batch plugins, construct a `LoggerBatchableContext` and pass a synthesized `scopeRecords` list. Assert on the side effects (DML, callouts via `System.Test.setMock`, published events).
 
@@ -107,8 +110,8 @@ The `LoggerPlugin.<Name>.md-meta.xml` file is the registration record - point `S
 
 Before shipping a new plugin:
 
-1. Apex class implements exactly one of `LoggerPlugin.Triggerable` / `LoggerPlugin.Batchable`.
-2. `LoggerPlugin.<Name>.md-meta.xml` exists, has `IsEnabled__c=true` (or `false` if opt-in), and points at the class.
+1. Apex class implements at least one of `LoggerPlugin.Triggerable` / `LoggerPlugin.Batchable` - both is fine when a single class needs to react to trigger events and participate in the purge batch.
+2. `LoggerPlugin.<Name>.md-meta.xml` exists, has `IsEnabled__c=true` (or `false` if opt-in), and populates the class-name field(s) that match the interfaces the class implements: `SObjectHandlerApexClass__c` for `Triggerable`, `BatchPurgerApexClass__c` for `Batchable`, or both fields when the class implements both interfaces.
 3. `<Name>PluginAdmin.permissionset-meta.xml` grants full access on plugin-owned objects and CMDT.
 4. `<PluginClass>_Tests.cls` covers happy path, empty scope, and disabled-configuration cases.
 5. `README.md` in the plugin folder documents install steps and any prerequisites.
