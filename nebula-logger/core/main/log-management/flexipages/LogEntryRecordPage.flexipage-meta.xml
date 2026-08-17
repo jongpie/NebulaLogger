@@ -933,7 +933,7 @@
                 <fieldItem>Record.LimitsEmailInvocations__c</fieldItem>
                 <identifier>RecordLimitsEmailInvocations__cField</identifier>
             </fieldInstance>
-        </itemInstances>        
+        </itemInstances>
         <name>Facet-8e5572ea-8a8e-4426-8154-004cbbcb1314</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -1925,7 +1925,7 @@
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection13</identifier>
                 <visibilityRule>
-                    <booleanFilter>1 OR 2 OR 3</booleanFilter>
+                    <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.HasRestResponseBody__c}</leftValue>
                         <operator>EQUAL</operator>
@@ -1940,6 +1940,11 @@
                         <leftValue>{!Record.HasRestResponseHeaders__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.RestResponseStatusCode__c}</leftValue>
+                        <operator>GE</operator>
+                        <rightValue>0</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
@@ -2070,7 +2075,7 @@
                 <componentName>flexipage:tab</componentName>
                 <identifier>flexipage_tab6</identifier>
                 <visibilityRule>
-                    <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
+                    <booleanFilter>1 OR 2 OR 3 OR 4 OR 5</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.RestRequestResourcePath__c}</leftValue>
                         <operator>NE</operator>
@@ -2089,6 +2094,11 @@
                         <leftValue>{!Record.HasRestResponseHeaders__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.RestResponseStatusCode__c}</leftValue>
+                        <operator>GE</operator>
+                        <rightValue>0</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>

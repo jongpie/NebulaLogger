@@ -61,7 +61,7 @@ public without sharing class LoggerTestConfigurator {
    * @param  mock The mock instance of `LogEntryDataMaskRule__mdt` to load
    */
   public static void setMock(LogEntryDataMaskRule__mdt mock) {
-    LogEntryEventBuilder.setMockDataMaskRule(mock);
+    LoggerConfigurationSelector.mockLogEntryDataMaskRules.add(mock);
   }
 
   /**

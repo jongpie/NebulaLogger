@@ -391,8 +391,8 @@ public class LoggerMockDataCreator {
     String recordIdSuffix = String.valueOf(recordIdNumber++);
     SOBJECT_TYPE_TO_MOCK_ID_COUNT.put(sobjectType, recordIdNumber);
 
-    String recordIdKeyPrefix = SObjectType.getDescribe().getKeyPrefix();
-    Integer idFieldLength = SObjectType.getDescribe().fields.getMap().get('Id').getDescribe().getLength();
+    String recordIdKeyPrefix = sobjectType.getDescribe().getKeyPrefix();
+    Integer idFieldLength = sobjectType.getDescribe().fields.getMap().get('Id').getDescribe().getLength();
     Integer recordIdCenterLength = idFieldLength - recordIdKeyPrefix.length() - recordIdSuffix.length();
     return recordIdKeyPrefix + '0'.repeat(recordIdCenterLength) + recordIdSuffix;
   }
