@@ -17,6 +17,9 @@ yarn.lock
 .claude/
 CLAUDE.md
 
+# Nebula build CLI compiled output
+scripts/build-cli/dist/
+
 # Files to exclude
 *.env
 *.log

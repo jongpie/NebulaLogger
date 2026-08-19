@@ -1,0 +1,32 @@
+{
+  "name": "@nebula-logger/build-cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Nebula Logger build & release CLI. Growing replacement for the assorted PowerShell scripts under scripts/build.",
+  "bin": {
+    "nebula": "./dist/cli.js"
+  },
+  "main": "./dist/cli.js",
+  "types": "./dist/cli.d.ts",
+  "engines": {
+    "node": ">= 20.16.0"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "clean": "rimraf dist",
+    "test": "jest --config jest.config.cjs",
+    "test:watch": "jest --config jest.config.cjs --watch"
+  },
+  "dependencies": {
+    "commander": "13.1.0"
+  },
+  "devDependencies": {
+    "@jest/globals": "29.7.0",
+    "@types/jest": "29.5.14",
+    "@types/node": "20.16.0",
+    "jest": "29.7.0",
+    "rimraf": "6.0.1",
+    "ts-jest": "29.2.5",
+    "typescript": "5.6.3"
+  }
+}

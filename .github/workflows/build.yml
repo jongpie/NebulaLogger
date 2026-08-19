@@ -203,8 +203,46 @@ jobs:
       - name: 'Set EMAIL_SERVICE_RUN_AS_USER for the scratch org'
         run: npm run env:set:email-service-run-as-user
 
+      - name: 'Install & build Nebula build CLI'
+        run: |
+          npm run build-cli:install
+          npm run build-cli:build
+
       - name: 'Create & Install Package Version'
-        run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md  -targetusername base_package_subscriber_scratch_org
+        id: create-and-install
+        run: |
+          npx nebula release create-and-install \
+            --alias "Nebula Logger - Core" \
+            --target-org base_package_subscriber_scratch_org \
+            --readme-path ./README.md \
+            --sfdx-project-path ./sfdx-project.json \
+            | tee ./create-and-install.log
+          package_version_id=$(grep '^PACKAGE_VERSION_ID=' ./create-and-install.log | tail -1 | cut -d= -f2)
+          if [[ -z "$package_version_id" ]]; then
+            echo "Failed to capture PACKAGE_VERSION_ID from the CLI output" >&2
+            exit 1
+          fi
+          echo "package_version_id=$package_version_id" >> "$GITHUB_OUTPUT"
+
+      - name: 'Re-install Package for All Users (repro guard for #938)'
+        env:
+          PACKAGE_VERSION_ID: ${{ steps.create-and-install.outputs.package_version_id }}
+        run: |
+          npx nebula package install \
+            --package "$PACKAGE_VERSION_ID" \
+            --target-org base_package_subscriber_scratch_org \
+            --security-type AllUsers
+
+      - name: 'Assign Logger Admin Permission Set'
+        run: npm run permset:assign:admin
+
+      # The prior AdminsOnly install already ran the package's Apex tests once during install.
+      # Re-running them here after promoting profile access to AllUsers guards against the
+      # MIXED_DML failure class from https://github.com/jongpie/NebulaLogger/issues/938,
+      # which only reproduces when subscriber-org profiles have broader access to the
+      # tables the tests touch.
+      - name: 'Run Apex Tests After AllUsers Install'
+        run: npm run test:apex:nocoverage
 
       # The metadata API / sf CLI support deploying metadata using package manifest XML files - see docs for more details:
       #     Docs: https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/manifest_samples.htm

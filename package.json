@@ -34,6 +34,9 @@
   "scripts": {
     "apex:tail:log": "sf apex tail log --color",
     "apex:tail:log:file": "sh scripts/build/tail-log-to-file.sh",
+    "build-cli:install": "npm --prefix ./scripts/build-cli install",
+    "build-cli:build": "npm --prefix ./scripts/build-cli run build",
+    "build-cli:test": "npm --prefix ./scripts/build-cli test",
     "docs:fix": "npm run docs:fix:apex && npm run docs:fix:lwc",
     "docs:fix:apex": "pwsh ./scripts/build/generate-apex-docs.ps1 && git add ./docs/apex",
     "docs:fix:lwc": "pwsh ./scripts/build/generate-lwc-docs.ps1 && git add ./docs/lightning-components",
