@@ -90,7 +90,7 @@ static void it_should_log_the_error_message_when_credit_check_throws() {
   ];
   System.Assert.areEqual(1, entries.size());
   System.Assert.areEqual('ERROR', entries[0].LoggingLevel__c);
-  System.Assert.areEqual(thrownException.getMessage, entries[0].ExceptionMessage__c);
+  System.Assert.areEqual(thrownException.getMessage(), entries[0].ExceptionMessage__c);
   System.Assert.areEqual(thrownException.getTypeName(), entries[0].ExceptionType__c);
 }
 ```
