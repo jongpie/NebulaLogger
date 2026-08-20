@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.19.3.NEXT",
-      "versionName": "Fixed MIXED_DML_OPERATION Errors in Tests",
-      "versionDescription": "Fixed MIXED_DML_OPERATION test failures in LogHandler_Tests and in LogEntryEventHandler_Test by using System.runAs() when creating test users (setup object data)",
+      "versionNumber": "4.19.4.NEXT",
+      "versionName": "Capture Apex Cursor and Apex Pagination Cursor Transaction Limits",
+      "versionDescription": "Added new fields on LogEntryEvent__e and LogEntry__c to capture the used and max values for System.Limits.getApexCursors(), System.Limits.getApexPaginationCursors(), and System.Limits.getApexPaginationCursorRows()",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
