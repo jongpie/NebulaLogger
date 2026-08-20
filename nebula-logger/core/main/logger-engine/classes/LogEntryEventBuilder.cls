@@ -1045,6 +1045,9 @@ global with sharing class LogEntryEventBuilder {
       logEntryEventTemplate.LimitsAggregateQueriesMax__c = CACHED_TRANSACTION_LIMITS.aggregateQueriesMax;
       logEntryEventTemplate.LimitsApexCursorFetchCallsMax__c = CACHED_TRANSACTION_LIMITS.apexCursorFetchCallsMax;
       logEntryEventTemplate.LimitsApexCursorRowsMax__c = CACHED_TRANSACTION_LIMITS.apexCursorRowsMax;
+      logEntryEventTemplate.LimitsApexCursorsMax__c = CACHED_TRANSACTION_LIMITS.apexCursorsMax;
+      logEntryEventTemplate.LimitsApexPaginationCursorRowsMax__c = CACHED_TRANSACTION_LIMITS.apexPaginationCursorRowsMax;
+      logEntryEventTemplate.LimitsApexPaginationCursorsMax__c = CACHED_TRANSACTION_LIMITS.apexPaginationCursorsMax;
       logEntryEventTemplate.LimitsAsyncCallsMax__c = CACHED_TRANSACTION_LIMITS.asyncCallsMax;
       logEntryEventTemplate.LimitsCalloutsMax__c = CACHED_TRANSACTION_LIMITS.calloutsMax;
       logEntryEventTemplate.LimitsCpuTimeMax__c = CACHED_TRANSACTION_LIMITS.cpuTimeMax;
@@ -1064,6 +1067,9 @@ global with sharing class LogEntryEventBuilder {
       logEntryEventTemplate.LimitsAggregateQueriesUsed__c = System.Limits.getAggregateQueries();
       logEntryEventTemplate.LimitsApexCursorFetchCallsUsed__c = System.Limits.getFetchCallsOnApexCursor();
       logEntryEventTemplate.LimitsApexCursorRowsUsed__c = System.Limits.getApexCursorRows();
+      logEntryEventTemplate.LimitsApexCursorsUsed__c = System.Limits.getApexCursors();
+      logEntryEventTemplate.LimitsApexPaginationCursorRowsUsed__c = System.Limits.getApexPaginationCursorRows();
+      logEntryEventTemplate.LimitsApexPaginationCursorsUsed__c = System.Limits.getApexPaginationCursors();
       logEntryEventTemplate.LimitsAsyncCallsUsed__c = System.Limits.getAsyncCalls();
       logEntryEventTemplate.LimitsCalloutsUsed__c = System.Limits.getCallouts();
       logEntryEventTemplate.LimitsCpuTimeUsed__c = System.Limits.getCpuTime();
@@ -1636,6 +1642,9 @@ global with sharing class LogEntryEventBuilder {
     public final Integer aggregateQueriesMax = System.Limits.getLimitAggregateQueries();
     public final Integer apexCursorFetchCallsMax = System.Limits.getLimitFetchCallsOnApexCursor();
     public final Integer apexCursorRowsMax = System.Limits.getLimitApexCursorRows();
+    public final Integer apexCursorsMax = System.Limits.getLimitApexCursors();
+    public final Integer apexPaginationCursorRowsMax = System.Limits.getLimitApexPaginationCursorRows();
+    public final Integer apexPaginationCursorsMax = System.Limits.getLimitApexPaginationCursors();
     public final Integer asyncCallsMax = System.Limits.getLimitAsyncCalls();
     public final Integer calloutsMax = System.Limits.getLimitCallouts();
     public final Integer cpuTimeMax = System.Limits.getLimitCpuTime();
