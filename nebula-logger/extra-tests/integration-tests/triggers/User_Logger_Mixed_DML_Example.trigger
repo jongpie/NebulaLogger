@@ -24,7 +24,11 @@ trigger User_Logger_Mixed_DML_Example on User(after insert) {
   Id targetGroupId = matchingGroups.get(0).Id;
   List<Schema.GroupMember> newGroupMembers = new List<Schema.GroupMember>();
   for (Schema.User insertedUser : Trigger.new) {
-    newGroupMembers.add(new Schema.GroupMember(GroupId = targetGroupId, UserOrGroupId = insertedUser.Id));
+    // Experience Cloud users can't be added to the public group (and doing so isn't relevant for the tests),
+    // so skip any Experience Cloud users.
+    if (insertedUser.ContactId == null) {
+      newGroupMembers.add(new Schema.GroupMember(GroupId = targetGroupId, UserOrGroupId = insertedUser.Id));
+    }
   }
   insert newGroupMembers;
 }
