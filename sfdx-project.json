@@ -243,6 +243,7 @@
     "Nebula Logger - Core@4.19.1-new-method-overloads-for-logger.logdatabaseerrors()": "04tg7000000GqibAAC",
     "Nebula Logger - Core@4.19.2-optimized-data-masking": "04tg7000000HNrRAAW",
     "Nebula Logger - Core@4.19.3-fixed-mixed_dml_operation-errors-in-tests": "04tg7000000IEirAAG",
+    "Nebula Logger - Core@4.19.4-capture-apex-cursor-and-apex-pagination-cursor-transaction-limits": "04tg7000000IawHAAS",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
