@@ -4,6 +4,7 @@
 $sfdxProjectJsonPath = "./sfdx-project.json"
 $packageJsonPath = "./package.json"
 $readmeClassPath = "./README.md"
+$installSkillPath = "./skills/nebula-logger-install/SKILL.md"
 $loggerClassPath = "./nebula-logger/core/main/logger-engine/classes/Logger.cls"
 $loggerComponentPath = "./nebula-logger/core/main/logger-engine/lwc/logger/loggerService.js"
 
@@ -54,6 +55,29 @@ function Update-README {
     git add $readmeClassPath
 }
 
+function Get-Install-Skill {
+    Get-Content -Raw -Path $installSkillPath
+}
+
+function Update-Install-Skill {
+    param (
+        $versionNumber
+    )
+    if (-not (Test-Path $installSkillPath)) {
+        Write-Output "Install skill not found at $installSkillPath, skipping"
+        return
+    }
+    $versionNumber = "v" + $versionNumber
+    $installSkillContents = Get-Install-Skill
+    Write-Output "Bumping install skill unlocked package version number to: $versionNumber"
+
+    $targetRegEx = "(### Unlocked Package - )(v[\d\.]+)"
+    $replacementRegEx = '$1' + $versionNumber
+    $installSkillContents -replace $targetRegEx, $replacementRegEx | Set-Content -Path $installSkillPath -NoNewline
+    npx prettier --write $installSkillPath
+    git add $installSkillPath
+}
+
 function Get-Logger-Class {
     Get-Content -Raw -Path $loggerClassPath
 }
@@ -97,5 +121,6 @@ Write-Output "Target Version Number: $versionNumber"
 
 Update-Package-JSON $versionNumber
 Update-README $versionNumber
+Update-Install-Skill $versionNumber
 Update-Logger-Class $versionNumber
 Update-Logger-Component $versionNumber

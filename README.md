@@ -2,6 +2,7 @@
 
 [![Build](https://github.com/jongpie/NebulaLogger/actions/workflows/build.yml/badge.svg)](https://github.com/jongpie/NebulaLogger/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/jongpie/NebulaLogger/branch/main/graph/badge.svg?token=1DJPDRM3N4)](https://codecov.io/gh/jongpie/NebulaLogger)
+[![skills.sh](https://skills.sh/b/jongpie/NebulaLogger)](https://skills.sh/jongpie/NebulaLogger)
 
 The most robust observability solution for Salesforce experts. Built 100% natively on the platform, and designed to work seamlessly with Apex, Lightning Components, Flow, OmniStudio, and integrations.
 
@@ -22,6 +23,16 @@ The most robust observability solution for Salesforce experts. Built 100% native
 [![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/16?closed=1)
 
 `sf package install --wait 30 --security-type AdminsOnly --package 04tg7000000GZbJAAW`
+
+---
+
+## AI Agent Skills
+
+Nebula Logger includes [Agent Skills](https://www.skills.sh/docs) that help AI coding agents (Claude Code, GitHub Copilot, Cursor, and others) install, configure, and use Nebula Logger with the recommended patterns.
+
+```bash
+npx skills add jongpie/NebulaLogger
+```
 
 ---
 

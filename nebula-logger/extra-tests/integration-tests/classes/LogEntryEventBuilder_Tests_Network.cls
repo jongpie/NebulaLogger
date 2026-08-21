@@ -72,13 +72,17 @@ private class LogEntryEventBuilder_Tests_Network {
   }
 
   static Schema.User setupExperienceSiteUser() {
-    Schema.UserRole userRole = new Schema.UserRole(DeveloperName = 'LoggerTestRole', Name = 'Logger Test Role');
+    Schema.UserRole userRole = new Schema.UserRole(
+      DeveloperName = 'LoggerTestRole_' + System.UUID.randomUUID().toString().replace('-', '_'),
+      Name = 'Logger Test Role'
+    );
     insert userRole;
-    Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), UserRoleId = userRole.Id);
-    update currentUser;
+    Schema.User accountOwnerUser = LoggerMockDataCreator.createUser();
+    accountOwnerUser.UserRoleId = userRole.Id;
+
     Schema.User experienceSiteUser;
-    System.runAs(currentUser) {
-      Schema.Account account = new Schema.Account(Name = 'Test Account', OwnerId = currentUser.Id);
+    System.runAs(accountOwnerUser) {
+      Schema.Account account = new Schema.Account(Name = 'Test Account', OwnerId = accountOwnerUser.Id);
       insert account;
       Contact contact = new Contact(AccountId = account.Id, LastName = 'testcontact');
       insert contact;
@@ -87,6 +91,7 @@ private class LogEntryEventBuilder_Tests_Network {
       experienceSiteUser.ContactId = contact.Id;
       insert experienceSiteUser;
     }
+
     return [SELECT Id, AccountId, ContactId FROM User WHERE Id = :experienceSiteUser.Id];
   }
 }
