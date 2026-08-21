@@ -37,6 +37,7 @@ gtag('config', 'G-TD37SS03XP');`
       sidebar: [
         {
           label: 'Introduction',
+          collapsed: true,
           items: [
             { label: 'What is Nebula Logger', slug: 'introduction/what-is-nebula-logger' },
             { label: 'How it works', slug: 'introduction/how-it-works' },
@@ -46,6 +47,7 @@ gtag('config', 'G-TD37SS03XP');`
         },
         {
           label: 'Getting Started',
+          collapsed: true,
           items: [
             { label: 'Install the unlocked package', slug: 'getting-started/install-unlocked' },
             { label: 'Install the managed package', slug: 'getting-started/install-managed' },
@@ -55,10 +57,12 @@ gtag('config', 'G-TD37SS03XP');`
         },
         {
           label: 'Logging Guide',
+          collapsed: true,
           items: [
             { label: 'Concepts', slug: 'logging-guide/concepts' },
             {
               label: 'Runtime Support',
+              collapsed: true,
               items: [
                 { label: 'Apex', slug: 'logging-guide/apex' },
                 { label: 'Lightning Web Components', slug: 'logging-guide/lwc' },
@@ -69,6 +73,7 @@ gtag('config', 'G-TD37SS03XP');`
             },
             {
               label: 'Enrichment & Features',
+              collapsed: true,
               items: [
                 { label: 'Scenarios', slug: 'logging-guide/scenarios' },
                 { label: 'Tags', slug: 'logging-guide/tags' },
@@ -81,6 +86,7 @@ gtag('config', 'G-TD37SS03XP');`
         },
         {
           label: 'Console & Operations',
+          collapsed: true,
           items: [
             { label: 'Logger Console app', slug: 'console/logger-console-app' },
             { label: 'Log record page', slug: 'console/log-record-page' },
@@ -90,6 +96,7 @@ gtag('config', 'G-TD37SS03XP');`
         },
         {
           label: 'Configuration',
+          collapsed: true,
           items: [
             { label: 'LoggerSettings__c hierarchy', slug: 'configuration/logger-settings' },
             { label: 'LoggerParameter__mdt feature flags', slug: 'configuration/logger-parameters' },
@@ -100,6 +107,7 @@ gtag('config', 'G-TD37SS03XP');`
         },
         {
           label: 'Retention & Purging',
+          collapsed: true,
           items: [
             { label: 'Retention date semantics', slug: 'retention/retention-dates' },
             { label: 'LogBatchPurger', slug: 'retention/log-batch-purger' },
@@ -109,9 +117,11 @@ gtag('config', 'G-TD37SS03XP');`
         },
         {
           label: 'Plugins',
+          collapsed: true,
           items: [
             {
               label: 'Plugin Framework',
+              collapsed: true,
               items: [
                 { label: 'Overview', slug: 'plugins/overview' },
                 { label: 'Building your own plugin', slug: 'plugins/building-your-own' }
@@ -119,6 +129,7 @@ gtag('config', 'G-TD37SS03XP');`
             },
             {
               label: 'Official Plugins',
+              collapsed: true,
               items: [
                 { label: 'Slack', slug: 'plugins/slack' },
                 { label: 'Big Object Archiving', slug: 'plugins/big-object-archiving' },
@@ -131,6 +142,7 @@ gtag('config', 'G-TD37SS03XP');`
         },
         {
           label: 'For Package Developers',
+          collapsed: true,
           items: [
             { label: 'Optional dependency via Callable', slug: 'for-package-developers/optional-dependency' },
             { label: 'Hard dependency', slug: 'for-package-developers/hard-dependency' },
@@ -139,6 +151,7 @@ gtag('config', 'G-TD37SS03XP');`
         },
         {
           label: 'AI Agent Skills',
+          collapsed: true,
           items: [
             { label: 'Installing the skills', slug: 'ai-agent-skills/installing' },
             { label: 'Skill catalog', slug: 'ai-agent-skills/catalog' }
@@ -146,10 +159,12 @@ gtag('config', 'G-TD37SS03XP');`
         },
         {
           label: 'Reference',
-          autogenerate: { directory: 'reference' }
+          collapsed: true,
+          autogenerate: { directory: 'reference', collapsed: true }
         },
         {
           label: 'Contributing',
+          collapsed: true,
           items: [
             { label: 'Repo layout', slug: 'contributing/repo-layout' },
             { label: 'Local development setup', slug: 'contributing/local-setup' },
