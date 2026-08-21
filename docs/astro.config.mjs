@@ -13,7 +13,7 @@ export default defineConfig({
         github: 'https://github.com/jongpie/NebulaLogger'
       },
       editLink: {
-        baseUrl: 'https://github.com/jongpie/NebulaLogger/edit/main/docs/'
+        baseUrl: 'https://github.com/jongpie/NebulaLogger/edit/feature/new-docs-site/docs/'
       },
       customCss: ['./src/styles/custom.css'],
       head: [
