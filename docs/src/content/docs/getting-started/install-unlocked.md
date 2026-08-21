@@ -51,5 +51,5 @@ Uninstalling deletes every `Log__c`, `LogEntry__c`, `LoggerScenario__c`, `Logger
 
 ## Where next
 
-- [Post-install setup](/getting-started/post-install-setup/) - permissions, `LoggerSettings__c`, and verification.
-- [Install the managed package](/getting-started/install-managed/) - if you need the namespaced version instead.
+- [Post-install setup](/NebulaLogger/getting-started/post-install-setup/) - permissions, `LoggerSettings__c`, and verification.
+- [Install the managed package](/NebulaLogger/getting-started/install-managed/) - if you need the namespaced version instead.

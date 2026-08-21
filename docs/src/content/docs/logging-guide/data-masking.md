@@ -67,5 +67,5 @@ If a rule needs to apply to historical data, run an anonymous Apex job that quer
 
 ## Where next
 
-- [Configuration - Data mask rules](/configuration/data-mask-rules/) - the same content in the configuration section for cross-reference.
-- [Best practices - What not to log](/logging-guide/apex/) - avoiding sensitive data at the source.
+- [Configuration - Data mask rules](/NebulaLogger/configuration/data-mask-rules/) - the same content in the configuration section for cross-reference.
+- [Best practices - What not to log](/NebulaLogger/logging-guide/apex/) - avoiding sensitive data at the source.

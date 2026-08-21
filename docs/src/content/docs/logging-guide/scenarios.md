@@ -37,7 +37,7 @@ In OmniStudio, pass `scenario` as an input to any `newEntry` Remote Action call.
 
 - **Investigation filtering**: the Logger Console lets you filter logs by scenario, so a support engineer can pull up "all logs from Order Fulfillment in the last hour" without walking user or record filters.
 - **Reporting**: scenario names populate `LoggerScenario__c` records, which are reportable.
-- **Per-scenario retention**: `LoggerScenarioRule__mdt` overrides retention days for logs whose scenario matches. See [Retention & Purging](/retention/retention-dates/).
+- **Per-scenario retention**: `LoggerScenarioRule__mdt` overrides retention days for logs whose scenario matches. See [Retention & Purging](/NebulaLogger/retention/retention-dates/).
 - **Per-scenario logging level**: same CMDT can override the effective logging level for a scenario, so you can turn up verbosity for one process without lifting the org-wide level.
 
 ## Naming conventions
@@ -67,6 +67,6 @@ Logger.saveLog();
 
 ## Where next
 
-- [Tags](/logging-guide/tags/) - the fine-grained counterpart to scenarios.
-- [Retention & Purging](/retention/retention-dates/) - per-scenario retention overrides.
-- [Configuration - Logging levels](/configuration/logging-levels/) - per-scenario logging level overrides.
+- [Tags](/NebulaLogger/logging-guide/tags/) - the fine-grained counterpart to scenarios.
+- [Retention & Purging](/NebulaLogger/retention/retention-dates/) - per-scenario retention overrides.
+- [Configuration - Logging levels](/NebulaLogger/configuration/logging-levels/) - per-scenario logging level overrides.

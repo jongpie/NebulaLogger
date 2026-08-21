@@ -43,10 +43,10 @@ If storage is genuinely tight, the levers in descending order of impact:
 
 1. Lower `LoggingLevel__c` in production. `DEBUG` -> `INFO` typically drops volume by an order of magnitude.
 2. Shorten `DefaultNumberOfDaysToRetainLogs__c`.
-3. Install the [Big Object Archiving plugin](/plugins/big-object-archiving/) to offload aged data.
+3. Install the [Big Object Archiving plugin](/NebulaLogger/plugins/big-object-archiving/) to offload aged data.
 
 ## Where next
 
-- [LoggerSettings\_\_c hierarchy](/configuration/logger-settings/) - the settings surface.
-- [Logging levels](/configuration/logging-levels/) - precedence and semantics.
-- [Retention & Purging](/retention/retention-dates/) - retention configuration in depth.
+- [LoggerSettings\_\_c hierarchy](/NebulaLogger/configuration/logger-settings/) - the settings surface.
+- [Logging levels](/NebulaLogger/configuration/logging-levels/) - precedence and semantics.
+- [Retention & Purging](/NebulaLogger/retention/retention-dates/) - retention configuration in depth.

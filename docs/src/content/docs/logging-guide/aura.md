@@ -72,5 +72,5 @@ The `<c:logger>` component is an LWC underneath, and LWC child methods aren't ye
 
 ## Where next
 
-- [Lightning Web Components](/logging-guide/lwc/) - the native LWC path (preferred for new development).
-- [Testing your instrumentation](/logging-guide/testing/) - jest patterns.
+- [Lightning Web Components](/NebulaLogger/logging-guide/lwc/) - the native LWC path (preferred for new development).
+- [Testing your instrumentation](/NebulaLogger/logging-guide/testing/) - jest patterns.

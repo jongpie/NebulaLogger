@@ -17,7 +17,7 @@ Nebula Logger is fully open source under the MIT license. If you want full contr
 - You want the plugin framework to remain independently packageable.
 - You want to consume the shipped plugins (Slack, Big Object Archiving, etc.) - those are separate packages that don't bundle cleanly.
 
-For those cases, install the [unlocked package](/getting-started/install-unlocked/) instead.
+For those cases, install the [unlocked package](/NebulaLogger/getting-started/install-unlocked/) instead.
 
 ## Steps
 
@@ -26,7 +26,7 @@ For those cases, install the [unlocked package](/getting-started/install-unlocke
 3. Add the copied directory as a `packageDirectories` entry in your `sfdx-project.json` if you package your work as unlocked packages.
 4. Deploy as normal: `sf project deploy start --source-dir <your-copied-path>`.
 5. Assign the permission sets that came along with the copy: `LoggerAdmin`, `LoggerLogViewer`, `LoggerEndUser`, `LoggerLogCreator`.
-6. Configure `LoggerSettings__c` at the org default level (see [Post-install setup](/getting-started/post-install-setup/)).
+6. Configure `LoggerSettings__c` at the org default level (see [Post-install setup](/NebulaLogger/getting-started/post-install-setup/)).
 
 ## Upgrading later
 
@@ -41,5 +41,5 @@ There is no automated tooling for this - the trade-off of bundling is that upgra
 
 ## Where next
 
-- [Post-install setup](/getting-started/post-install-setup/) - permissions and `LoggerSettings__c` configuration.
-- [Logging Guide](/logging-guide/concepts/) - how to actually use the framework once it's deployed.
+- [Post-install setup](/NebulaLogger/getting-started/post-install-setup/) - permissions and `LoggerSettings__c` configuration.
+- [Logging Guide](/NebulaLogger/logging-guide/concepts/) - how to actually use the framework once it's deployed.

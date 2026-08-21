@@ -13,7 +13,7 @@ Because every runtime writes to the same `Log__c` / `LogEntry__c` schema, a sing
 
 ![Combined Apex + Flow log](/images/combined-apex-flow-log.png)
 
-The runtime-specific pages that follow this one ([Apex](/logging-guide/apex/), [LWC](/logging-guide/lwc/), [Aura](/logging-guide/aura/), [Flow](/logging-guide/flow/), [OmniStudio](/logging-guide/omnistudio/)) show what this looks like in each context.
+The runtime-specific pages that follow this one ([Apex](/NebulaLogger/logging-guide/apex/), [LWC](/NebulaLogger/logging-guide/lwc/), [Aura](/NebulaLogger/logging-guide/aura/), [Flow](/NebulaLogger/logging-guide/flow/), [OmniStudio](/NebulaLogger/logging-guide/omnistudio/)) show what this looks like in each context.
 
 ## Logging levels
 
@@ -21,7 +21,7 @@ Every context supports the same seven levels:
 
 `ERROR`, `WARN`, `INFO`, `DEBUG`, `FINE`, `FINER`, `FINEST`.
 
-Which levels actually persist depends on the effective `LoggerSettings__c.LoggingLevel__c` for the user. If the user's effective level is `WARN`, then `INFO` / `DEBUG` / `FINE` / `FINER` / `FINEST` calls are dropped at the framework level - no CPU spent, no record inserted. See [Configuration - Logging levels](/configuration/logging-levels/) for the full precedence.
+Which levels actually persist depends on the effective `LoggerSettings__c.LoggingLevel__c` for the user. If the user's effective level is `WARN`, then `INFO` / `DEBUG` / `FINE` / `FINER` / `FINEST` calls are dropped at the framework level - no CPU spent, no record inserted. See [Configuration - Logging levels](/NebulaLogger/configuration/logging-levels/) for the full precedence.
 
 Rule of thumb:
 
@@ -38,7 +38,7 @@ Because the buffer lives in memory, it is accessible during a test:
 - `Logger.flushBuffer()` - drop the buffer without persisting.
 - `Logger.suspendSaving()` / `Logger.resumeSaving()` - gate persistence temporarily.
 
-See [Testing your instrumentation](/logging-guide/testing/) for how to use these in tests.
+See [Testing your instrumentation](/NebulaLogger/logging-guide/testing/) for how to use these in tests.
 
 ## Save methods
 
@@ -49,7 +49,7 @@ See [Testing your instrumentation](/logging-guide/testing/) for how to use these
 - **`REST`** - synchronous callout to the org's REST API.
 - **`SYNCHRONOUS_DML`** - direct DML, skipping the platform event.
 
-Override globally on `LoggerSettings__c.DefaultSaveMethod__c` or per-call via `Logger.saveLog(SaveMethod.QUEUEABLE)`. See [Configuration - Save methods](/configuration/logger-settings/#save-method) for the trade-offs.
+Override globally on `LoggerSettings__c.DefaultSaveMethod__c` or per-call via `Logger.saveLog(SaveMethod.QUEUEABLE)`. See [Configuration - Save methods](/NebulaLogger/configuration/logger-settings/#save-method) for the trade-offs.
 
 ## Scenarios
 
@@ -57,7 +57,7 @@ A **scenario** groups an entire transaction under a business process name (e.g. 
 
 - Set once per transaction: `Logger.setScenario('Order Fulfillment')` (or `logger.setScenario(...)` in LWC).
 - Every entry in the transaction inherits the scenario.
-- Scenarios drive per-scenario retention overrides via `LoggerScenarioRule__mdt` - see [Retention & Purging](/retention/retention-dates/).
+- Scenarios drive per-scenario retention overrides via `LoggerScenarioRule__mdt` - see [Retention & Purging](/NebulaLogger/retention/retention-dates/).
 
 ## Tags
 
@@ -67,7 +67,7 @@ A **tag** labels a specific entry (not the whole transaction).
 - Multiple tags per entry are supported: chain `.addTag('inventory').addTag('customer-onboarding')`.
 - Tags are stored as `LoggerTag__c` records joined to entries via `LogEntryTag__c`. New tag names auto-create new `LoggerTag__c` records.
 
-A common team convention is a controlled tag taxonomy: `domain:*`, `feature:*`, `incident:*`. See [Tags in depth](/logging-guide/tags/).
+A common team convention is a controlled tag taxonomy: `domain:*`, `feature:*`, `incident:*`. See [Tags in depth](/NebulaLogger/logging-guide/tags/).
 
 ## Record association
 
@@ -79,7 +79,7 @@ Logger.info('Credit check completed').setRecord(account);
 
 `.setRecord(...)` captures a JSON snapshot of the record's state at log time. The log entry page renders both the current record and the snapshot, so investigating an old log shows what the record looked like _then_.
 
-Overloads: `SObject`, `Id`, `List<SObject>`, `Map<Id, SObject>`, `System.Iterable<Id>`, and `setRecordId(Id)`. See [Apex logging](/logging-guide/apex/#attaching-records) for the full list.
+Overloads: `SObject`, `Id`, `List<SObject>`, `Map<Id, SObject>`, `System.Iterable<Id>`, and `setRecordId(Id)`. See [Apex logging](/NebulaLogger/logging-guide/apex/#attaching-records) for the full list.
 
 ## Async transaction linking
 
@@ -89,13 +89,13 @@ Async work (batch, queueable, scheduled) runs in a new Apex transaction, which p
 2. Pass it to the child.
 3. Call `Logger.setParentLogTransactionId(parentId)` at the top of the child transaction.
 
-The child `Log__c` populates `ParentLog__c` pointing at the parent, so the console can walk the chain. See [Apex logging - Async parent/child linking](/logging-guide/apex/#async-parentchild-linking) for a complete example.
+The child `Log__c` populates `ParentLog__c` pointing at the parent, so the console can walk the chain. See [Apex logging - Async parent/child linking](/NebulaLogger/logging-guide/apex/#async-parentchild-linking) for a complete example.
 
 ## Where next
 
-- [Apex](/logging-guide/apex/) - level methods, exception handling, record association, async linking.
-- [Lightning Web Components](/logging-guide/lwc/) - the `c/logger` module.
-- [Aura](/logging-guide/aura/) - `<c:logger>` component.
-- [Flow](/logging-guide/flow/) - the four invocable actions.
-- [OmniStudio](/logging-guide/omnistudio/) - Remote Action steps.
-- [Testing your instrumentation](/logging-guide/testing/) - assert on the buffer and on persisted records.
+- [Apex](/NebulaLogger/logging-guide/apex/) - level methods, exception handling, record association, async linking.
+- [Lightning Web Components](/NebulaLogger/logging-guide/lwc/) - the `c/logger` module.
+- [Aura](/NebulaLogger/logging-guide/aura/) - `<c:logger>` component.
+- [Flow](/NebulaLogger/logging-guide/flow/) - the four invocable actions.
+- [OmniStudio](/NebulaLogger/logging-guide/omnistudio/) - Remote Action steps.
+- [Testing your instrumentation](/NebulaLogger/logging-guide/testing/) - assert on the buffer and on persisted records.

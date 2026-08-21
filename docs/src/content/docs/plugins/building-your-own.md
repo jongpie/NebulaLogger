@@ -128,5 +128,5 @@ Before shipping:
 
 ## Where next
 
-- [Plugin framework overview](/plugins/overview/) - interface details.
-- Existing plugins to read for reference: [Slack](/plugins/slack/), [Big Object Archiving](/plugins/big-object-archiving/), [Log Retention Rules](/plugins/log-retention-rules/), [Async Failure Additions](/plugins/async-failure-additions/).
+- [Plugin framework overview](/NebulaLogger/plugins/overview/) - interface details.
+- Existing plugins to read for reference: [Slack](/NebulaLogger/plugins/slack/), [Big Object Archiving](/NebulaLogger/plugins/big-object-archiving/), [Log Retention Rules](/NebulaLogger/plugins/log-retention-rules/), [Async Failure Additions](/NebulaLogger/plugins/async-failure-additions/).

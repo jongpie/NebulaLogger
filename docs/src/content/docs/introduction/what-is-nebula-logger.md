@@ -39,7 +39,7 @@ Nebula Logger gives teams a consistent, queryable logging model that survives pa
 
 ## Where next
 
-- [How it works](/introduction/how-it-works/) - the architecture.
-- [Feature tour](/introduction/feature-tour/) - a walkthrough of the shipped features.
-- [Package options](/introduction/package-options/) - unlocked vs managed vs bundled.
-- [Getting Started](/getting-started/install-unlocked/) - install and configure.
+- [How it works](/NebulaLogger/introduction/how-it-works/) - the architecture.
+- [Feature tour](/NebulaLogger/introduction/feature-tour/) - a walkthrough of the shipped features.
+- [Package options](/NebulaLogger/introduction/package-options/) - unlocked vs managed vs bundled.
+- [Getting Started](/NebulaLogger/getting-started/install-unlocked/) - install and configure.

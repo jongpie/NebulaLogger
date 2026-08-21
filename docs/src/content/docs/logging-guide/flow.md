@@ -68,6 +68,6 @@ Every path through the Flow that added entries needs to hit `Save Log`. Miss a p
 
 ## Where next
 
-- [Concepts](/logging-guide/concepts/) - the core model these actions implement.
-- [Scenarios](/logging-guide/scenarios/) - grouping Flow-driven transactions under a business process.
-- [Tags](/logging-guide/tags/) - tag taxonomy conventions.
+- [Concepts](/NebulaLogger/logging-guide/concepts/) - the core model these actions implement.
+- [Scenarios](/NebulaLogger/logging-guide/scenarios/) - grouping Flow-driven transactions under a business process.
+- [Tags](/NebulaLogger/logging-guide/tags/) - tag taxonomy conventions.

@@ -5,7 +5,7 @@ description: Configuring LogEntryDataMaskRule__mdt records to redact sensitive s
 
 Nebula Logger masks sensitive substrings in log entries via regex rules stored in `LogEntryDataMaskRule__mdt`. Masking runs _before_ entries are persisted, so masked values never reach `LogEntry__c`.
 
-See [Logging Guide - Data masking](/logging-guide/data-masking/) for the user-facing narrative. This page focuses on the configuration surface.
+See [Logging Guide - Data masking](/NebulaLogger/logging-guide/data-masking/) for the user-facing narrative. This page focuses on the configuration surface.
 
 ## Rule fields
 
@@ -50,5 +50,5 @@ If a shipped rule is too aggressive or not aggressive enough for your org, edit 
 
 ## Where next
 
-- [Logging Guide - Data masking](/logging-guide/data-masking/) - the same content in the logging-guide section.
-- [`LogEntryDataMaskRule__mdt` reference](/reference/custom-objects/logentrydatamaskrule__mdt/) - full field list.
+- [Logging Guide - Data masking](/NebulaLogger/logging-guide/data-masking/) - the same content in the logging-guide section.
+- [`LogEntryDataMaskRule__mdt` reference](/NebulaLogger/reference/custom-objects/logentrydatamaskrule__mdt/) - full field list.

@@ -82,5 +82,5 @@ E2e is the one that gets skipped most often because it's slow - don't skip it. I
 
 ## Where next
 
-- [Repo layout](/contributing/repo-layout/) - where test files live.
-- [PR conventions](/contributing/pr-conventions/) - commit and PR style.
+- [Repo layout](/NebulaLogger/contributing/repo-layout/) - where test files live.
+- [PR conventions](/NebulaLogger/contributing/pr-conventions/) - commit and PR style.

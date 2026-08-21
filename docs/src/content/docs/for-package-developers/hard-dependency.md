@@ -11,7 +11,7 @@ If you want to guarantee Nebula Logger is present in every customer's org - not 
 - Your customer support workflow assumes Nebula Logger is installed everywhere.
 - You want to reference `Logger.info(...)` etc. directly in your Apex, without the `CallableLogger` indirection.
 
-If any of those don't apply, [optional dependency via Callable](/for-package-developers/optional-dependency/) is usually better - it gives customers the choice.
+If any of those don't apply, [optional dependency via Callable](/NebulaLogger/for-package-developers/optional-dependency/) is usually better - it gives customers the choice.
 
 ## Declaring the dependency
 
@@ -52,6 +52,6 @@ Choose based on your release cadence and how much you rely on Nebula Logger inte
 
 ## Where next
 
-- [Optional dependency via Callable](/for-package-developers/optional-dependency/) - the alternative.
-- [No dependency (bundling)](/for-package-developers/no-dependency/) - copy metadata into your project.
-- [Package options](/introduction/package-options/) - unlocked vs managed vs bundled comparison.
+- [Optional dependency via Callable](/NebulaLogger/for-package-developers/optional-dependency/) - the alternative.
+- [No dependency (bundling)](/NebulaLogger/for-package-developers/no-dependency/) - copy metadata into your project.
+- [Package options](/NebulaLogger/introduction/package-options/) - unlocked vs managed vs bundled comparison.

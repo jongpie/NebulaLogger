@@ -58,7 +58,7 @@ Each level method has overloads for common enrichment patterns:
 - `Logger.error(String message, System.Exception ex)`
 - `Logger.error(String message, Database.SaveResult saveResult)`
 
-See the [`Logger` reference](/reference/logger-engine/logger/) for the full list.
+See the [`Logger` reference](/NebulaLogger/reference/logger-engine/logger/) for the full list.
 
 ## Exception logging
 
@@ -145,7 +145,7 @@ LogMessage logMessage = new LogMessage('Processed {0} records with {1} errors', 
 Logger.fine(logMessage);
 ```
 
-There are constructors for zero through five arguments, plus a `List<Object>` variant for more. See the [`LogMessage` reference](/reference/logger-engine/logmessage/).
+There are constructors for zero through five arguments, plus a `List<Object>` variant for more. See the [`LogMessage` reference](/NebulaLogger/reference/logger-engine/logmessage/).
 
 ## Transaction controls
 
@@ -157,7 +157,7 @@ Occasionally you need finer control over the buffer than `saveLog()` gives you.
 - `Logger.setSaveMethod(SaveMethod)` - overrides the default for the rest of the transaction.
 - `Logger.saveLog(SaveMethod)` - overrides the save method for just this call.
 
-See [Concepts - Save methods](/logging-guide/concepts/#save-methods) for the trade-offs of each method.
+See [Concepts - Save methods](/NebulaLogger/logging-guide/concepts/#save-methods) for the trade-offs of each method.
 
 ## Async parent/child linking
 
@@ -228,7 +228,7 @@ Customize the format of the auto-emitted debug string via `LoggerSettings__c.Sys
 
 ## Where next
 
-- [Testing your instrumentation](/logging-guide/testing/) - asserting on buffered and persisted entries in tests.
-- [Scenarios](/logging-guide/scenarios/) - grouping transactions by business process.
-- [Tags](/logging-guide/tags/) - labeling individual entries.
-- [`Logger` reference](/reference/logger-engine/logger/) - the full API surface.
+- [Testing your instrumentation](/NebulaLogger/logging-guide/testing/) - asserting on buffered and persisted entries in tests.
+- [Scenarios](/NebulaLogger/logging-guide/scenarios/) - grouping transactions by business process.
+- [Tags](/NebulaLogger/logging-guide/tags/) - labeling individual entries.
+- [`Logger` reference](/NebulaLogger/reference/logger-engine/logger/) - the full API surface.

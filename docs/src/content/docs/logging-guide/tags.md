@@ -88,5 +88,5 @@ Don't overload one axis to do another's job. If you find yourself using tags to 
 
 ## Where next
 
-- [Scenarios](/logging-guide/scenarios/) - the transaction-level counterpart.
-- [Console & Operations](/console/logger-console-app/) - filtering by tag in the console.
+- [Scenarios](/NebulaLogger/logging-guide/scenarios/) - the transaction-level counterpart.
+- [Console & Operations](/NebulaLogger/console/logger-console-app/) - filtering by tag in the console.

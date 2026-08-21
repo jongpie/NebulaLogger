@@ -46,6 +46,6 @@ Together, these give an admin one page to answer "is logging healthy right now, 
 
 ## Where next
 
-- [Log record page](/console/log-record-page/) - the shipped record page for `Log__c`.
-- [Related Log Entries component](/console/related-log-entries/) - embed on any Lightning record page.
-- [Investigation playbooks](/console/investigation-playbooks/) - concrete workflows for common tasks.
+- [Log record page](/NebulaLogger/console/log-record-page/) - the shipped record page for `Log__c`.
+- [Related Log Entries component](/NebulaLogger/console/related-log-entries/) - embed on any Lightning record page.
+- [Investigation playbooks](/NebulaLogger/console/investigation-playbooks/) - concrete workflows for common tasks.

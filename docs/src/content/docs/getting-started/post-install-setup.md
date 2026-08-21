@@ -99,6 +99,6 @@ The `Log__c` record should exist with a populated `LogRetentionDate__c`. If it d
 
 ## Where next
 
-- [Logging Guide - Concepts](/logging-guide/concepts/) - the core model with code examples.
-- [Console & Operations](/console/logger-console-app/) - what the console app gives you.
-- [Configuration](/configuration/logger-settings/) - deeper `LoggerSettings__c` documentation.
+- [Logging Guide - Concepts](/NebulaLogger/logging-guide/concepts/) - the core model with code examples.
+- [Console & Operations](/NebulaLogger/console/logger-console-app/) - what the console app gives you.
+- [Configuration](/NebulaLogger/configuration/logger-settings/) - deeper `LoggerSettings__c` documentation.

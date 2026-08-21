@@ -5,7 +5,7 @@
 
 The most robust observability solution for Salesforce experts. Built 100% natively on the platform, and designed to work seamlessly with Apex, Lightning Components, Flow, OmniStudio, and integrations.
 
-**Full documentation: [nebulalogger.com](https://nebulalogger.com)**
+**Full documentation: [jongpie.github.io/NebulaLogger](https://jongpie.github.io/NebulaLogger)**
 
 ## Install
 
@@ -27,7 +27,7 @@ sf package install --wait 20 --security-type AdminsOnly --package 04tg7000000HNr
 sf package install --wait 30 --security-type AdminsOnly --package 04tg7000000GZbJAAW
 ```
 
-Choose the unlocked package unless you specifically need a namespaced install. See [Package options](https://nebulalogger.com/introduction/package-options/) for the full comparison.
+Choose the unlocked package unless you specifically need a namespaced install. See [Package options](https://jongpie.github.io/NebulaLogger/introduction/package-options/) for the full comparison.
 
 ## AI agent skills
 
@@ -37,11 +37,11 @@ Nebula Logger ships [Agent Skills](https://www.skills.sh/docs) that teach Claude
 npx skills add jongpie/NebulaLogger
 ```
 
-See [AI Agent Skills](https://nebulalogger.com/ai-agent-skills/installing/) for what's included.
+See [AI Agent Skills](https://jongpie.github.io/NebulaLogger/ai-agent-skills/installing/) for what's included.
 
 ## Contributing
 
-Fork the repo, work in a `feature/*` or `bugfix/*` branch, open a PR against `main`. See [Contributing](https://nebulalogger.com/contributing/repo-layout/) for local setup, testing, and PR conventions. AI coding agents should also read [CLAUDE.md](CLAUDE.md).
+Fork the repo, work in a `feature/*` or `bugfix/*` branch, open a PR against `main`. See [Contributing](https://jongpie.github.io/NebulaLogger/contributing/repo-layout/) for local setup, testing, and PR conventions. AI coding agents should also read [CLAUDE.md](CLAUDE.md).
 
 ## License
 

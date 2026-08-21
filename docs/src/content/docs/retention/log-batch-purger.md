@@ -3,7 +3,7 @@ title: LogBatchPurger
 description: The batch job that deletes or archives logs whose LogRetentionDate__c has passed.
 ---
 
-`LogBatchPurger` is the Apex batch job that acts on retention dates. It queries for logs whose `LogRetentionDate__c` is past-due and runs the configured [purge action](/retention/purge-actions/) on each.
+`LogBatchPurger` is the Apex batch job that acts on retention dates. It queries for logs whose `LogRetentionDate__c` is past-due and runs the configured [purge action](/NebulaLogger/retention/purge-actions/) on each.
 
 ## The batch does not run automatically
 
@@ -60,10 +60,10 @@ The Logger Console home page has a **`logBatchPurge`** component that triggers t
 
 ## What happens to each record
 
-The purge **action** determines the fate of each aged-out record. See [Purge actions](/retention/purge-actions/) for the options - by default, records are hard-deleted (no Recycle Bin).
+The purge **action** determines the fate of each aged-out record. See [Purge actions](/NebulaLogger/retention/purge-actions/) for the options - by default, records are hard-deleted (no Recycle Bin).
 
 ## Where next
 
-- [Purge actions](/retention/purge-actions/) - options for what happens when a log ages out.
-- [Log Retention Rules plugin](/plugins/log-retention-rules/) - CMDT-driven retention overrides.
-- [`LogBatchPurger` reference](/reference/) - class-level details (see the Reference section).
+- [Purge actions](/NebulaLogger/retention/purge-actions/) - options for what happens when a log ages out.
+- [Log Retention Rules plugin](/NebulaLogger/plugins/log-retention-rules/) - CMDT-driven retention overrides.
+- [`LogBatchPurger` reference](/NebulaLogger/reference/) - class-level details (see the Reference section).

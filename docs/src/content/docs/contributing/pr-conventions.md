@@ -42,7 +42,7 @@ Never write raw `insert x;` / `update x;` / etc. in Nebula Logger Apex - main co
 
 ## Testing
 
-Every code change ships with tests. See [Testing](/contributing/testing/).
+Every code change ships with tests. See [Testing](/NebulaLogger/contributing/testing/).
 
 - Apex: `Foo_Tests.cls` with `it_should_*` methods.
 - LWC: colocated `__tests__/foo.test.js` using `sfdx-lwc-jest`.
@@ -81,6 +81,6 @@ Passes if the docs are already up-to-date. Fails and prints the diff if not.
 
 ## Where next
 
-- [Repo layout](/contributing/repo-layout/).
-- [Local development setup](/contributing/local-setup/).
-- [Testing](/contributing/testing/).
+- [Repo layout](/NebulaLogger/contributing/repo-layout/).
+- [Local development setup](/NebulaLogger/contributing/local-setup/).
+- [Testing](/NebulaLogger/contributing/testing/).

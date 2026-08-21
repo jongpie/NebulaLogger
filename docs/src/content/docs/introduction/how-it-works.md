@@ -57,6 +57,6 @@ The child `Log__c` populates `ParentLog__c` pointing at the parent, so the conso
 
 ## Where next
 
-- [Feature tour](/introduction/feature-tour/) - a broader walkthrough.
-- [Concepts](/logging-guide/concepts/) - the runtime model with code examples.
-- [Configuration](/configuration/logger-settings/) - the settings hierarchy in depth.
+- [Feature tour](/NebulaLogger/introduction/feature-tour/) - a broader walkthrough.
+- [Concepts](/NebulaLogger/logging-guide/concepts/) - the runtime model with code examples.
+- [Configuration](/NebulaLogger/configuration/logger-settings/) - the settings hierarchy in depth.

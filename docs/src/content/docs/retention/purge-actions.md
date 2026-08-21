@@ -13,7 +13,7 @@ description: What LogBatchPurger does when a log ages out - and how plugins can 
 
 Plugins can register additional purge actions. When installed, their action value becomes selectable in `LoggerSettings__c.DefaultLogPurgeAction__c`.
 
-- **Big Object Archiving plugin** - adds an `Archive` action that copies logs to a `LogEntryArchive__b` big object _before_ deletion, so the data remains queryable long-term. See [Big Object Archiving plugin](/plugins/big-object-archiving/).
+- **Big Object Archiving plugin** - adds an `Archive` action that copies logs to a `LogEntryArchive__b` big object _before_ deletion, so the data remains queryable long-term. See [Big Object Archiving plugin](/NebulaLogger/plugins/big-object-archiving/).
 
 ## Choosing an action per log
 
@@ -29,6 +29,6 @@ Admins with edit access on `Log__c` can change `LogPurgeAction__c` on an individ
 
 ## Where next
 
-- [Retention date semantics](/retention/retention-dates/) - how retention dates get populated.
-- [LogBatchPurger](/retention/log-batch-purger/) - the batch that acts on retention.
-- [Big Object Archiving plugin](/plugins/big-object-archiving/) - the archival plugin.
+- [Retention date semantics](/NebulaLogger/retention/retention-dates/) - how retention dates get populated.
+- [LogBatchPurger](/NebulaLogger/retention/log-batch-purger/) - the batch that acts on retention.
+- [Big Object Archiving plugin](/NebulaLogger/plugins/big-object-archiving/) - the archival plugin.

@@ -32,5 +32,5 @@ Filters on the dashboard let admins scope by:
 
 ## Where next
 
-- [Big Object Archiving plugin](/plugins/big-object-archiving/) - offload aged data to keep storage bounded.
-- [Configuration - Environment defaults](/configuration/environment-defaults/) - tuning verbosity based on what the dashboard shows.
+- [Big Object Archiving plugin](/NebulaLogger/plugins/big-object-archiving/) - offload aged data to keep storage bounded.
+- [Configuration - Environment defaults](/NebulaLogger/configuration/environment-defaults/) - tuning verbosity based on what the dashboard shows.

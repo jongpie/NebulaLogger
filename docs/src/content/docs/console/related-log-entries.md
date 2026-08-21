@@ -40,5 +40,5 @@ Clicking through to a specific entry drills into the standard `LogEntry__c` reco
 
 ## Where next
 
-- [Logging Guide - Apex - Attaching records](/logging-guide/apex/#attaching-records) - how entries get associated with a record.
-- [`relatedLogEntries` reference](/reference/lwc/) - LWC API reference.
+- [Logging Guide - Apex - Attaching records](/NebulaLogger/logging-guide/apex/#attaching-records) - how entries get associated with a record.
+- [`relatedLogEntries` reference](/NebulaLogger/reference/lwc/) - LWC API reference.

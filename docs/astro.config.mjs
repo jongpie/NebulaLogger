@@ -3,7 +3,8 @@ import starlight from '@astrojs/starlight';
 import mdx from '@astrojs/mdx';
 
 export default defineConfig({
-  site: 'https://nebulalogger.com',
+  site: 'https://jongpie.github.io',
+  base: '/NebulaLogger',
   integrations: [
     starlight({
       title: 'Nebula Logger',

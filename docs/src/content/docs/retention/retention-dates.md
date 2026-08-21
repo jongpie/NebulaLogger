@@ -22,7 +22,7 @@ If neither yields a value, `LogRetentionDate__c` is left null and the log is nev
 
 ## What "eligible" means
 
-`LogBatchPurger` (see [LogBatchPurger](/retention/log-batch-purger/)) queries for eligible logs and runs the configured **purge action** (see [Purge actions](/retention/purge-actions/)) on each.
+`LogBatchPurger` (see [LogBatchPurger](/NebulaLogger/retention/log-batch-purger/)) queries for eligible logs and runs the configured **purge action** (see [Purge actions](/NebulaLogger/retention/purge-actions/)) on each.
 
 If no `LogBatchPurger` is scheduled, retention dates are populated but nothing acts on them. That is the single most common cause of "we set retention to 30 days but logs from six months ago are still there."
 
@@ -33,7 +33,7 @@ Two supported mechanisms:
 - **Per-scenario via `LoggerScenarioRule__mdt`** - the intended path for policy-level overrides. Regulated processes (keep 7 years) or high-volume test scenarios (purge in 24 hours) fit here.
 - **Direct edit** - admins with edit access on `Log__c` can change `LogRetentionDate__c` on an individual record. Useful for holding onto a specific log longer than default (e.g. an incident record).
 
-For bulk overrides beyond scenario rules, install the [Log Retention Rules plugin](/plugins/log-retention-rules/), which adds a CMDT-driven rule engine that sets retention based on log attributes.
+For bulk overrides beyond scenario rules, install the [Log Retention Rules plugin](/NebulaLogger/plugins/log-retention-rules/), which adds a CMDT-driven rule engine that sets retention based on log attributes.
 
 ## Verifying retention is working
 
@@ -50,6 +50,6 @@ If `LogRetentionDate__c` is null, either `LoggerSettings__c.DefaultNumberOfDaysT
 
 ## Where next
 
-- [LogBatchPurger](/retention/log-batch-purger/) - the batch job that acts on retention dates.
-- [Purge actions](/retention/purge-actions/) - what happens when a log ages out.
-- [Log Retention Rules plugin](/plugins/log-retention-rules/) - CMDT-driven retention overrides.
+- [LogBatchPurger](/NebulaLogger/retention/log-batch-purger/) - the batch job that acts on retention dates.
+- [Purge actions](/NebulaLogger/retention/purge-actions/) - what happens when a log ages out.
+- [Log Retention Rules plugin](/NebulaLogger/plugins/log-retention-rules/) - CMDT-driven retention overrides.

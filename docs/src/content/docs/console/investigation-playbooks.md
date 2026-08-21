@@ -48,5 +48,5 @@ Start with the shipped list views and narrow with column filters before creating
 
 ## Where next
 
-- [Logger Console app](/console/logger-console-app/) - the console tour.
-- [Log record page](/console/log-record-page/) - what each `Log__c` and `LogEntry__c` page shows.
+- [Logger Console app](/NebulaLogger/console/logger-console-app/) - the console tour.
+- [Log record page](/NebulaLogger/console/log-record-page/) - what each `Log__c` and `LogEntry__c` page shows.

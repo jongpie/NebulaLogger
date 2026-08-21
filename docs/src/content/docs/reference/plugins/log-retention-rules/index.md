@@ -8,10 +8,10 @@ description: >-
 Auto-generated reference for the **log-retention-rules** plugin.
 
 :::caution[Unlocked package only]
-The log-retention-rules plugin's Apex API is exposed as `public` (not `global`) and is only available in the [unlocked package](/introduction/package-options/). `public` API is not covered by Nebula Logger's global compatibility guarantees - classes, methods, and fields on this page can change, be renamed, or be removed in a future release without a deprecation window. Pin plugin versions you've tested against and re-verify after upgrades.
+The log-retention-rules plugin's Apex API is exposed as `public` (not `global`) and is only available in the [unlocked package](/NebulaLogger/introduction/package-options/). `public` API is not covered by Nebula Logger's global compatibility guarantees - classes, methods, and fields on this page can change, be renamed, or be removed in a future release without a deprecation window. Pin plugin versions you've tested against and re-verify after upgrades.
 :::
 
-For install, configuration, and usage guidance, see the [log-retention-rules plugin narrative](/plugins/log-retention-rules/).
+For install, configuration, and usage guidance, see the [log-retention-rules plugin narrative](/NebulaLogger/plugins/log-retention-rules/).
 
 ---
 

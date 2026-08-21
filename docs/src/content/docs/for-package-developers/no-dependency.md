@@ -22,7 +22,7 @@ Choose bundling when you specifically need a single artifact and can absorb the 
 3. Add the copied directory as a `packageDirectories` entry in your `sfdx-project.json`.
 4. Deploy as normal: `sf project deploy start --source-dir <your-copied-path>`.
 5. Assign the shipped permission sets (`LoggerAdmin`, `LoggerLogViewer`, `LoggerEndUser`, `LoggerLogCreator`).
-6. Configure `LoggerSettings__c` at the org default level (see [Post-install setup](/getting-started/post-install-setup/)).
+6. Configure `LoggerSettings__c` at the org default level (see [Post-install setup](/NebulaLogger/getting-started/post-install-setup/)).
 
 ## Upgrading
 
@@ -41,6 +41,6 @@ The `nebula-logger/core/main/` directory is written for the unlocked (no-namespa
 
 ## Where next
 
-- [Optional dependency via Callable](/for-package-developers/optional-dependency/) - if you can accept optional logging.
-- [Hard dependency](/for-package-developers/hard-dependency/) - if you want automatic upgrades.
-- [Getting Started - Bundle without a dependency](/getting-started/bundle-without-dependency/) - the same content from the getting-started view.
+- [Optional dependency via Callable](/NebulaLogger/for-package-developers/optional-dependency/) - if you can accept optional logging.
+- [Hard dependency](/NebulaLogger/for-package-developers/hard-dependency/) - if you want automatic upgrades.
+- [Getting Started - Bundle without a dependency](/NebulaLogger/getting-started/bundle-without-dependency/) - the same content from the getting-started view.

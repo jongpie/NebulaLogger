@@ -3,7 +3,7 @@ title: Install the managed package
 description: How to install the Nebula Logger managed package (namespace Nebula) in a Salesforce sandbox or production org.
 ---
 
-The managed package installs under the `Nebula` namespace. Choose it only when you need namespace isolation - for AppExchange delivery or org policies that require it. Otherwise install the [unlocked package](/getting-started/install-unlocked/) instead.
+The managed package installs under the `Nebula` namespace. Choose it only when you need namespace isolation - for AppExchange delivery or org policies that require it. Otherwise install the [unlocked package](/NebulaLogger/getting-started/install-unlocked/) instead.
 
 Always confirm the current version on the [GitHub releases page](https://github.com/jongpie/NebulaLogger/releases) before installing.
 
@@ -59,5 +59,5 @@ Uninstalling deletes every `Nebula__Log__c`, `Nebula__LogEntry__c`, `Nebula__Log
 
 ## Where next
 
-- [Post-install setup](/getting-started/post-install-setup/) - permissions, `LoggerSettings__c`, and verification.
-- [Package options](/introduction/package-options/) - unlocked vs managed vs bundled comparison.
+- [Post-install setup](/NebulaLogger/getting-started/post-install-setup/) - permissions, `LoggerSettings__c`, and verification.
+- [Package options](/NebulaLogger/introduction/package-options/) - unlocked vs managed vs bundled comparison.

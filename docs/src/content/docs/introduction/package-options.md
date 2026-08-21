@@ -26,7 +26,7 @@ Start here unless you have a hard reason not to. The unlocked package:
 - Includes the plugin framework, so all the shipped plugins and any you write yourself work.
 - Is the reference implementation - if a feature exists in Nebula Logger, it exists here first.
 
-Install steps: see [Install the unlocked package](/getting-started/install-unlocked/).
+Install steps: see [Install the unlocked package](/NebulaLogger/getting-started/install-unlocked/).
 
 ## Managed package
 
@@ -43,7 +43,7 @@ Tradeoffs:
 
 All Nebula Logger APIs referenced in this documentation are `global`, so they are available in both packages. Prefix them with `Nebula.` in the managed package (`Nebula.Logger.info(...)`).
 
-Install steps: see [Install the managed package](/getting-started/install-managed/).
+Install steps: see [Install the managed package](/NebulaLogger/getting-started/install-managed/).
 
 ## Bundle without a package
 
@@ -53,14 +53,14 @@ If you need full control over what deploys and are willing to own the upgrade pa
 - You are responsible for pulling in updates - no automatic upgrade path.
 - Ideal for teams that want to ship a single deployment artifact.
 
-Install steps: see [Bundle without a dependency](/getting-started/bundle-without-dependency/).
+Install steps: see [Bundle without a dependency](/NebulaLogger/getting-started/bundle-without-dependency/).
 
 ## For ISVs and package developers
 
-If you are building your own package and want to _optionally_ use Nebula Logger when it's installed in a customer's org - without forcing customers to install it - use `CallableLogger`. Your package compiles and installs cleanly whether Nebula Logger is present or not. See [Optional dependency via Callable](/for-package-developers/optional-dependency/).
+If you are building your own package and want to _optionally_ use Nebula Logger when it's installed in a customer's org - without forcing customers to install it - use `CallableLogger`. Your package compiles and installs cleanly whether Nebula Logger is present or not. See [Optional dependency via Callable](/NebulaLogger/for-package-developers/optional-dependency/).
 
 ## Where next
 
-- [Install the unlocked package](/getting-started/install-unlocked/) - the recommended path.
-- [Install the managed package](/getting-started/install-managed/) - namespaced install.
-- [Bundle without a dependency](/getting-started/bundle-without-dependency/) - copy metadata into your project.
+- [Install the unlocked package](/NebulaLogger/getting-started/install-unlocked/) - the recommended path.
+- [Install the managed package](/NebulaLogger/getting-started/install-managed/) - namespaced install.
+- [Bundle without a dependency](/NebulaLogger/getting-started/bundle-without-dependency/) - copy metadata into your project.

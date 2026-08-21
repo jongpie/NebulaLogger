@@ -19,7 +19,7 @@ If scenario rules cover your needs, you don't need this plugin.
 
 ## Installation
 
-The Log Retention Rules plugin ships as its own unlocked package. See the [plugin page](/plugins/log-retention-rules/) in the Plugins section for install details.
+The Log Retention Rules plugin ships as its own unlocked package. See the [plugin page](/NebulaLogger/plugins/log-retention-rules/) in the Plugins section for install details.
 
 ## Rule model
 
@@ -32,6 +32,6 @@ Each `LogRetentionRule__mdt` record defines one rule. Fields (subject to change 
 
 ## Where next
 
-- [Retention date semantics](/retention/retention-dates/) - how retention gets set in the first place.
-- [Plugins - Log Retention Rules](/plugins/log-retention-rules/) - the plugin's own page.
-- [Log Retention Rules plugin reference](/reference/plugins/log-retention-rules/) - auto-generated Apex + CMDT reference.
+- [Retention date semantics](/NebulaLogger/retention/retention-dates/) - how retention gets set in the first place.
+- [Plugins - Log Retention Rules](/NebulaLogger/plugins/log-retention-rules/) - the plugin's own page.
+- [Log Retention Rules plugin reference](/NebulaLogger/reference/plugins/log-retention-rules/) - auto-generated Apex + CMDT reference.

@@ -81,5 +81,5 @@ The shipped pages remain the default for other apps and profiles.
 
 ## Where next
 
-- [Related Log Entries component](/console/related-log-entries/) - reuse the entry list on any record page.
-- [Investigation playbooks](/console/investigation-playbooks/) - workflows using these pages.
+- [Related Log Entries component](/NebulaLogger/console/related-log-entries/) - reuse the entry list on any record page.
+- [Investigation playbooks](/NebulaLogger/console/investigation-playbooks/) - workflows using these pages.

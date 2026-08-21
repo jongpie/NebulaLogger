@@ -44,4 +44,4 @@ The skills.sh convention is agent-agnostic - any agent that reads the manifest c
 
 ## Where next
 
-- [Skill catalog](/ai-agent-skills/catalog/) - what each skill covers.
+- [Skill catalog](/NebulaLogger/ai-agent-skills/catalog/) - what each skill covers.

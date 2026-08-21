@@ -118,11 +118,11 @@ jest.mock('c/logger', () => ({
 }));
 ```
 
-Assert on the arguments passed to logger methods (`toHaveBeenCalledWith(...)`), not just that they were called. `toHaveBeenCalled()` alone lets regressions slip through where the message text is dropped or garbled. See [Testing your instrumentation](/logging-guide/testing/) for the full pattern.
+Assert on the arguments passed to logger methods (`toHaveBeenCalledWith(...)`), not just that they were called. `toHaveBeenCalled()` alone lets regressions slip through where the message text is dropped or garbled. See [Testing your instrumentation](/NebulaLogger/logging-guide/testing/) for the full pattern.
 
 ## Where next
 
-- [Aura](/logging-guide/aura/) - the equivalent for Aura components.
-- [Testing your instrumentation](/logging-guide/testing/) - jest mocking patterns.
-- [`logger` LWC reference](/reference/lwc/logger/) - the exported API.
-- [`logEntryBuilder` LWC reference](/reference/lwc/logentrybuilder/) - the builder returned by level methods.
+- [Aura](/NebulaLogger/logging-guide/aura/) - the equivalent for Aura components.
+- [Testing your instrumentation](/NebulaLogger/logging-guide/testing/) - jest mocking patterns.
+- [`logger` LWC reference](/NebulaLogger/reference/lwc/logger/) - the exported API.
+- [`logEntryBuilder` LWC reference](/NebulaLogger/reference/lwc/logentrybuilder/) - the builder returned by level methods.

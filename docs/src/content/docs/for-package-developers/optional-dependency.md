@@ -94,6 +94,6 @@ Every action accepts a `Map<String, Object>` input and returns a `Map<String, Ob
 
 ## Where next
 
-- [Hard dependency](/for-package-developers/hard-dependency/) - if you want to require Nebula Logger.
-- [No dependency (bundling)](/for-package-developers/no-dependency/) - if you want to ship a copy in your own package.
-- [`CallableLogger` reference](/reference/logger-engine/callablelogger/) - full API.
+- [Hard dependency](/NebulaLogger/for-package-developers/hard-dependency/) - if you want to require Nebula Logger.
+- [No dependency (bundling)](/NebulaLogger/for-package-developers/no-dependency/) - if you want to ship a copy in your own package.
+- [`CallableLogger` reference](/NebulaLogger/reference/logger-engine/callablelogger/) - full API.

@@ -15,7 +15,7 @@ Groupings:
 - **lwc** - `logger` and `logEntryBuilder` client-side APIs.
 - **plugins** - reference for each official plugin under `nebula-logger/plugins/`. Public API, unlocked-package only.
 
-For narrative and code examples, see the [Logging Guide](/logging-guide/concepts/).
+For narrative and code examples, see the [Logging Guide](/NebulaLogger/logging-guide/concepts/).
 
 ---
 

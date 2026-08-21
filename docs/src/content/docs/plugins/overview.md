@@ -77,5 +77,5 @@ Leave whichever fields aren't relevant (Apex vs Flow, trigger vs batch) as null.
 
 ## Where next
 
-- [Building your own plugin](/plugins/building-your-own/) - full walkthrough of writing and registering a plugin.
-- [Slack](/plugins/slack/), [Big Object Archiving](/plugins/big-object-archiving/), [Log Retention Rules](/plugins/log-retention-rules/), [Logger Admin Dashboard](/plugins/logger-admin-dashboard/), [Async Failure Additions](/plugins/async-failure-additions/) - shipped plugins.
+- [Building your own plugin](/NebulaLogger/plugins/building-your-own/) - full walkthrough of writing and registering a plugin.
+- [Slack](/NebulaLogger/plugins/slack/), [Big Object Archiving](/NebulaLogger/plugins/big-object-archiving/), [Log Retention Rules](/NebulaLogger/plugins/log-retention-rules/), [Logger Admin Dashboard](/NebulaLogger/plugins/logger-admin-dashboard/), [Async Failure Additions](/NebulaLogger/plugins/async-failure-additions/) - shipped plugins.

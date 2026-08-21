@@ -157,5 +157,5 @@ Safe from a subscriber's own test suite:
 
 ## Where next
 
-- [Apex](/logging-guide/apex/) - the APIs being tested.
-- [Lightning Web Components](/logging-guide/lwc/) - the LWC path.
+- [Apex](/NebulaLogger/logging-guide/apex/) - the APIs being tested.
+- [Lightning Web Components](/NebulaLogger/logging-guide/lwc/) - the LWC path.

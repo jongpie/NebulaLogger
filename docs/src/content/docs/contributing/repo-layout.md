@@ -59,6 +59,6 @@ Current plugins:
 
 ## Where next
 
-- [Local development setup](/contributing/local-setup/) - clone, install, run tests.
-- [Testing](/contributing/testing/) - Apex, LWC, and e2e test suites.
-- [PR conventions](/contributing/pr-conventions/) - commit and PR style.
+- [Local development setup](/NebulaLogger/contributing/local-setup/) - clone, install, run tests.
+- [Testing](/NebulaLogger/contributing/testing/) - Apex, LWC, and e2e test suites.
+- [PR conventions](/NebulaLogger/contributing/pr-conventions/) - commit and PR style.

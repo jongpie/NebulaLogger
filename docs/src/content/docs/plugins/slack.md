@@ -33,11 +33,11 @@ After installation, assign the `LoggerSlackPluginAdmin` permission set to admins
 ## What to watch for
 
 - **Volume**: Slack rate limits messages. If your `ERROR` volume is high, filter more aggressively or route to a dedicated channel.
-- **Sensitive data**: Slack messages leave Salesforce. If any log message might contain sensitive data, verify [data masking](/configuration/data-mask-rules/) covers it - or filter those entries out entirely.
+- **Sensitive data**: Slack messages leave Salesforce. If any log message might contain sensitive data, verify [data masking](/NebulaLogger/configuration/data-mask-rules/) covers it - or filter those entries out entirely.
 - **Chatty transactions**: if a single transaction adds 20 error entries, each triggers a Slack post. Consider adjusting the plugin's filter to only fire once per transaction rather than per entry.
 
 ## Where next
 
-- [Slack plugin reference](/reference/plugins/slack/) - auto-generated `SlackLoggerPlugin` API reference.
-- [Plugin framework overview](/plugins/overview/) - how plugins hook in.
-- [Building your own plugin](/plugins/building-your-own/) - write a similar outbound integration.
+- [Slack plugin reference](/NebulaLogger/reference/plugins/slack/) - auto-generated `SlackLoggerPlugin` API reference.
+- [Plugin framework overview](/NebulaLogger/plugins/overview/) - how plugins hook in.
+- [Building your own plugin](/NebulaLogger/plugins/building-your-own/) - write a similar outbound integration.

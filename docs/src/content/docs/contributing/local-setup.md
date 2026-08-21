@@ -64,5 +64,5 @@ Navigate to the Logger Console app to verify the install worked.
 
 ## Where next
 
-- [Testing](/contributing/testing/) - running the Apex, LWC, and e2e suites.
-- [PR conventions](/contributing/pr-conventions/) - commit and PR style.
+- [Testing](/NebulaLogger/contributing/testing/) - running the Apex, LWC, and e2e suites.
+- [PR conventions](/NebulaLogger/contributing/pr-conventions/) - commit and PR style.

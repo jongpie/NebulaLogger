@@ -44,6 +44,6 @@ If both a scenario rule and a retention rule match the same log, the plugin's pr
 
 ## Where next
 
-- [Log Retention Rules plugin reference](/reference/plugins/log-retention-rules/) - auto-generated Apex + CMDT reference.
-- [Retention date semantics](/retention/retention-dates/) - how retention gets set in the core framework.
-- [Plugin framework overview](/plugins/overview/) - how plugins hook in.
+- [Log Retention Rules plugin reference](/NebulaLogger/reference/plugins/log-retention-rules/) - auto-generated Apex + CMDT reference.
+- [Retention date semantics](/NebulaLogger/retention/retention-dates/) - how retention gets set in the core framework.
+- [Plugin framework overview](/NebulaLogger/plugins/overview/) - how plugins hook in.

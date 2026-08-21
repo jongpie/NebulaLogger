@@ -78,5 +78,5 @@ Included [Agent Skills](https://www.skills.sh/docs) teach Claude Code, GitHub Co
 
 ## Where next
 
-- [Package options](/introduction/package-options/) - unlocked vs managed vs bundled.
-- [Getting Started](/getting-started/install-unlocked/) - install and configure.
+- [Package options](/NebulaLogger/introduction/package-options/) - unlocked vs managed vs bundled.
+- [Getting Started](/NebulaLogger/getting-started/install-unlocked/) - install and configure.

@@ -15,7 +15,7 @@ Configure a **Remote Action** step in the OmniScript or Integration Procedure wi
 
 ## Input keys
 
-The same keys used by the [ISV optional-dependency pattern](/for-package-developers/optional-dependency/) apply here.
+The same keys used by the [ISV optional-dependency pattern](/NebulaLogger/for-package-developers/optional-dependency/) apply here.
 
 | Key                                                | Purpose                                                                                       |
 | -------------------------------------------------- | --------------------------------------------------------------------------------------------- |
@@ -52,5 +52,5 @@ Every action accepts a `Map<String, Object>` and returns a `Map<String, Object>`
 
 ## Where next
 
-- [Optional dependency via Callable](/for-package-developers/optional-dependency/) - the same `CallableLogger` class from Apex.
-- [Concepts](/logging-guide/concepts/) - the core model.
+- [Optional dependency via Callable](/NebulaLogger/for-package-developers/optional-dependency/) - the same `CallableLogger` class from Apex.
+- [Concepts](/NebulaLogger/logging-guide/concepts/) - the core model.

@@ -119,7 +119,7 @@ Nebula Logger reads these mapping records during the platform event trigger and 
 
 ## Where next
 
-- [Concepts](/logging-guide/concepts/) - the model these fields extend.
-- [Scenarios](/logging-guide/scenarios/) - when a scenario is a better fit than a custom field.
-- [Tags](/logging-guide/tags/) - when a tag is a better fit than a custom field.
-- [`LoggerFieldMapping__mdt` reference](/reference/custom-objects/loggerfieldmapping__mdt/) - the mapping CMDT.
+- [Concepts](/NebulaLogger/logging-guide/concepts/) - the model these fields extend.
+- [Scenarios](/NebulaLogger/logging-guide/scenarios/) - when a scenario is a better fit than a custom field.
+- [Tags](/NebulaLogger/logging-guide/tags/) - when a tag is a better fit than a custom field.
+- [`LoggerFieldMapping__mdt` reference](/NebulaLogger/reference/custom-objects/loggerfieldmapping__mdt/) - the mapping CMDT.
