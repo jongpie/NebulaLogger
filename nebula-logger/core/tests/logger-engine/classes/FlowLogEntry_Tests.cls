@@ -260,6 +260,28 @@ private class FlowLogEntry_Tests {
   }
 
   @IsTest
+  static void it_should_handle_null_boolean_inputs_from_flow() {
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();
+    LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+    FlowLogEntry flowEntry = createFlowLogEntry();
+    flowEntry.loggingLevelName = System.LoggingLevel.DEBUG.name();
+    flowEntry.saveLog = null;
+    flowEntry.shouldThrowFaultMessageException = null;
+
+    Exception thrownException;
+    try {
+      FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
+    } catch (Exception ex) {
+      thrownException = ex;
+    }
+
+    System.Assert.isNull(thrownException, 'Null Boolean inputs from Flow should not throw a NullPointerException');
+    System.Assert.areEqual(1, Logger.getBufferSize(), 'Entry should have been buffered without saving');
+    System.Assert.areEqual(0, Logger.saveLogCallCount, 'A null saveLog should not trigger an auto-save');
+  }
+
+  @IsTest
   static void it_should_add_tags_to_log_entry() {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
     System.LoggingLevel userLoggingLevel = System.LoggingLevel.FINEST;
