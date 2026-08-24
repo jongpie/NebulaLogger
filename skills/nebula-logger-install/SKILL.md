@@ -37,7 +37,7 @@ Always confirm the latest version on:
 
 - https://github.com/jongpie/NebulaLogger/releases
 
-### Unlocked Package - v4.19.4
+### Unlocked Package - v4.19.5
 
 - Sandbox install link: `https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000IawHAAS`
 - Production install link: `https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000IawHAAS`
