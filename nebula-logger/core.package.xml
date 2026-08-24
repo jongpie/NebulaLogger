@@ -179,6 +179,12 @@
         <members>LogEntryEvent__e.LimitsApexCursorFetchCallsUsed__c</members>
         <members>LogEntryEvent__e.LimitsApexCursorRowsMax__c</members>
         <members>LogEntryEvent__e.LimitsApexCursorRowsUsed__c</members>
+        <members>LogEntryEvent__e.LimitsApexCursorsMax__c</members>
+        <members>LogEntryEvent__e.LimitsApexCursorsUsed__c</members>
+        <members>LogEntryEvent__e.LimitsApexPaginationCursorRowsMax__c</members>
+        <members>LogEntryEvent__e.LimitsApexPaginationCursorRowsUsed__c</members>
+        <members>LogEntryEvent__e.LimitsApexPaginationCursorsMax__c</members>
+        <members>LogEntryEvent__e.LimitsApexPaginationCursorsUsed__c</members>
         <members>LogEntryEvent__e.LimitsAsyncCallsMax__c</members>
         <members>LogEntryEvent__e.LimitsAsyncCallsUsed__c</members>
         <members>LogEntryEvent__e.LimitsCalloutsMax__c</members>
@@ -428,6 +434,15 @@
         <members>LogEntry__c.LimitsApexCursorRowsMax__c</members>
         <members>LogEntry__c.LimitsApexCursorRowsUsed__c</members>
         <members>LogEntry__c.LimitsApexCursorRows__c</members>
+        <members>LogEntry__c.LimitsApexCursorsMax__c</members>
+        <members>LogEntry__c.LimitsApexCursorsUsed__c</members>
+        <members>LogEntry__c.LimitsApexCursors__c</members>
+        <members>LogEntry__c.LimitsApexPaginationCursorRowsMax__c</members>
+        <members>LogEntry__c.LimitsApexPaginationCursorRowsUsed__c</members>
+        <members>LogEntry__c.LimitsApexPaginationCursorRows__c</members>
+        <members>LogEntry__c.LimitsApexPaginationCursorsMax__c</members>
+        <members>LogEntry__c.LimitsApexPaginationCursorsUsed__c</members>
+        <members>LogEntry__c.LimitsApexPaginationCursors__c</members>
         <members>LogEntry__c.LimitsAsyncCallsMax__c</members>
         <members>LogEntry__c.LimitsAsyncCallsUsed__c</members>
         <members>LogEntry__c.LimitsAsyncCalls__c</members>
@@ -732,6 +747,8 @@
         <members>LogStatus.New</members>
         <members>LogStatus.On_Hold</members>
         <members>LoggerParameter.CallStatusApi</members>
+        <members>LoggerParameter.DataMaskRegExChunkSize</members>
+        <members>LoggerParameter.DataMaskRegExOverlapSize</members>
         <members>LoggerParameter.DefaultLogEntryRelatedListFieldSet</members>
         <members>LoggerParameter.EnableLogEntryEventStream</members>
         <members>LoggerParameter.EnableLoggerSystemMessages</members>

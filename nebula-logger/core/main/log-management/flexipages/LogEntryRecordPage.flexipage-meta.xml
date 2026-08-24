@@ -860,6 +860,16 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.LimitsApexCursors__c</fieldItem>
+                <identifier>RecordLimitsApexCursors__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.LimitsApexCursorFetchCalls__c</fieldItem>
                 <identifier>RecordLimitsApexCursorFetchCalls__cField</identifier>
             </fieldInstance>
@@ -872,6 +882,26 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsApexCursorRows__c</fieldItem>
                 <identifier>RecordLimitsApexCursorRows__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.LimitsApexPaginationCursors__c</fieldItem>
+                <identifier>RecordLimitsApexPaginationCursors__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.LimitsApexPaginationCursorRows__c</fieldItem>
+                <identifier>RecordLimitsApexPaginationCursorRows__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -924,6 +954,10 @@
                 <identifier>RecordLimitsDmlStatements__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <name>Facet-8e5572ea-8a8e-4426-8154-004cbbcb1314</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -934,10 +968,6 @@
                 <identifier>RecordLimitsEmailInvocations__cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-8e5572ea-8a8e-4426-8154-004cbbcb1314</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
