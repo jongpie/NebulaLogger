@@ -1,0 +1,597 @@
+---
+title: LoggerParameter__mdt
+description: 'Used to configure key-value pair parameters in Nebula Logger to control systemwide features'
+---
+
+import FieldFilters from '/src/components/FieldFilters.astro';
+
+Used to configure key-value pair parameters in Nebula Logger to control systemwide features
+
+<div class="sobject-attributes">
+
+| Attribute    | Value                |
+| ------------ | -------------------- |
+| Object Type  | Custom Metadata Type |
+| Label        | Logger Parameter     |
+| Plural Label | Logger Parameters    |
+| Fields       | 3                    |
+
+</div>
+
+<h2 id="fields-heading" data-field-total="3">
+  Fields (<span data-field-visible-count>3</span> of 3)
+</h2>
+
+<FieldFilters types={['LongTextArea']} showTrackHistoryFilter={false} />
+
+<div data-field-entry="true" data-field-api-name="Comments__c" data-field-types="LongTextArea" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="comments__c comments a place to store any comments or notes about customizations that have been made to this loggerparameter__mdt in the current org. this is purely for documentation purposes.">
+
+### `Comments__c`
+
+> A place to store any comments or notes about customizations that have been made to this LoggerParameter\_\_mdt in the current org. This is purely for documentation purposes.
+
+| Attribute           | Value                |
+| ------------------- | -------------------- |
+| Label               | Comments             |
+| Type                | LongTextArea         |
+| Length              | 4000                 |
+| Required            | No                   |
+| Field Manageability | SubscriberControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="Description__c" data-field-types="LongTextArea" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="description__c description">
+
+### `Description__c`
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Description         |
+| Type                    | LongTextArea        |
+| Length                  | 131072              |
+| Required                | No                  |
+| Compliance Group        | None                |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+| Field Manageability     | DeveloperControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="Value__c" data-field-types="LongTextArea" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="value__c value">
+
+### `Value__c`
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Value                |
+| Type                    | LongTextArea         |
+| Length                  | 131072               |
+| Required                | No                   |
+| Compliance Group        | None                 |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+| Field Manageability     | SubscriberControlled |
+
+</div>
+
+## Records (40)
+
+<div data-cmdt-record="true" data-cmdt-record-name="CallStatusApi">
+
+### `CallStatusApi`
+
+_Call Status API_
+
+| Field            | Value                                                                                                                                                                                                                                                        |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Description__c` | When set to 'true' (default), an async callout is made to https://api.status.salesforce.com to get additional details about the current org, including the org's release version and release number. This information is then stored on the Log\_\_c record. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                       |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="DataMaskRegExChunkSize">
+
+### `DataMaskRegExChunkSize`
+
+_Data Mask RegEx: Chunk Size_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When data masking is applied to a very long string, the value is processed in chunks of this many characters to avoid the Apex 'System.LimitException: RegEx too complicated' error (which Salesforce raises when a single regex evaluation is too expensive). Tradeoffs: a LARGER chunk size means fewer chunks and slightly less overlap re-scanning, but each regex evaluation runs against more text and is therefore more likely to hit the LimitException; a SMALLER chunk size is safer against the limit but increases chunk count and overlap re-scan overhead. The chunk size must also be larger than DataMaskRegExOverlapSize plus the longest value any enabled rule can match, or boundary values can be missed. The default (4000) is a deliberately conservative value, roughly 27x below even the worst-case measured failure point. With all four shipped rules applied single-pass (no chunking), the limit was hit between ~110K characters (realistic log-shaped text) and ~220K characters (dense structured input) — diluting matches with ordinary text makes it fail sooner, not later, because the limit is a regex-engine step budget rather than a character count. Note: that LimitException is uncatchable, so without chunking a single oversized log message fails the whole logging call. Benchmarking found chunk size to be a safety knob rather than a performance lever: processing CPU was effectively flat across chunk sizes from 1K to 64K, so raising this value yields no measurable speedup while moving closer to the failure point. Lower this if a custom rule still throws 'RegEx too complicated' at the default; only raise it after testing your specific rule regexes against representative data. When no record is configured, Nebula Logger falls back to its built-in default of 4000. |
+| `Value__c`       | `4000`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="DataMaskRegExOverlapSize">
+
+### `DataMaskRegExOverlapSize`
+
+_Data Mask RegEx: Overlap Size_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Description__c` | When data masking is applied to a very long string, the value is processed in overlapping chunks to avoid the Apex 'System.LimitException: RegEx too complicated' error. This integer controls how many characters adjacent chunks overlap, which guarantees that a sensitive value sitting on a chunk boundary is still fully contained within at least one chunk. This value MUST be greater than or equal to the longest value that any enabled LogEntryDataMaskRule\_\_mdt regex can match. The default (20) covers the built-in rules (SSN ~11 chars, credit card ~19 chars with separators); increase it if you add custom rules that match longer values. When no record is configured, Nebula Logger falls back to its built-in default of 20. |
+| `Value__c`       | `20`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="DefaultLogEntryRelatedListFieldSet">
+
+### `DefaultLogEntryRelatedListFieldSet`
+
+_Default Log Entry Related List Field Set_
+
+| Field            | Value                                                                                                                                                                                                                  |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | The name of the LogEntry\_\_c field set to use as the default field set when configuring the LWC &lt;c-related-log-entries&gt; within App Builder. By default, the included field set 'Related_List_Defaults' is used. |
+| `Value__c`       | `Related_List_Defaults`                                                                                                                                                                                                |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="EnableLogEntryEventStream">
+
+### `EnableLogEntryEventStream`
+
+_Enable Log Entry Event Stream_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), the LWC logEntryEventStream is enabled & subscribes to LogEntryEvent\_\_e records, using the Emp API. Using the Emp API counts towards your org's event delivery allocations, so the LWC can be disabled if the allocation needs to be conserved. See this page for more details may be generated that contain additional details about the logging system - https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="EnableLoggerSystemMessages">
+
+### `EnableLoggerSystemMessages`
+
+_Enable Logger System Messages_
+
+| Field            | Value                                                                                                |
+| ---------------- | ---------------------------------------------------------------------------------------------------- |
+| `Description__c` | When enabled, log entries may be generated that contain additional details about the logging system. |
+| `Value__c`       | `true`                                                                                               |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="EnableStackTraceParsing">
+
+### `EnableStackTraceParsing`
+
+_Enable Stack Trace Parsing_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), the Apex or JavaScript stack trace will be parsed on each log entry & used to set the fields LogEntryEvent**e.OriginLocation**c, LogEntry**c.OriginLocation**c & LogEntry**c.StackTrace**c will be saved in your org. When set to 'false', stack traces will not be parsed - this can conserve CPU usage, at the expense of losing some data about log entries. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                                                        |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="EnableTagging">
+
+### `EnableTagging`
+
+_Enable Tagging_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                 |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), any log entry tags will be saved in your org. Depending on your org's configuration, tags are either stored in LoggerTag**c and LogEntryTag**c objects (default), or using the standard objects Topic and TopicAssignment (not supported in the managed package). When set to 'false', tags are not stored in your org. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="IgnoredApexOrigins">
+
+### `IgnoredApexOrigins`
+
+_Ignored Apex Origins_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | A list of Apex class names that should be ignored when parsing stack traces. Any stack trace lines containing these class names will be removed from the parsed stack trace. This is useful for filtering out utility or framework classes from stack traces. The value should be a JSON array of strings, e.g., ["MyUtilityClass", "AnotherFrameworkClass"]. |
+| `Value__c`       | `[]`                                                                                                                                                                                                                                                                                                                                                          |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="LogBatchPurgerDefaultBatchSize">
+
+### `LogBatchPurgerDefaultBatchSize`
+
+_Log Batch Purger: Default Batch Size_
+
+| Field            | Value                                                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | The integer value used to control the default batch size used by the batchable class LogBatchPurger (default is 500). |
+| `Value__c`       | `500`                                                                                                                 |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="LogEntryEventStreamDisplayFields">
+
+### `LogEntryEventStreamDisplayFields`
+
+_Log Entry Event Stream Display Fields_
+
+| Field            | Value                                                                                                               |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | Contains the fields to be displayed in the Tabular view of the Log Entry Event Stream Tab under the Logger Console. |
+| `Value__c`       | `["Timestamp__c", "LoggedByUsername__c", "OriginLocation__c", "LoggingLevel__c", "Message__c"]`                     |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="NormalizeScenarioData">
+
+### `NormalizeScenarioData`
+
+_Normalize Scenario Data_
+
+| Field            | Value                                                                                                                                                                                                                                                                            |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), any scenarios specified via Logger.setScenario() will be stored in the custom object LoggerScenario**c. When set to 'false', scenarios are only stored in the text fields Log**c.TransactionScenarioName**c and LogEntry**c.EntryScenarioName\_\_c |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                           |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="NormalizeTagData">
+
+### `NormalizeTagData`
+
+_Normalize Tag Data_
+
+| Field            | Value                                                                                                                                                                                                                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), any tags specified via LogEntryEventBuilder.addTag() or LogEntryEventBuilder.addTags() will be stored in the custom objects LogEntryTag**c and LoggerTag**c. When set to 'false', tags are only stored in the long text area field LogEntry**c.Tags**c. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="PlatformCachePartitionName">
+
+### `PlatformCachePartitionName`
+
+_Platform Cache Partition Name_
+
+| Field            | Value                                                                                                                                                                   |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | Indicates the name of the Platform Cache partition to use for caching (when platform cache is enabled). By default, the included cache partition 'LoggerCache' is used. |
+| `Value__c`       | `LoggerCache`                                                                                                                                                           |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="QueryApexClassData">
+
+### `QueryApexClassData`
+
+_Query Apex Class Data_
+
+| Field            | Value                                                                                                                                                                                                                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), the ApexClass object will be queried to track additional details about Apex classes that logged data - the queried data is stored in fields on LogEntry\_\_c. When set to 'false', the ApexClass object will not be queried, and the related fields will be null. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                          |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="QueryApexTriggerData">
+
+### `QueryApexTriggerData`
+
+_Query Apex Trigger Data_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), the ApexTrigger object will be queried to track additional details about Apex triggers that logged data - the queried data is stored in fields on LogEntry\_\_c. When set to 'false', the ApexTrigger object will not be queried, and the related fields will be null. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                               |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="QueryAuthSessionData">
+
+### `QueryAuthSessionData`
+
+_Query Auth Session Data_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Description__c` | When set to 'true' (default), the AuthSession object will be queried to track additional details about the AuthSession for users that logged data - the queried data is stored in fields on LogEntryEvent**e and Log**c. When set to 'false', the AuthSession object will not be queried, and the related fields will be null. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                         |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="QueryAuthSessionDataSynchronously">
+
+### `QueryAuthSessionDataSynchronously`
+
+_Query Auth Session Data Synchronously_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), the AuthSession object will be queried synchronously so that the related fields on LogEntryEvent**e will be populated. When set to 'false', the AuthSession object will only be queried asynchronously, and the related fields will be null on LogEntryEvent**e but populated on Log**c. This is useful if you want to reduce the syncronous queries used by Nebula Logger you do not rely on the related LogEntryEvent**e fields being populated. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="QueryFlowDefinitionViewData">
+
+### `QueryFlowDefinitionViewData`
+
+_Query Flow Definition View Data_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                         |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), the FlowDefinitionView object will be queried to track additional details about Flows that logged data - the queried data is stored in fields on LogEntryEvent**e and LogEntry**c. When set to 'false', the FlowDefinitionView object will not be queried, and the related fields will be null. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                        |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="QueryNetworkData">
+
+### `QueryNetworkData`
+
+_Query Network Data_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | Note: this parameter only applies to orgs that are using Experience Cloud (Communities). When set to 'true' (default), the Network object will be queried to track additional details about the logging user's Network when they are logged in via an Experience Cloud Site - the queried data is stored in fields on LogEntryEvent**e and Log**c. When set to 'false', the Network object will not be queried, and the related fields will be null. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="QueryNetworkDataSynchronously">
+
+### `QueryNetworkDataSynchronously`
+
+_Query Network Data Synchronously_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | Note: this parameter only applies to orgs that are using Experience Cloud (Communities). When set to 'true' (default), the Network object will be queried synchronously so that the related fields on LogEntryEvent**e will be populated. When set to 'false', the Network object will only be queried asynchronously, and the related fields will be null on LogEntryEvent**e but populated on Log**c. This is useful if you want to reduce the syncronous queries used by Nebula Logger you do not rely on the related LogEntryEvent**e fields being populated. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="QueryOmniProcessData">
+
+### `QueryOmniProcessData`
+
+_Query OmniProcess Data_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | Note: this parameter only applies to orgs that are using OmniStudio. When set to 'true' (default), the OmniProcess object will be queried to track additional details about the OmniScript or OmniIntegrationProcedure that generated a log entry - the queried data is stored in fields on LogEntry\_\_c. When set to 'false', the OmniProcess object will not be queried, and the related fields will be null. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                                                                           |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="QueryOrganizationData">
+
+### `QueryOrganizationData`
+
+_Query Organization Data_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                          |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), the Organization object will be queried to track additional details about the current Organization - the queried data is stored in fields on LogEntryEvent**e and Log**c. When set to 'false', the Organization object will not be queried, and the related fields will be null. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                         |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="QueryOrganizationDataSynchronously">
+
+### `QueryOrganizationDataSynchronously`
+
+_Query Organization Data Synchronously_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), the Organization object will be queried synchronously so that the related fields on LogEntryEvent**e will be populated. When set to 'false', the Organization object will only be queried asynchronously, and the related fields will be null on LogEntryEvent**e but populated on Log**c. This is useful if you want to reduce the syncronous queries used by Nebula Logger you do not rely on the related LogEntryEvent**e fields being populated. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="QueryRelatedRecordData">
+
+### `QueryRelatedRecordData`
+
+_Query Related Record Data_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), SObjects are dynamically queried (based on the field LogEntry**c.RecordId**c) to retrieve record names, which is then stored in LogEntry**c.RecordName**c. When set to 'false', the dynamic queries will not be executed, and the field LogEntry**c.RecordName**c will be null. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                        |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="QueryUserData">
+
+### `QueryUserData`
+
+_Query User Data_
+
+| Field            | Value                                                                                                                                                                                                                                                                                  |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), the User object will be queried to track additional details about the logging User - the queried data is stored in fields on LogEntryEvent**e and Log**c. When set to 'false', the User object will not be queried, and the related fields will be null. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                 |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="QueryUserDataSynchronously">
+
+### `QueryUserDataSynchronously`
+
+_Query User Data Synchronously_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Description__c` | When set to 'true' (default), the User object will be queried synchronously so that the related fields on LogEntryEvent**e will be populated. When set to 'false', the User object will only be queried asynchronously, and the related fields will be null on LogEntryEvent**e but populated on Log**c. This is useful if you want to reduce the syncronous queries used by Nebula Logger you do not rely on the related LogEntryEvent**e fields being populated. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="RequireScenarioUsage">
+
+### `RequireScenarioUsage`
+
+_Require Scenario Usage_
+
+| Field            | Value                                                                                                                                                                                                                                                                                  |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'false' (default), specifying a scenario is completely optional. When set to 'true', a scenario is required to be set before any logging can occur. If a logging method is called & the current scenario is null/blank, then Nebula Logger will throw a runtime exception. |
+| `Value__c`       | `false`                                                                                                                                                                                                                                                                                |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="SendErrorEmailNotifications">
+
+### `SendErrorEmailNotifications`
+
+_Send Error Email Notifications_
+
+| Field            | Value                                                                                                                                                                                                                                                                                     |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), if an internal error occurs within Logger, an email notification will be sent to the org's list of Apex Exception Email recipients, configured under Setup --&gt; Email --&gt; Apex Exception Email. When set to 'false', no emails will be sent by Logger. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                    |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="StoreHeapSizeLimit">
+
+### `StoreHeapSizeLimit`
+
+_Store Heap Size Limit_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), transaction heap limits are retrieved from the class System.Limits and stored on LogEntry\_\_c. When set to 'false', transaction heap limits are not retrieved or stored. This drastically helps reduce CPU time usage per log entry. The 'Store Transaction Limits' Logger Parameter record must also be set to 'true' for any limit tracking to occur. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                                                 |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="StoreHttpRequestHeaderValues">
+
+### `StoreHttpRequestHeaderValues`
+
+_Store HTTP Request Header Values_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), Nebula Logger will store the header values of any instance of an HttpRequest that is logged using the instance method LogEntryEventBuilder.setHttpRequestDetails(). When set to 'false', the header values are not stored or referenced by Nebula Logger. Regardless of how this parameter is configured, Nebula Logger will still log the specified list of header keys of any instance of an HttpRequest that is logged - this parameter only controls if the header values are stored. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="StoreHttpResponseHeaderValues">
+
+### `StoreHttpResponseHeaderValues`
+
+_Store HTTP Response Header Values_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), Nebula Logger will store the header values of any instance of an HttpResponse that is logged using the instance method LogEntryEventBuilder.setHttpResponseDetails(). When set to 'false', the header values are not stored or referenced by Nebula Logger. Regardless of how this parameter is configured, Nebula Logger will still log the header keys of any instance of an HttpResponse that is logged - this parameter only controls if the header values are stored. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="StoreOrganizationLimits">
+
+### `StoreOrganizationLimits`
+
+_Store Organization Limits_
+
+| Field            | Value                                                                                                                                                                                                                                            |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Description__c` | When set to 'true' (default), organization limits are retrieved from the class System.OrgLimits and stored on Log\_\_c. When set to 'false', organization limits are not retrieved or stored. This helps reduce some CPU time & heap size usage. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                           |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="StoreRestRequestHeaderValues">
+
+### `StoreRestRequestHeaderValues`
+
+_Store REST Request Header Values_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), Nebula Logger will store the header values of any instance of an RestRequest that is logged using the instance method LogEntryEventBuilder.setRestRequestDetails(). When set to 'false', the header values are not stored or referenced by Nebula Logger. Regardless of how this parameter is configured, Nebula Logger will still log the header keys of any instance of an RestRequest that is logged - this parameter only controls if the header values are stored. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="StoreRestResponseHeaderValues">
+
+### `StoreRestResponseHeaderValues`
+
+_Store REST Response Header Values_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), Nebula Logger will store the header values of any instance of an RestResponse that is logged using the instance method LogEntryEventBuilder.setRestResponseDetails(). When set to 'false', the header values are not stored or referenced by Nebula Logger. Regardless of how this parameter is configured, Nebula Logger will still log the header keys of any instance of an RestResponse that is logged - this parameter only controls if the header values are stored. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="StoreTransactionLimits">
+
+### `StoreTransactionLimits`
+
+_Store Transaction Limits_
+
+| Field            | Value                                                                                                                                                                                                                                            |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Description__c` | When set to 'true' (default), transaction limits are retrieved from the class System.Limits and stored on LogEntry\_\_c. When set to 'false', transaction limits are not retrieved or stored. This helps reduce some CPU time & heap size usage. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                           |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="SystemDebugMessageFormat">
+
+### `SystemDebugMessageFormat`
+
+_System.debug() Message Format_
+
+| Field            | Value                                                                                         |
+| ---------------- | --------------------------------------------------------------------------------------------- |
+| `Description__c` | Controls the format of the Apex Log System Debug messages with fields from LogEntryEvent\_\_e |
+| `Value__c`       | `{OriginLocation__c}\n{Message__c}`                                                           |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="UseFirstSpecifiedScenario">
+
+### `UseFirstSpecifiedScenario`
+
+_Use First Specified Scenario_
+
+| Field            | Value                                                                                                                                                                                                                                                                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When enabled (default), the first value provided when calling Logger.setScenario(String) is used to set the field Log**c.TransactionScenario**c, and any subsequent calls to Logger.setScenario(String) are ignored in the current transaction. When disabled, the last value provided when calling Logger.setScenario(String) is instead used. |
+| `Value__c`       | `true`                                                                                                                                                                                                                                                                                                                                          |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="UsePlatformCache">
+
+### `UsePlatformCache`
+
+_Use Platform Cache_
+
+| Field            | Value                                                                                                                                                                                                                            |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true' (default), Nebula Logger will used Platform Cache to cache organization and session data in the cache partition LoggerCache. When set to 'false', any cached data is only cached within a single transaction. |
+| `Value__c`       | `true`                                                                                                                                                                                                                           |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="UseTopicsForTags">
+
+### `UseTopicsForTags`
+
+_Use Topics for Tags_
+
+| Field            | Value                                                                                                                                                                                                                |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Description__c` | When set to 'true', any custom Logger tags will use the standard objects Topic and TopicAssignment When set to 'false' (default), any custom Logger tags will use the custom objects LoggerTag**c and LogEntryTag**c |
+| `Value__c`       | `false`                                                                                                                                                                                                              |
+
+</div>

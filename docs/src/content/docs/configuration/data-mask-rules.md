@@ -51,4 +51,4 @@ If a shipped rule is too aggressive or not aggressive enough for your org, edit 
 ## Where next
 
 - [Logging Guide - Data masking](/NebulaLogger/logging-guide/data-masking/) - the same content in the logging-guide section.
-- [`LogEntryDataMaskRule__mdt` reference](/NebulaLogger/reference/custom-objects/logentrydatamaskrule__mdt/) - full field list.
+- [`LogEntryDataMaskRule__mdt` reference](/NebulaLogger/metadata-reference/custom-objects/logentrydatamaskrule__mdt/) - full field list.

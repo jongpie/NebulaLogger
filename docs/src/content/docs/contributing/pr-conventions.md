@@ -65,7 +65,7 @@ Public/global Apex and LWC APIs are documented via `@cparra/apexdocs` and `jsdoc
 npm run docs:fix
 ```
 
-That runs the docs generation script. Commit the updated Markdown files under `docs/src/content/docs/reference/`.
+That runs the docs generation script. Commit the updated Markdown files under `docs/src/content/docs/metadata-reference/`.
 
 Verify before pushing:
 

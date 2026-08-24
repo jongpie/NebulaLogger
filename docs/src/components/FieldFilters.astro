@@ -1,0 +1,672 @@
+---
+export interface Props {
+  types: string[];
+  showTrackHistoryFilter?: boolean;
+}
+const { types, showTrackHistoryFilter = false } = Astro.props;
+
+const baseFlagOptions = [
+  { label: 'Include deprecated', filter: 'deprecated' },
+  { label: 'Has description', filter: 'has-description' },
+  { label: 'Has help text', filter: 'has-help-text' }
+];
+const flagOptions = showTrackHistoryFilter ? [...baseFlagOptions, { label: 'Track history', filter: 'track-history' }] : baseFlagOptions;
+---
+
+<div class="field-filters not-content" role="region" aria-label="Field filters">
+  <div class="field-filters__row">
+    <div class="field-filters__search-wrapper">
+      <span class="field-filters__search-label">Search</span>
+      <input
+        class="field-filters__search"
+        type="search"
+        placeholder="Search fields..."
+        data-field-filter="search"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="Filter fields by name, label, or description"
+      />
+      <button type="button" class="field-filters__clear" data-field-filter-clear aria-label="Clear search" hidden>x</button>
+    </div>
+
+    <div class="field-filters__menu" data-field-filter-menu="type">
+      <button
+        type="button"
+        class="field-filters__menu-trigger"
+        data-field-filter-menu-trigger
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <span class="field-filters__menu-label">Type</span>
+        <span class="field-filters__menu-summary" data-field-filter-menu-summary>All</span>
+        <span class="field-filters__menu-caret" aria-hidden="true">v</span>
+      </button>
+      <div class="field-filters__menu-panel" role="dialog" aria-label="Field type" hidden>
+        <ul class="field-filters__option-list">
+          {types.map(type => (
+            <li>
+              <label class="field-filters__option">
+                <input type="checkbox" data-field-filter="type" value={type} />
+                <span>{type}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="field-filters__menu" data-field-filter-menu="flags">
+      <button
+        type="button"
+        class="field-filters__menu-trigger"
+        data-field-filter-menu-trigger
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <span class="field-filters__menu-label">Flags</span>
+        <span class="field-filters__menu-summary" data-field-filter-menu-summary>None</span>
+        <span class="field-filters__menu-caret" aria-hidden="true">v</span>
+      </button>
+      <div class="field-filters__menu-panel" role="dialog" aria-label="Flags" hidden>
+        <ul class="field-filters__option-list">
+          {flagOptions.map(option => (
+            <li>
+              <label class="field-filters__option">
+                <input type="checkbox" data-field-filter={option.filter} />
+                <span>{option.label}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <button type="button" class="field-filters__reset" data-field-filter-reset>Reset</button>
+  </div>
+</div>
+
+<style>
+  .field-filters,
+  .field-filters *,
+  .field-filters *::before,
+  .field-filters *::after {
+    box-sizing: border-box;
+  }
+
+  .field-filters {
+    --control-h: 2.25rem;
+    --control-fs: 0.85rem;
+    --label-fs: 0.72rem;
+    --accent: var(--sl-color-accent);
+    --accent-text: var(--sl-color-accent-high, #fff);
+    --accent-low: color-mix(in srgb, var(--sl-color-accent) 15%, transparent);
+    --accent-medium: color-mix(in srgb, var(--sl-color-accent) 40%, transparent);
+    --card-bg: var(--sl-color-bg-inline-code);
+    --border: var(--sl-color-hairline);
+    --label-search: #4f9fff;
+    --label-flags: #b26bff;
+    --label-type: #4fd6a8;
+    position: sticky;
+    top: var(--sl-nav-height, 0);
+    z-index: 10;
+    margin-bottom: 1rem;
+    padding: 0.75rem 0.9rem;
+    background: var(--sl-color-bg-inline-code);
+    border: 1px solid var(--accent-medium);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    font-size: var(--control-fs);
+    line-height: 1.4;
+  }
+
+  .field-filters__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: stretch;
+    min-height: var(--control-h);
+  }
+
+  /* Search */
+  .field-filters__search-wrapper {
+    position: relative;
+    flex: 1 1 14rem;
+    min-width: 12rem;
+    display: flex;
+    align-items: center;
+    height: var(--control-h);
+    margin: 0;
+    padding: 0;
+  }
+  .field-filters__search-label {
+    position: absolute;
+    left: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--sl-color-gray-3);
+    font-weight: 700;
+    font-size: var(--label-fs);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--label-search);
+    height: 1rem;
+    line-height: 1rem;
+    display: inline-flex;
+    align-items: center;
+    pointer-events: none;
+  }
+  .field-filters__search {
+    width: 100%;
+    height: var(--control-h);
+    box-sizing: border-box;
+    background: var(--card-bg);
+    color: var(--sl-color-text);
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    padding: 0 1.9rem 0 5.5rem;
+    margin: 0;
+    font-size: var(--control-fs);
+    line-height: 1;
+    font-family: inherit;
+  }
+  .field-filters__search::-webkit-search-decoration,
+  .field-filters__search::-webkit-search-cancel-button,
+  .field-filters__search::-webkit-search-results-button,
+  .field-filters__search::-webkit-search-results-decoration {
+    display: none;
+  }
+  .field-filters__search:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+  .field-filters__clear {
+    position: absolute;
+    top: 50%;
+    right: 0.45rem;
+    transform: translateY(-50%);
+    width: 1.15rem;
+    height: 1.15rem;
+    padding: 0;
+    border: 0;
+    background: var(--sl-color-gray-4, var(--border));
+    color: var(--sl-color-bg);
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-family: inherit;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .field-filters__clear:hover {
+    background: var(--accent);
+  }
+  .field-filters__clear[hidden] {
+    display: none;
+  }
+  /* Dropdown menus (Flags, Type) */
+  .field-filters__menu {
+    position: relative;
+    flex: 0 0 auto;
+  }
+  .field-filters__menu-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: var(--control-h);
+    padding: 0 0.7rem;
+    background: var(--card-bg);
+    color: var(--sl-color-text);
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    font-family: inherit;
+    font-size: var(--control-fs);
+    line-height: 1;
+    cursor: pointer;
+    min-width: 8rem;
+    max-width: 14rem;
+  }
+  .field-filters__menu-trigger:hover {
+    border-color: var(--accent);
+  }
+  .field-filters__menu-trigger[data-active='true'] {
+    border-color: var(--accent);
+    background: var(--accent-low);
+    color: var(--accent);
+  }
+  .field-filters__menu-trigger[aria-expanded='true'] {
+    border-color: var(--accent);
+  }
+  .field-filters__menu-label {
+    font-size: var(--label-fs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sl-color-gray-3);
+    flex-shrink: 0;
+    padding-left: 0.5rem;
+    border-left: 3px solid transparent;
+    height: 1rem;
+    line-height: 1rem;
+    display: inline-flex;
+    align-items: center;
+  }
+  .field-filters__menu[data-field-filter-menu='flags'] .field-filters__menu-label {
+    border-left-color: var(--label-flags);
+  }
+  .field-filters__menu[data-field-filter-menu='type'] .field-filters__menu-label {
+    border-left-color: var(--label-type);
+  }
+  .field-filters__menu-trigger[data-active='true'] .field-filters__menu-label {
+    color: var(--accent);
+  }
+  .field-filters__menu-summary {
+    flex: 1 1 auto;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .field-filters__menu-caret {
+    color: var(--sl-color-gray-3);
+    font-size: 0.7rem;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+  .field-filters__menu-trigger[aria-expanded='true'] .field-filters__menu-caret {
+    transform: rotate(180deg);
+  }
+
+  .field-filters__menu-panel {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    left: 0;
+    z-index: 20;
+    background: var(--sl-color-bg);
+    border: 1px solid var(--accent-medium);
+    border-radius: 0.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    min-width: 100%;
+    max-height: 22rem;
+    overflow-y: auto;
+  }
+  .field-filters__option-list {
+    list-style: none;
+    padding: 0.35rem;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .field-filters__option {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: var(--control-fs);
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .field-filters__option:hover {
+    background: var(--card-bg);
+  }
+  .field-filters__option input {
+    margin: 0;
+    accent-color: var(--accent);
+    width: 0.95rem;
+    height: 0.95rem;
+    flex-shrink: 0;
+  }
+  .field-filters__option:has(input:checked) {
+    background: var(--accent-low);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Reset */
+  .field-filters__reset {
+    height: var(--control-h);
+    padding: 0 1rem;
+    background: var(--accent-low);
+    border: 1px solid var(--accent-medium);
+    border-radius: 0.375rem;
+    color: var(--accent);
+    font-family: inherit;
+    font-size: var(--control-fs);
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    white-space: nowrap;
+    margin-left: auto;
+  }
+  .field-filters__reset:hover {
+    background: var(--accent);
+    color: var(--accent-text);
+    border-color: var(--accent);
+  }
+  .field-filters__reset:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  [data-field-entry][hidden] {
+    display: none !important;
+  }
+
+  @media (max-width: 55rem) {
+    .field-filters__search-group {
+      flex: 1 1 100%;
+    }
+    .field-filters__menu {
+      flex: 1 1 auto;
+    }
+    .field-filters__menu-trigger {
+      width: 100%;
+    }
+    .field-filters__reset {
+      flex: 1 1 100%;
+      margin-left: 0;
+    }
+  }
+</style>
+
+<script is:inline>
+  function initFieldFilters() {
+    const root = document.querySelector('.field-filters');
+    if (!root) return;
+
+    const entries = Array.from(document.querySelectorAll('[data-field-entry]'));
+    if (entries.length === 0) {
+      return;
+    }
+
+    const searchInput = root.querySelector('input[data-field-filter="search"]');
+    const clearButton = root.querySelector('[data-field-filter-clear]');
+    const typeCheckboxes = Array.from(root.querySelectorAll('input[data-field-filter="type"]'));
+    const deprecatedInput = root.querySelector('input[data-field-filter="deprecated"]');
+    const helpTextInput = root.querySelector('input[data-field-filter="has-help-text"]');
+    const descriptionInput = root.querySelector('input[data-field-filter="has-description"]');
+    const trackHistoryInput = root.querySelector('input[data-field-filter="track-history"]');
+    const visibleCountNode = document.querySelector('[data-field-visible-count]');
+    const resetButton = root.querySelector('[data-field-filter-reset]');
+    const menus = Array.from(root.querySelectorAll('.field-filters__menu'));
+
+    const totalCount = entries.length;
+
+    const tocLinks = Array.from(document.querySelectorAll('starlight-toc a[href^="#"]'));
+    const tocEntriesByFieldId = new Map();
+    for (const link of tocLinks) {
+      const targetId = decodeURIComponent(link.getAttribute('href').slice(1));
+      const heading = document.getElementById(targetId);
+      if (!heading) {
+        continue;
+      }
+      const wrapper = heading.closest('[data-field-entry]');
+      if (!wrapper) {
+        continue;
+      }
+      const item = link.closest('li') || link;
+      tocEntriesByFieldId.set(wrapper, item);
+    }
+
+    function selectedTypes() {
+      return typeCheckboxes.filter(cb => cb.checked).map(cb => cb.value);
+    }
+
+    function activeFlags() {
+      const flags = [];
+      if (deprecatedInput?.checked) {
+        flags.push('Include deprecated');
+      }
+      if (descriptionInput?.checked) {
+        flags.push('Has description');
+      }
+      if (helpTextInput?.checked) {
+        flags.push('Has help text');
+      }
+      if (trackHistoryInput?.checked) {
+        flags.push('Track history');
+      }
+      return flags;
+    }
+
+    function summarize(values, allLabel) {
+      if (values.length === 0) {
+        return allLabel;
+      }
+      if (values.length === 1) {
+        return values[0];
+      }
+      return `${values.length} selected`;
+    }
+
+    function apply() {
+      const types = selectedTypes();
+      const includeDeprecated = deprecatedInput?.checked || false;
+      const onlyDescription = descriptionInput?.checked || false;
+      const onlyHelpText = helpTextInput?.checked || false;
+      const onlyTrackHistory = trackHistoryInput?.checked || false;
+      const searchTerm = (searchInput?.value || '').trim().toLowerCase();
+
+      let visible = 0;
+      for (const entry of entries) {
+        const entryTypes = (entry.dataset.fieldTypes || '').split(/\s+/).filter(Boolean);
+        const isDeprecated = entry.dataset.deprecated === 'true';
+        const hasHelpText = entry.dataset.hasHelpText === 'true';
+        const hasDescription = entry.dataset.hasDescription === 'true';
+        const trackHistory = entry.dataset.trackHistory === 'true';
+        const haystack = entry.dataset.search || '';
+
+        let show = true;
+        if (types.length > 0 && !types.some(t => entryTypes.includes(t))) {
+          show = false;
+        }
+        if (!includeDeprecated && isDeprecated) {
+          show = false;
+        }
+        if (onlyDescription && !hasDescription) {
+          show = false;
+        }
+        if (onlyHelpText && !hasHelpText) {
+          show = false;
+        }
+        if (onlyTrackHistory && !trackHistory) {
+          show = false;
+        }
+        if (searchTerm && !haystack.includes(searchTerm)) {
+          show = false;
+        }
+
+        entry.hidden = !show;
+        const tocItem = tocEntriesByFieldId.get(entry);
+        if (tocItem) {
+          tocItem.hidden = !show;
+        }
+        if (show) {
+          visible++;
+        }
+      }
+
+      const flagsActive = activeFlags();
+
+      if (visibleCountNode) {
+        visibleCountNode.textContent = String(visible);
+      }
+      if (clearButton) {
+        clearButton.hidden = !searchTerm;
+      }
+
+      for (const menu of menus) {
+        const kind = menu.dataset.fieldFilterMenu;
+        const trigger = menu.querySelector('[data-field-filter-menu-trigger]');
+        const summaryNode = menu.querySelector('[data-field-filter-menu-summary]');
+        if (!trigger || !summaryNode) {
+          continue;
+        }
+        if (kind === 'flags') {
+          summaryNode.textContent = summarize(flagsActive, 'None');
+          trigger.dataset.active = flagsActive.length > 0 ? 'true' : 'false';
+        } else if (kind === 'type') {
+          summaryNode.textContent = summarize(types, 'All');
+          trigger.dataset.active = types.length > 0 ? 'true' : 'false';
+        }
+      }
+
+      writeHash({ types, includeDeprecated, onlyDescription, onlyHelpText, onlyTrackHistory, searchTerm });
+    }
+
+    function writeHash(state) {
+      const params = new URLSearchParams();
+      if (state.types.length > 0) {
+        params.set('type', state.types.join(','));
+      }
+      if (state.includeDeprecated) {
+        params.set('deprecated', '1');
+      }
+      if (state.onlyDescription) {
+        params.set('description', '1');
+      }
+      if (state.onlyHelpText) {
+        params.set('helpText', '1');
+      }
+      if (state.onlyTrackHistory) {
+        params.set('trackHistory', '1');
+      }
+      if (state.searchTerm) {
+        params.set('q', state.searchTerm);
+      }
+      const serialized = params.toString();
+      const newHash = serialized ? `#${serialized}` : '';
+      if (newHash !== window.location.hash) {
+        history.replaceState(null, '', `${window.location.pathname}${window.location.search}${newHash}`);
+      }
+    }
+
+    function readHash() {
+      const raw = window.location.hash.replace(/^#/, '');
+      if (!raw) {
+        return;
+      }
+      const params = new URLSearchParams(raw);
+      const typesParam = params.get('type');
+      if (typesParam) {
+        const wanted = new Set(typesParam.split(',').filter(Boolean));
+        for (const cb of typeCheckboxes) {
+          cb.checked = wanted.has(cb.value);
+        }
+      }
+      if (deprecatedInput) {
+        deprecatedInput.checked = params.get('deprecated') === '1';
+      }
+      if (descriptionInput) {
+        descriptionInput.checked = params.get('description') === '1';
+      }
+      if (helpTextInput) {
+        helpTextInput.checked = params.get('helpText') === '1';
+      }
+      if (trackHistoryInput) {
+        trackHistoryInput.checked = params.get('trackHistory') === '1';
+      }
+      if (searchInput) {
+        searchInput.value = params.get('q') || '';
+      }
+    }
+
+    function toggleMenu(menu, open) {
+      const trigger = menu.querySelector('[data-field-filter-menu-trigger]');
+      const panel = menu.querySelector('.field-filters__menu-panel');
+      if (!trigger || !panel) {
+        return;
+      }
+      const shouldOpen = open !== undefined ? open : panel.hidden;
+      panel.hidden = !shouldOpen;
+      trigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+    }
+
+    function closeAllMenus(except) {
+      for (const menu of menus) {
+        if (menu === except) {
+          continue;
+        }
+        toggleMenu(menu, false);
+      }
+    }
+
+    readHash();
+    apply();
+
+    for (const menu of menus) {
+      const trigger = menu.querySelector('[data-field-filter-menu-trigger]');
+      trigger?.addEventListener('click', event => {
+        event.stopPropagation();
+        const willOpen = trigger.getAttribute('aria-expanded') !== 'true';
+        closeAllMenus(willOpen ? menu : null);
+        toggleMenu(menu, willOpen);
+      });
+    }
+
+    root.addEventListener('change', event => {
+      if (event.target !== searchInput) {
+        apply();
+      }
+    });
+    searchInput?.addEventListener('input', apply);
+    clearButton?.addEventListener('click', () => {
+      if (!searchInput) {
+        return;
+      }
+      searchInput.value = '';
+      searchInput.focus();
+      apply();
+    });
+    resetButton?.addEventListener('click', () => {
+      for (const cb of typeCheckboxes) {
+        cb.checked = false;
+      }
+      if (deprecatedInput) {
+        deprecatedInput.checked = false;
+      }
+      if (descriptionInput) {
+        descriptionInput.checked = false;
+      }
+      if (helpTextInput) {
+        helpTextInput.checked = false;
+      }
+      if (trackHistoryInput) {
+        trackHistoryInput.checked = false;
+      }
+      if (searchInput) {
+        searchInput.value = '';
+      }
+      closeAllMenus();
+      apply();
+    });
+
+    document.addEventListener('click', event => {
+      for (const menu of menus) {
+        if (menu.contains(event.target)) {
+          return;
+        }
+      }
+      closeAllMenus();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        closeAllMenus();
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFieldFilters);
+  } else {
+    initFieldFilters();
+  }
+</script>

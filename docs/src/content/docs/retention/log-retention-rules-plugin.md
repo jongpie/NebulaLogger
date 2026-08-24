@@ -34,4 +34,4 @@ Each `LogRetentionRule__mdt` record defines one rule. Fields (subject to change 
 
 - [Retention date semantics](/NebulaLogger/retention/retention-dates/) - how retention gets set in the first place.
 - [Plugins - Log Retention Rules](/NebulaLogger/plugins/log-retention-rules/) - the plugin's own page.
-- [Log Retention Rules plugin reference](/NebulaLogger/reference/plugins/log-retention-rules/) - auto-generated Apex + CMDT reference.
+- [Log Retention Rules plugin reference](/NebulaLogger/metadata-reference/plugins/log-retention-rules/) - auto-generated Apex + CMDT reference.

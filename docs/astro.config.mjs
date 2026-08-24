@@ -9,9 +9,7 @@ export default defineConfig({
     starlight({
       title: 'Nebula Logger',
       description: 'The most robust observability solution for Salesforce experts.',
-      social: {
-        github: 'https://github.com/jongpie/NebulaLogger'
-      },
+      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/jongpie/NebulaLogger' }],
       editLink: {
         baseUrl: 'https://github.com/jongpie/NebulaLogger/edit/feature/new-docs-site/docs/'
       },
@@ -158,9 +156,47 @@ gtag('config', 'G-TD37SS03XP');`
           ]
         },
         {
-          label: 'Reference',
+          label: 'Metadata Reference',
           collapsed: true,
-          autogenerate: { directory: 'reference', collapsed: true }
+          items: [
+            {
+              label: 'Custom Objects',
+              collapsed: true,
+              items: [
+                { label: 'Overview', slug: 'metadata-reference/custom-objects' },
+                {
+                  label: 'Configuration',
+                  collapsed: true,
+                  items: [{ autogenerate: { directory: 'metadata-reference/custom-objects/configuration' } }]
+                },
+                {
+                  label: 'Logger Engine',
+                  collapsed: true,
+                  items: [{ autogenerate: { directory: 'metadata-reference/custom-objects/logger-engine' } }]
+                },
+                {
+                  label: 'Log Management',
+                  collapsed: true,
+                  items: [{ autogenerate: { directory: 'metadata-reference/custom-objects/log-management' } }]
+                }
+              ]
+            },
+            {
+              label: 'Logger Engine (Apex)',
+              collapsed: true,
+              items: [{ autogenerate: { directory: 'metadata-reference/logger-engine' } }]
+            },
+            {
+              label: 'Plugins',
+              collapsed: true,
+              items: [{ autogenerate: { directory: 'metadata-reference/plugins' } }]
+            },
+            {
+              label: 'Lightning Web Components',
+              collapsed: true,
+              items: [{ autogenerate: { directory: 'metadata-reference/lwc' } }]
+            }
+          ]
         },
         {
           label: 'Contributing',

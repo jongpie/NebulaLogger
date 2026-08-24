@@ -1,0 +1,142 @@
+---
+title: LogStatus__mdt
+description: 'Used to configure in Nebula Logger which picklist values in Log__c.Status__c are considered open/closed and resolved/unresolved'
+---
+
+import FieldFilters from '/src/components/FieldFilters.astro';
+
+Used to configure in Nebula Logger which picklist values in Log**c.Status**c are considered open/closed and resolved/unresolved
+
+<div class="sobject-attributes">
+
+| Attribute    | Value                |
+| ------------ | -------------------- |
+| Object Type  | Custom Metadata Type |
+| Label        | Log Status           |
+| Plural Label | Log Statuses         |
+| Fields       | 3                    |
+
+</div>
+
+<h2 id="fields-heading" data-field-total="3">
+  Fields (<span data-field-visible-count>3</span> of 3)
+</h2>
+
+<FieldFilters types={['Checkbox']} showTrackHistoryFilter={false} />
+
+<div data-field-entry="true" data-field-api-name="IsActive__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="isactive__c is active">
+
+### `IsActive__c`
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Is Active            |
+| Type                    | Checkbox             |
+| Required                | No                   |
+| Default Value           | `true`               |
+| Compliance Group        | None                 |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+| Field Manageability     | SubscriberControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsClosed__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="isclosed__c is closed">
+
+### `IsClosed__c`
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Is Closed            |
+| Type                    | Checkbox             |
+| Required                | No                   |
+| Default Value           | `false`              |
+| Compliance Group        | None                 |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+| Field Manageability     | SubscriberControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsResolved__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="isresolved__c is resolved">
+
+### `IsResolved__c`
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Is Resolved          |
+| Type                    | Checkbox             |
+| Required                | No                   |
+| Default Value           | `false`              |
+| Compliance Group        | None                 |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+| Field Manageability     | SubscriberControlled |
+
+</div>
+
+## Records (5)
+
+<div data-cmdt-record="true" data-cmdt-record-name="Done">
+
+### `Done`
+
+| Field           | Value  |
+| --------------- | ------ |
+| `IsActive__c`   | `true` |
+| `IsClosed__c`   | `true` |
+| `IsResolved__c` | `true` |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="Ignored">
+
+### `Ignored`
+
+| Field           | Value   |
+| --------------- | ------- |
+| `IsActive__c`   | `true`  |
+| `IsClosed__c`   | `true`  |
+| `IsResolved__c` | `false` |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="In_Progress">
+
+### `In_Progress`
+
+_In Progress_
+
+| Field           | Value   |
+| --------------- | ------- |
+| `IsActive__c`   | `true`  |
+| `IsClosed__c`   | `false` |
+| `IsResolved__c` | `false` |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="New">
+
+### `New`
+
+| Field           | Value   |
+| --------------- | ------- |
+| `IsActive__c`   | `true`  |
+| `IsClosed__c`   | `false` |
+| `IsResolved__c` | `false` |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="On_Hold">
+
+### `On_Hold`
+
+_On Hold_
+
+| Field           | Value   |
+| --------------- | ------- |
+| `IsActive__c`   | `true`  |
+| `IsClosed__c`   | `false` |
+| `IsResolved__c` | `false` |
+
+</div>

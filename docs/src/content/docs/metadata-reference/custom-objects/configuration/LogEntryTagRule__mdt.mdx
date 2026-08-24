@@ -1,0 +1,143 @@
+---
+title: LogEntryTagRule__mdt
+description: 'Used to configure rules in Nebula Logger to assign additional tags to LogEntry__c records based on field values'
+---
+
+import FieldFilters from '/src/components/FieldFilters.astro';
+
+Used to configure rules in Nebula Logger to assign additional tags to LogEntry\_\_c records based on field values
+
+<div class="sobject-attributes">
+
+| Attribute    | Value                |
+| ------------ | -------------------- |
+| Object Type  | Custom Metadata Type |
+| Label        | Log Entry Tag Rule   |
+| Plural Label | Logger Tag Rules     |
+| Fields       | 6                    |
+
+</div>
+
+<h2 id="fields-heading" data-field-total="6">
+  Fields (<span data-field-visible-count>6</span> of 6)
+</h2>
+
+<FieldFilters types={['Checkbox', 'LongTextArea', 'MetadataRelationship', 'Picklist']} showTrackHistoryFilter={false} />
+
+<div data-field-entry="true" data-field-api-name="ComparisonType__c" data-field-types="Picklist" data-required="true" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="comparisontype__c comparison type">
+
+### `ComparisonType__c`
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Comparison Type      |
+| Type                    | Picklist             |
+| Required                | Yes                  |
+| Compliance Group        | None                 |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+| Field Manageability     | SubscriberControlled |
+
+**Picklist Values**
+
+| API Value       | Label         | Default |
+| --------------- | ------------- | ------- |
+| `CONTAINS`      | CONTAINS      | Yes     |
+| `EQUALS`        | EQUALS        | No      |
+| `MATCHES_REGEX` | MATCHES_REGEX | No      |
+| `STARTS_WITH`   | STARTS_WITH   | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ComparisonValue__c" data-field-types="LongTextArea" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="comparisonvalue__c comparison value">
+
+### `ComparisonValue__c`
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Comparison Value     |
+| Type                    | LongTextArea         |
+| Length                  | 32768                |
+| Required                | No                   |
+| Compliance Group        | None                 |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+| Field Manageability     | SubscriberControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="isenabled__c is enabled">
+
+### `IsEnabled__c`
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Is Enabled          |
+| Type                    | Checkbox            |
+| Required                | No                  |
+| Default Value           | `true`              |
+| Compliance Group        | None                |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+| Field Manageability     | DeveloperControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SObjectField__c" data-field-types="MetadataRelationship" data-required="true" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="sobjectfield__c field">
+
+### `SObjectField__c`
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Field                |
+| Type                    | MetadataRelationship |
+| Required                | Yes                  |
+| References              | `FieldDefinition`    |
+| Relationship Name       | `LogEntryTagRules`   |
+| Relationship Label      | Log Entry Tag Rules  |
+| Compliance Group        | None                 |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+| Field Manageability     | SubscriberControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SObjectType__c" data-field-types="MetadataRelationship" data-required="true" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="sobjecttype__c logger sobject">
+
+### `SObjectType__c`
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Logger SObject       |
+| Type                    | MetadataRelationship |
+| Required                | Yes                  |
+| References              | `EntityDefinition`   |
+| Relationship Name       | `LogEntryTagRules`   |
+| Relationship Label      | Log Entry Tag Rules  |
+| Compliance Group        | None                 |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+| Field Manageability     | SubscriberControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="Tags__c" data-field-types="LongTextArea" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="tags__c tag(s) to apply 1 or more tags to assign - each tag should be listed on a separate line 1 or more tags to assign - each tag should be listed on a separate line">
+
+### `Tags__c`
+
+1 or more tags to assign - each tag should be listed on a separate line
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Tag(s) to Apply      |
+| Type                    | LongTextArea         |
+| Length                  | 32768                |
+| Required                | No                   |
+| Compliance Group        | None                 |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+| Field Manageability     | SubscriberControlled |
+
+</div>

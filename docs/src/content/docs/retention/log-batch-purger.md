@@ -66,4 +66,4 @@ The purge **action** determines the fate of each aged-out record. See [Purge act
 
 - [Purge actions](/NebulaLogger/retention/purge-actions/) - options for what happens when a log ages out.
 - [Log Retention Rules plugin](/NebulaLogger/plugins/log-retention-rules/) - CMDT-driven retention overrides.
-- [`LogBatchPurger` reference](/NebulaLogger/reference/) - class-level details (see the Reference section).
+- [`LogBatchPurger` reference](/NebulaLogger/metadata-reference/) - class-level details (see the Metadata Reference section).

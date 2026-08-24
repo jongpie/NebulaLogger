@@ -1,0 +1,259 @@
+---
+title: LogEntryTag__c
+description: 'Used by Nebula Logger as a junction object to represent a unique relationship between a LogEntry__c record and a LoggerTag__c record'
+---
+
+import FieldFilters from '/src/components/FieldFilters.astro';
+
+Used by Nebula Logger as a junction object to represent a unique relationship between a LogEntry**c record and a LoggerTag**c record
+
+<div class="sobject-attributes">
+
+| Attribute     | Value                   |
+| ------------- | ----------------------- |
+| Object Type   | Custom Object           |
+| Label         | Log Entry Tag           |
+| Plural Label  | Log Entry Tags          |
+| Apex Trigger  | `LogEntryTag`           |
+| FlexiPage     | `LogEntryTagRecordPage` |
+| Track History | Yes                     |
+| Fields        | 10                      |
+
+</div>
+
+<h2 id="fields-heading" data-field-total="10">
+  Fields (<span data-field-visible-count>10</span> of 10)
+</h2>
+
+<FieldFilters types={['DateTime', 'Formula', 'MasterDetail', 'Text']} showTrackHistoryFilter={true} />
+
+<div data-field-entry="true" data-field-api-name="ImpersonatedByUsernameLink__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="impersonatedbyusernamelink__c impersonated by username">
+
+### `ImpersonatedByUsernameLink__c`
+
+| Attribute               | Value                    |
+| ----------------------- | ------------------------ |
+| Label                   | Impersonated By Username |
+| Type                    | Text                     |
+| Required                | No                       |
+| Track History           | No                       |
+| Compliance Group        | PII;GDPR;CCPA            |
+| Security Classification | Confidential             |
+| Business Status         | Active                   |
+
+**Formula**
+
+```
+LogEntry__r.ImpersonatedByUsernameLink__c
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LogEntry__c" data-field-types="MasterDetail" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="logentry__c log entry">
+
+### `LogEntry__c`
+
+| Attribute               | Value          |
+| ----------------------- | -------------- |
+| Label                   | Log Entry      |
+| Type                    | MasterDetail   |
+| Required                | No             |
+| References              | `LogEntry__c`  |
+| Relationship Name       | `LogEntryTags` |
+| Relationship Label      | Log Entry Tags |
+| Track History           | No             |
+| Compliance Group        | None           |
+| Security Classification | Confidential   |
+| Business Status         | Active         |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LogEntryOrigin__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="logentryorigin__c log entry origin">
+
+### `LogEntryOrigin__c`
+
+| Attribute               | Value            |
+| ----------------------- | ---------------- |
+| Label                   | Log Entry Origin |
+| Type                    | Text             |
+| Required                | No               |
+| Track History           | No               |
+| Compliance Group        | None             |
+| Security Classification | Confidential     |
+| Business Status         | Active           |
+
+**Formula**
+
+```
+LogEntry__r.Origin__c
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LogEntryTimestamp__c" data-field-types="DateTime Formula" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="logentrytimestamp__c log entry timestamp">
+
+### `LogEntryTimestamp__c`
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Log Entry Timestamp |
+| Type                    | DateTime            |
+| Required                | No                  |
+| Track History           | No                  |
+| Compliance Group        | None                |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+
+**Formula**
+
+```
+LogEntry__r.Timestamp__c
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoggedByUsernameLink__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="loggedbyusernamelink__c username">
+
+### `LoggedByUsernameLink__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Username      |
+| Type                    | Text          |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+**Formula**
+
+```
+LogEntry__r.LoggedByUsernameLink__c
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LogLink__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="loglink__c log">
+
+### `LogLink__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Log          |
+| Type                    | Text         |
+| Required                | No           |
+| Track History           | No           |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+**Formula**
+
+```
+HYPERLINK(
+  LogEntry__r.Log__c,
+  LogEntry__r.Log__r.Name,
+  '_top'
+)
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ParentLogLink__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="parentloglink__c parent log">
+
+### `ParentLogLink__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Parent Log    |
+| Type                    | Text          |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+**Formula**
+
+```
+LogEntry__r.ParentLogLink__c
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ProfileLink__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="profilelink__c profile">
+
+### `ProfileLink__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Profile       |
+| Type                    | Text          |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+**Formula**
+
+```
+LogEntry__r.ProfileLink__c
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="Tag__c" data-field-types="MasterDetail" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="tag__c logger tag">
+
+### `Tag__c`
+
+| Attribute               | Value              |
+| ----------------------- | ------------------ |
+| Label                   | Logger Tag         |
+| Type                    | MasterDetail       |
+| Required                | No                 |
+| References              | `LoggerTag__c`     |
+| Relationship Name       | `LogEntryTags`     |
+| Relationship Label      | Tagged Log Entries |
+| Track History           | No                 |
+| Compliance Group        | None               |
+| Security Classification | Confidential       |
+| Business Status         | Active             |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="UniqueId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="uniqueid__c unique id an external id field used to ensure that log entry tag records are unique an external id field used to ensure that log entry tag records are unique">
+
+### `UniqueId__c`
+
+An external ID field used to ensure that Log Entry Tag records are unique
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Unique ID    |
+| Type                    | Text         |
+| Length                  | 255          |
+| Required                | No           |
+| Unique                  | Yes          |
+| External ID             | Yes          |
+| Track History           | No           |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+</div>

@@ -1,0 +1,2168 @@
+---
+title: Log__c
+description: 'Used by Nebula Logger to unify all log entries generated in a single transaction'
+---
+
+import FieldFilters from '/src/components/FieldFilters.astro';
+
+Used by Nebula Logger to unify all log entries generated in a single transaction
+
+<div class="sobject-attributes">
+
+| Attribute     | Value                         |
+| ------------- | ----------------------------- |
+| Object Type   | Custom Object                 |
+| Label         | Log                           |
+| Plural Label  | Logs                          |
+| Apex Trigger  | `Log`                         |
+| FlexiPage     | `LogRecordPage`               |
+| Track History | Yes                           |
+| Fields        | 101 (95 active, 6 deprecated) |
+
+</div>
+
+<h2 id="fields-heading" data-field-total="101">
+  Fields (<span data-field-visible-count>101</span> of 101)
+</h2>
+
+<FieldFilters
+  types={['Checkbox', 'Date', 'DateTime', 'Formula', 'LongTextArea', 'Lookup', 'Number', 'Picklist', 'Summary', 'Text', 'Url']}
+  showTrackHistoryFilter={true}
+/>
+
+<div data-field-entry="true" data-field-api-name="ApiReleaseNumber__c" data-field-types="Text" data-required="false" data-deprecated="true" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="apireleasenumber__c deprecated: api release number the release number for the org's instance - determined by making a callout to status.salesforce.com the release number for the org's instance - determined by making a callout to status.salesforce.com">
+
+### `ApiReleaseNumber__c`
+
+The release number for the org's instance - determined by making a callout to status.salesforce.com
+
+| Attribute               | Value                          |
+| ----------------------- | ------------------------------ |
+| Label                   | DEPRECATED: API Release Number |
+| Type                    | Text                           |
+| Length                  | 255                            |
+| Required                | No                             |
+| Track History           | No                             |
+| Compliance Group        | None                           |
+| Security Classification | Confidential                   |
+| Business Status         | DeprecateCandidate             |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ApiReleaseVersion__c" data-field-types="Text" data-required="false" data-deprecated="true" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="apireleaseversion__c deprecated: api release version the release version for the org's instance - determined by making a callout to status.salesforce.com the release version for the org's instance - determined by making a callout to status.salesforce.com">
+
+### `ApiReleaseVersion__c`
+
+The release version for the org's instance - determined by making a callout to status.salesforce.com
+
+| Attribute               | Value                           |
+| ----------------------- | ------------------------------- |
+| Label                   | DEPRECATED: API Release Version |
+| Type                    | Text                            |
+| Length                  | 255                             |
+| Required                | No                              |
+| Track History           | No                              |
+| Compliance Group        | None                            |
+| Security Classification | Confidential                    |
+| Business Status         | DeprecateCandidate              |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ApiVersion__c" data-field-types="Picklist" data-required="false" data-deprecated="true" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="apiversion__c deprecated: api version the salesforce release (api version) of the environment the salesforce release (api version) of the environment">
+
+### `ApiVersion__c`
+
+The Salesforce release (API version) of the environment
+
+| Attribute               | Value                   |
+| ----------------------- | ----------------------- |
+| Label                   | DEPRECATED: API Version |
+| Type                    | Picklist                |
+| Required                | No                      |
+| Track History           | No                      |
+| Compliance Group        | None                    |
+| Security Classification | Confidential            |
+| Business Status         | DeprecateCandidate      |
+
+**Picklist Values**
+
+| API Value | Label                     | Default |
+| --------- | ------------------------- | ------- |
+| `v66.0`   | v66.0 - Spring'26 Release | No      |
+| `v65.0`   | v65.0 - Winter'26 Release | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="AsyncContextChildJobId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="asynccontextchildjobid__c async context child job id">
+
+### `AsyncContextChildJobId__c`
+
+| Attribute               | Value                      |
+| ----------------------- | -------------------------- |
+| Label                   | Async Context Child Job ID |
+| Type                    | Text                       |
+| Length                  | 18                         |
+| Required                | No                         |
+| Track History           | No                         |
+| Compliance Group        | None                       |
+| Security Classification | Confidential               |
+| Business Status         | Active                     |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="AsyncContextParentJobId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="asynccontextparentjobid__c async context parent job id">
+
+### `AsyncContextParentJobId__c`
+
+| Attribute               | Value                       |
+| ----------------------- | --------------------------- |
+| Label                   | Async Context Parent Job ID |
+| Type                    | Text                        |
+| Length                  | 18                          |
+| Required                | No                          |
+| Track History           | No                          |
+| Compliance Group        | None                        |
+| Security Classification | Confidential                |
+| Business Status         | Active                      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="AsyncContextTriggerId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="asynccontexttriggerid__c async context trigger id">
+
+### `AsyncContextTriggerId__c`
+
+| Attribute               | Value                    |
+| ----------------------- | ------------------------ |
+| Label                   | Async Context Trigger ID |
+| Type                    | Text                     |
+| Length                  | 18                       |
+| Required                | No                       |
+| Track History           | No                       |
+| Compliance Group        | None                     |
+| Security Classification | Confidential             |
+| Business Status         | Active                   |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="AsyncContextType__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="asynccontexttype__c async context type">
+
+### `AsyncContextType__c`
+
+| Attribute               | Value              |
+| ----------------------- | ------------------ |
+| Label                   | Async Context Type |
+| Type                    | Picklist           |
+| Required                | No                 |
+| Track History           | No                 |
+| Compliance Group        | None               |
+| Security Classification | Confidential       |
+| Business Status         | Active             |
+
+**Picklist Values**
+
+| API Value                   | Label                     | Default |
+| --------------------------- | ------------------------- | ------- |
+| `Database.BatchableContext` | Database.BatchableContext | No      |
+| `System.FinalizerContext`   | System.FinalizerContext   | No      |
+| `System.QueueableContext`   | System.QueueableContext   | No      |
+| `System.SchedulableContext` | System.SchedulableContext | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ClosedBy__c" data-field-types="Lookup" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="true" data-search="closedby__c closed by">
+
+### `ClosedBy__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Closed By     |
+| Type                    | Lookup        |
+| Required                | No            |
+| References              | `User`        |
+| Relationship Name       | `ClosedLogs`  |
+| Delete Constraint       | SetNull       |
+| Track History           | Yes           |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ClosedDate__c" data-field-types="DateTime" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="true" data-search="closeddate__c closed date">
+
+### `ClosedDate__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Closed Date  |
+| Type                    | DateTime     |
+| Required                | No           |
+| Track History           | Yes          |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="Comments__c" data-field-types="LongTextArea" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="true" data-search="comments__c comments">
+
+### `Comments__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Comments     |
+| Type                    | LongTextArea |
+| Length                  | 4000         |
+| Required                | No           |
+| Track History           | Yes          |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="EndTime__c" data-field-types="Summary" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="endtime__c end time">
+
+### `EndTime__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | End Time     |
+| Type                    | Summary      |
+| Required                | No           |
+| Track History           | No           |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="HasComments__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="hascomments__c has comments">
+
+### `HasComments__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Has Comments |
+| Type                    | Checkbox     |
+| Required                | No           |
+| Default Value           | `false`      |
+| Track History           | No           |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="HasLoggedByFederationIdentifier__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="hasloggedbyfederationidentifier__c has user federation identifier">
+
+### `HasLoggedByFederationIdentifier__c`
+
+| Attribute               | Value                          |
+| ----------------------- | ------------------------------ |
+| Label                   | Has User Federation Identifier |
+| Type                    | Checkbox                       |
+| Required                | No                             |
+| Default Value           | `false`                        |
+| Track History           | No                             |
+| Compliance Group        | None                           |
+| Security Classification | Confidential                   |
+| Business Status         | Active                         |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="HasOrganizationLimits__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="true" data-search="hasorganizationlimits__c has organization limits">
+
+### `HasOrganizationLimits__c`
+
+| Attribute               | Value                   |
+| ----------------------- | ----------------------- |
+| Label                   | Has Organization Limits |
+| Type                    | Checkbox                |
+| Required                | No                      |
+| Default Value           | `false`                 |
+| Track History           | Yes                     |
+| Compliance Group        | None                    |
+| Security Classification | Confidential            |
+| Business Status         | Active                  |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ImpersonatedBy__c" data-field-types="Lookup" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="impersonatedby__c impersonated by">
+
+### `ImpersonatedBy__c`
+
+| Attribute               | Value              |
+| ----------------------- | ------------------ |
+| Label                   | Impersonated By    |
+| Type                    | Lookup             |
+| Required                | No                 |
+| References              | `User`             |
+| Relationship Name       | `ImpersonatedLogs` |
+| Delete Constraint       | SetNull            |
+| Track History           | No                 |
+| Compliance Group        | PII;GDPR;CCPA      |
+| Security Classification | Confidential       |
+| Business Status         | Active             |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ImpersonatedByUsernameLink__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="impersonatedbyusernamelink__c impersonated by username">
+
+### `ImpersonatedByUsernameLink__c`
+
+| Attribute               | Value                    |
+| ----------------------- | ------------------------ |
+| Label                   | Impersonated By Username |
+| Type                    | Text                     |
+| Required                | No                       |
+| Track History           | No                       |
+| Compliance Group        | PII;GDPR;CCPA            |
+| Security Classification | Confidential             |
+| Business Status         | Active                   |
+
+**Formula**
+
+```
+IF(
+    ISBLANK(ImpersonatedBy__c),
+    null,
+    HYPERLINK(
+        ImpersonatedBy__c,
+        ImpersonatedBy__r.Username,
+        '_top'
+    )
+)
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsClosed__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="true" data-search="isclosed__c is closed">
+
+### `IsClosed__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Is Closed    |
+| Type                    | Checkbox     |
+| Required                | No           |
+| Default Value           | `false`      |
+| Track History           | Yes          |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsResolved__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="true" data-search="isresolved__c is resolved">
+
+### `IsResolved__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Is Resolved  |
+| Type                    | Checkbox     |
+| Required                | No           |
+| Default Value           | `false`      |
+| Track History           | Yes          |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="Issue__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="true" data-search="issue__c issue">
+
+### `Issue__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Issue        |
+| Type                    | Picklist     |
+| Required                | No           |
+| Track History           | Yes          |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+**Picklist Values**
+
+| API Value           | Label             | Default |
+| ------------------- | ----------------- | ------- |
+| `Code Issue`        | Code Issue        | No      |
+| `Config Issue`      | Config Issue      | No      |
+| `Data Issue`        | Data Issue        | No      |
+| `Integration Issue` | Integration Issue | No      |
+| `No Issue`          | No Issue          | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="Locale__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="locale__c locale">
+
+### `Locale__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Locale        |
+| Type                    | Text          |
+| Length                  | 255           |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LogEntriesSummary__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="logentriessummary__c summary">
+
+### `LogEntriesSummary__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Summary      |
+| Type                    | Text         |
+| Required                | No           |
+| Track History           | No           |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+**Formula**
+
+```
+TEXT(TotalLogEntries__c) + ' total entries'
++ IF(
+    TotalERRORLogEntries__c = 0,
+    '',
+    ', ' + TEXT(TotalERRORLogEntries__c) + ' error(s)'
+)
++ IF(
+    TotalWARNLogEntries__c = 0,
+    '',
+    ', ' + TEXT(TotalWARNLogEntries__c) + ' warning(s)'
+)
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoggedBy__c" data-field-types="Lookup" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="loggedby__c logged by">
+
+### `LoggedBy__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Logged By     |
+| Type                    | Lookup        |
+| Required                | No            |
+| References              | `User`        |
+| Relationship Name       | `Logs`        |
+| Delete Constraint       | SetNull       |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoggedByFederationIdentifier__c" data-field-types="LongTextArea" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="loggedbyfederationidentifier__c user federation identifier">
+
+### `LoggedByFederationIdentifier__c`
+
+| Attribute               | Value                      |
+| ----------------------- | -------------------------- |
+| Label                   | User Federation Identifier |
+| Type                    | LongTextArea               |
+| Length                  | 512                        |
+| Required                | No                         |
+| Track History           | No                         |
+| Compliance Group        | PII;GDPR;CCPA              |
+| Security Classification | Confidential               |
+| Business Status         | Active                     |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoggedByUsername__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="loggedbyusername__c username">
+
+### `LoggedByUsername__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Username      |
+| Type                    | Text          |
+| Length                  | 255           |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoggedByUsernameLink__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="loggedbyusernamelink__c username">
+
+### `LoggedByUsernameLink__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Username      |
+| Type                    | Text          |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+**Formula**
+
+```
+IF(
+    ISBLANK(LoggedBy__c),
+    'Anonymous',
+    HYPERLINK(
+        LoggedBy__c,
+        IF(
+            ISPICKVAL(UserType__c, 'AutomatedProcess'),
+            TRIM(LoggedBy__r.FirstName + ' ' + LoggedBy__r.LastName),
+            LoggedByUsername__c
+        ),
+        '_top'
+    )
+)
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoggedByUsernameText__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="loggedbyusernametext__c username">
+
+### `LoggedByUsernameText__c`
+
+| Attribute               | Value          |
+| ----------------------- | -------------- |
+| Label                   | Username       |
+| Type                    | Text           |
+| Required                | No             |
+| Track History           | No             |
+| Compliance Group        | PII;HIPAA;CCPA |
+| Security Classification | Confidential   |
+| Business Status         | Active         |
+
+**Formula**
+
+```
+IF(ISBLANK(LoggedBy__c),
+  'Anonymous',
+  IF(ISPICKVAL(UserType__c, 'AutomatedProcess'),
+    TRIM(LoggedBy__r.FirstName + ' ' + LoggedBy__r.LastName),
+    LoggedByUsername__c)
+)
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoggerVersionNumber__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="loggerversionnumber__c logger version number">
+
+### `LoggerVersionNumber__c`
+
+| Attribute               | Value                 |
+| ----------------------- | --------------------- |
+| Label                   | Logger Version Number |
+| Type                    | Text                  |
+| Length                  | 14                    |
+| Required                | No                    |
+| External ID             | Yes                   |
+| Track History           | No                    |
+| Compliance Group        | None                  |
+| Security Classification | Confidential          |
+| Business Status         | Active                |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoginApplication__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="loginapplication__c login application">
+
+### `LoginApplication__c`
+
+| Attribute               | Value             |
+| ----------------------- | ----------------- |
+| Label                   | Login Application |
+| Type                    | Text              |
+| Length                  | 255               |
+| Required                | No                |
+| Track History           | No                |
+| Compliance Group        | PII;GDPR;CCPA     |
+| Security Classification | Confidential      |
+| Business Status         | Active            |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoginBrowser__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="loginbrowser__c login browser">
+
+### `LoginBrowser__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Login Browser |
+| Type                    | Text          |
+| Length                  | 255           |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoginDomain__c" data-field-types="Url" data-required="false" data-deprecated="true" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="logindomain__c deprecated: login domain">
+
+### `LoginDomain__c`
+
+| Attribute               | Value                    |
+| ----------------------- | ------------------------ |
+| Label                   | DEPRECATED: Login Domain |
+| Type                    | Url                      |
+| Required                | No                       |
+| Track History           | No                       |
+| Compliance Group        | PII;GDPR;CCPA            |
+| Security Classification | Confidential             |
+| Business Status         | DeprecateCandidate       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoginHistoryId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="loginhistoryid__c login history id">
+
+### `LoginHistoryId__c`
+
+| Attribute               | Value            |
+| ----------------------- | ---------------- |
+| Label                   | Login History ID |
+| Type                    | Text             |
+| Length                  | 18               |
+| Required                | No               |
+| Track History           | No               |
+| Compliance Group        | PII;GDPR;CCPA    |
+| Security Classification | Confidential     |
+| Business Status         | Active           |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoginPlatform__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="loginplatform__c login platform">
+
+### `LoginPlatform__c`
+
+| Attribute               | Value          |
+| ----------------------- | -------------- |
+| Label                   | Login Platform |
+| Type                    | Text           |
+| Length                  | 255            |
+| Required                | No             |
+| Track History           | No             |
+| Compliance Group        | PII;GDPR;CCPA  |
+| Security Classification | Confidential   |
+| Business Status         | Active         |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoginType__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="logintype__c login type">
+
+### `LoginType__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Login Type    |
+| Type                    | Picklist      |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+**Picklist Values**
+
+| API Value                | Label                  | Default |
+| ------------------------ | ---------------------- | ------- |
+| `Application`            | Application            | No      |
+| `Remote Access 2.0`      | Remote Access 2.0      | No      |
+| `SAML Idp Initiated SSO` | SAML Idp Initiated SSO | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LogoutUrl__c" data-field-types="Url" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="logouturl__c logout url">
+
+### `LogoutUrl__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Logout URL   |
+| Type                    | Url          |
+| Required                | No           |
+| Track History           | No           |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LogPurgeAction__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="true" data-search="logpurgeaction__c log purge action used by the batch job logbatchpurger, this indicates the action that should be taken for a log__c record when logretentiondate__c &lt; today. out of the box, only 'delete' is used by logger, but plugins can add &amp; use new values.">
+
+### `LogPurgeAction__c`
+
+> Used by the batch job LogBatchPurger, this indicates the action that should be taken for a Log**c record when LogRetentionDate**c &lt; TODAY. Out of the box, only 'Delete' is used by Logger, but plugins can add & use new values.
+
+| Attribute               | Value            |
+| ----------------------- | ---------------- |
+| Label                   | Log Purge Action |
+| Type                    | Picklist         |
+| Required                | No               |
+| Track History           | Yes              |
+| Compliance Group        | None             |
+| Security Classification | Confidential     |
+| Business Status         | Active           |
+
+**Picklist Values**
+
+| API Value | Label  | Default |
+| --------- | ------ | ------- |
+| `Delete`  | Delete | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LogRetentionDate__c" data-field-types="Date" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="true" data-search="logretentiondate__c log retention date the date that this log can be automatically deleted by the batch job logbatchpurger.
+
+it defaults to 2 weeks after creation (configurable in logger settings), but the date can be set manually or via automation if certain logs need to be kept longer/indefinitely. the date that this log can be automatically deleted by the batch job logbatchpurger.">
+
+### `LogRetentionDate__c`
+
+The date that this log can be automatically deleted by the batch job LogBatchPurger.
+
+It defaults to 2 weeks after creation (configurable in Logger Settings), but the date can be set manually or via automation if certain logs need to be kept longer/indefinitely.
+
+> The date that this log can be automatically deleted by the batch job LogBatchPurger.
+
+| Attribute               | Value              |
+| ----------------------- | ------------------ |
+| Label                   | Log Retention Date |
+| Type                    | Date               |
+| Required                | No                 |
+| Track History           | Yes                |
+| Compliance Group        | None               |
+| Security Classification | Confidential       |
+| Business Status         | Active             |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="MaxLogEntryLoggingLevelOrdinal__c" data-field-types="Summary" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="maxlogentrylogginglevelordinal__c max log entry logging level ordinal the highest logging level ordinal of any related log entries the highest logging level ordinal of any related log entries">
+
+### `MaxLogEntryLoggingLevelOrdinal__c`
+
+The highest logging level ordinal of any related log entries
+
+| Attribute               | Value                               |
+| ----------------------- | ----------------------------------- |
+| Label                   | Max Log Entry Logging Level Ordinal |
+| Type                    | Summary                             |
+| Required                | No                                  |
+| Track History           | No                                  |
+| Compliance Group        | None                                |
+| Security Classification | Confidential                        |
+| Business Status         | Active                              |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="NetworkId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="networkid__c site network id the network id of the community user's site. set with network.getnetworkid() the network id of the user's community site.">
+
+### `NetworkId__c`
+
+The Network ID of the Community user's site. Set with Network.getNetworkId()
+
+> The Network ID of the user's Community site.
+
+| Attribute               | Value           |
+| ----------------------- | --------------- |
+| Label                   | Site Network ID |
+| Type                    | Text            |
+| Length                  | 18              |
+| Required                | No              |
+| External ID             | Yes             |
+| Track History           | No              |
+| Compliance Group        | PII;GDPR;CCPA   |
+| Security Classification | Confidential    |
+| Business Status         | Active          |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="NetworkLoginUrl__c" data-field-types="Url" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="networkloginurl__c site login url">
+
+### `NetworkLoginUrl__c`
+
+| Attribute               | Value          |
+| ----------------------- | -------------- |
+| Label                   | Site Login URL |
+| Type                    | Url            |
+| Required                | No             |
+| Track History           | No             |
+| Compliance Group        | PII;GDPR;CCPA  |
+| Security Classification | Confidential   |
+| Business Status         | Active         |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="NetworkLogoutUrl__c" data-field-types="Url" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="networklogouturl__c site logout url">
+
+### `NetworkLogoutUrl__c`
+
+| Attribute               | Value           |
+| ----------------------- | --------------- |
+| Label                   | Site Logout URL |
+| Type                    | Url             |
+| Required                | No              |
+| Track History           | No              |
+| Compliance Group        | PII;GDPR;CCPA   |
+| Security Classification | Confidential    |
+| Business Status         | Active          |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="NetworkName__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="networkname__c site name the name of the user's community site (based on networkid). the name of the user's community site (based on networkid).">
+
+### `NetworkName__c`
+
+The name of the user's Community site (based on NetworkId).
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Site Name     |
+| Type                    | Text          |
+| Length                  | 255           |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="NetworkSelfRegistrationUrl__c" data-field-types="Url" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="networkselfregistrationurl__c site self registration url">
+
+### `NetworkSelfRegistrationUrl__c`
+
+| Attribute               | Value                      |
+| ----------------------- | -------------------------- |
+| Label                   | Site Self Registration URL |
+| Type                    | Url                        |
+| Required                | No                         |
+| Track History           | No                         |
+| Compliance Group        | PII;GDPR;CCPA              |
+| Security Classification | Confidential               |
+| Business Status         | Active                     |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="NetworkUrlPathPrefix__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="networkurlpathprefix__c site url path prefix the urlpathprefix is a unique string at the end of the url for this community. for example, in the community url communitiessubdomainname.force.com/customers, customers is the urlpathprefix. the urlpathprefix is a unique string at the end of the url for this community. for example, in the community url communitiessubdomainname.force.com/customers, customers is the urlpathprefix.">
+
+### `NetworkUrlPathPrefix__c`
+
+The UrlPathPrefix is a unique string at the end of the URL for this community. For example, in the community URL CommunitiesSubdomainName.force.com/customers, customers is the UrlPathPrefix.
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Site URL Path Prefix |
+| Type                    | Text                 |
+| Length                  | 255                  |
+| Required                | No                   |
+| Track History           | No                   |
+| Compliance Group        | PII;GDPR;CCPA        |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="OrganizationApiVersion__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="organizationapiversion__c organization api version the salesforce release (api version) of the environment the salesforce release (api version) of the environment">
+
+### `OrganizationApiVersion__c`
+
+The Salesforce release (API version) of the environment
+
+| Attribute               | Value                    |
+| ----------------------- | ------------------------ |
+| Label                   | Organization API Version |
+| Type                    | Picklist                 |
+| Required                | No                       |
+| Track History           | No                       |
+| Compliance Group        | None                     |
+| Security Classification | Confidential             |
+| Business Status         | Active                   |
+
+**Picklist Values**
+
+| API Value | Label                     | Default |
+| --------- | ------------------------- | ------- |
+| `v66.0`   | v66.0 - Spring'26 Release | No      |
+| `v65.0`   | v65.0 - Winter'26 Release | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="OrganizationDomainUrl__c" data-field-types="Url" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="organizationdomainurl__c organization domain url the value returned from system.url.getorgdomainurl() the value returned from system.url.getorgdomainurl()">
+
+### `OrganizationDomainUrl__c`
+
+The value returned from System.URL.getOrgDomainUrl()
+
+| Attribute               | Value                   |
+| ----------------------- | ----------------------- |
+| Label                   | Organization Domain URL |
+| Type                    | Url                     |
+| Required                | No                      |
+| Track History           | No                      |
+| Compliance Group        | None                    |
+| Security Classification | Confidential            |
+| Business Status         | Active                  |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="OrganizationEnvironmentType__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="organizationenvironmenttype__c environment type">
+
+### `OrganizationEnvironmentType__c`
+
+| Attribute               | Value            |
+| ----------------------- | ---------------- |
+| Label                   | Environment Type |
+| Type                    | Picklist         |
+| Required                | No               |
+| Track History           | No               |
+| Compliance Group        | None             |
+| Security Classification | Confidential     |
+| Business Status         | Active           |
+
+**Picklist Values**
+
+| API Value     | Label       | Default |
+| ------------- | ----------- | ------- |
+| `Production`  | Production  | No      |
+| `Sandbox`     | Sandbox     | No      |
+| `Scratch Org` | Scratch Org | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="OrganizationId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="organizationid__c organization id">
+
+### `OrganizationId__c`
+
+| Attribute               | Value           |
+| ----------------------- | --------------- |
+| Label                   | Organization ID |
+| Type                    | Text            |
+| Length                  | 18              |
+| Required                | No              |
+| Track History           | No              |
+| Compliance Group        | None            |
+| Security Classification | Confidential    |
+| Business Status         | Active          |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="OrganizationInstanceName__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="organizationinstancename__c instance name">
+
+### `OrganizationInstanceName__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Instance Name |
+| Type                    | Text          |
+| Length                  | 255           |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | None          |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="OrganizationInstanceReleaseCycle__c" data-field-types="Picklist" data-required="false" data-deprecated="true" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="organizationinstancereleasecycle__c deprecated: instance release cycle">
+
+### `OrganizationInstanceReleaseCycle__c`
+
+| Attribute               | Value                              |
+| ----------------------- | ---------------------------------- |
+| Label                   | DEPRECATED: Instance Release Cycle |
+| Type                    | Picklist                           |
+| Required                | No                                 |
+| Track History           | No                                 |
+| Compliance Group        | None                               |
+| Security Classification | Confidential                       |
+| Business Status         | DeprecateCandidate                 |
+
+**Picklist Values**
+
+| API Value              | Label                | Default |
+| ---------------------- | -------------------- | ------- |
+| `Preview Instance`     | Preview Instance     | No      |
+| `Non-Preview Instance` | Non-Preview Instance | No      |
+| `Unknown`              | Unknown              | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="OrganizationLimits__c" data-field-types="LongTextArea" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="organizationlimits__c organization limits">
+
+### `OrganizationLimits__c`
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Organization Limits |
+| Type                    | LongTextArea        |
+| Length                  | 131072              |
+| Required                | No                  |
+| Track History           | No                  |
+| Compliance Group        | None                |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="OrganizationLocation__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="true" data-search="organizationlocation__c organization location">
+
+### `OrganizationLocation__c`
+
+| Attribute               | Value                 |
+| ----------------------- | --------------------- |
+| Label                   | Organization Location |
+| Type                    | Picklist              |
+| Required                | No                    |
+| Track History           | Yes                   |
+| Compliance Group        | None                  |
+| Security Classification | Confidential          |
+| Business Status         | Active                |
+
+**Picklist Values**
+
+| API Value | Label | Default |
+| --------- | ----- | ------- |
+| `APAC`    | APAC  | No      |
+| `EMEA`    | EMEA  | No      |
+| `NA`      | NA    | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="OrganizationName__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="organizationname__c organization name">
+
+### `OrganizationName__c`
+
+| Attribute               | Value             |
+| ----------------------- | ----------------- |
+| Label                   | Organization Name |
+| Type                    | Text              |
+| Length                  | 255               |
+| Required                | No                |
+| Track History           | No                |
+| Compliance Group        | None              |
+| Security Classification | Confidential      |
+| Business Status         | Active            |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="OrganizationNamespacePrefix__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="organizationnamespaceprefix__c organization namespace prefix">
+
+### `OrganizationNamespacePrefix__c`
+
+| Attribute               | Value                         |
+| ----------------------- | ----------------------------- |
+| Label                   | Organization Namespace Prefix |
+| Type                    | Text                          |
+| Length                  | 255                           |
+| Required                | No                            |
+| Track History           | No                            |
+| Compliance Group        | None                          |
+| Security Classification | Confidential                  |
+| Business Status         | Active                        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="OrganizationReleaseNumber__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="organizationreleasenumber__c organization release number the release number for the org's instance - determined by making a callout to status.salesforce.com the release number for the org's instance - determined by making a callout to status.salesforce.com">
+
+### `OrganizationReleaseNumber__c`
+
+The release number for the org's instance - determined by making a callout to status.salesforce.com
+
+| Attribute               | Value                       |
+| ----------------------- | --------------------------- |
+| Label                   | Organization Release Number |
+| Type                    | Text                        |
+| Length                  | 255                         |
+| Required                | No                          |
+| Track History           | No                          |
+| Compliance Group        | None                        |
+| Security Classification | Confidential                |
+| Business Status         | Active                      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="OrganizationReleaseVersion__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="organizationreleaseversion__c organization release version the release version for the org's instance - determined by making a callout to status.salesforce.com the release version for the org's instance - determined by making a callout to status.salesforce.com">
+
+### `OrganizationReleaseVersion__c`
+
+The release version for the org's instance - determined by making a callout to status.salesforce.com
+
+| Attribute               | Value                        |
+| ----------------------- | ---------------------------- |
+| Label                   | Organization Release Version |
+| Type                    | Text                         |
+| Length                  | 255                          |
+| Required                | No                           |
+| Track History           | No                           |
+| Compliance Group        | None                         |
+| Security Classification | Confidential                 |
+| Business Status         | Active                       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="OrganizationType__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="organizationtype__c organization type">
+
+### `OrganizationType__c`
+
+| Attribute               | Value             |
+| ----------------------- | ----------------- |
+| Label                   | Organization Type |
+| Type                    | Picklist          |
+| Required                | No                |
+| Track History           | No                |
+| Compliance Group        | None              |
+| Security Classification | Confidential      |
+| Business Status         | Active            |
+
+**Picklist Values**
+
+| API Value                 | Label                   | Default |
+| ------------------------- | ----------------------- | ------- |
+| `Team Edition`            | Team Edition            | No      |
+| `Professional Edition`    | Professional Edition    | No      |
+| `Enterprise Edition`      | Enterprise Edition      | No      |
+| `Developer Edition`       | Developer Edition       | No      |
+| `Personal Edition`        | Personal Edition        | No      |
+| `Unlimited Edition`       | Unlimited Edition       | No      |
+| `Contact Manager Edition` | Contact Manager Edition | No      |
+| `Base Edition`            | Base Edition            | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ParentLog__c" data-field-types="Lookup" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="parentlog__c parent log the log from the original transaction that initiated a child log - for example, batch jobs have start, execute and finish methods. all 3 are considered separate transactions. by using the parent log, logs from all 3 transactions can be linked together. the log from the original transaction that initiated a child log - for example, batch jobs have start, execute and finish methods. all 3 are considered separate transactions. by using the parent log, logs from all 3 transactions can be linked together.">
+
+### `ParentLog__c`
+
+The log from the original transaction that initiated a child log - for example, batch jobs have start, execute and finish methods. All 3 are considered separate transactions. By using the parent log, logs from all 3 transactions can be linked together.
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Parent Log    |
+| Type                    | Lookup        |
+| Required                | No            |
+| References              | `Log__c`      |
+| Relationship Name       | `ChildLogs`   |
+| Relationship Label      | Related Logs  |
+| Delete Constraint       | SetNull       |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ParentLogLink__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="parentloglink__c parent log">
+
+### `ParentLogLink__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Parent Log    |
+| Type                    | Text          |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+**Formula**
+
+```
+IF(
+    NOT(ISBLANK(ParentLog__c)),
+    HYPERLINK(ParentLog__c, ParentLog__r.Name + ' - ' + ParentLogTransactionId__c, '_top'),
+    ParentLogTransactionId__c
+)
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ParentLogTransactionId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="parentlogtransactionid__c parent log transaction id">
+
+### `ParentLogTransactionId__c`
+
+| Attribute               | Value                     |
+| ----------------------- | ------------------------- |
+| Label                   | Parent Log Transaction ID |
+| Type                    | Text                      |
+| Length                  | 36                        |
+| Required                | No                        |
+| Track History           | No                        |
+| Compliance Group        | PII;GDPR;CCPA             |
+| Security Classification | Confidential              |
+| Business Status         | Active                    |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ParentSessionId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="parentsessionid__c parent session id">
+
+### `ParentSessionId__c`
+
+| Attribute               | Value             |
+| ----------------------- | ----------------- |
+| Label                   | Parent Session ID |
+| Type                    | Text              |
+| Length                  | 120               |
+| Required                | No                |
+| Track History           | No                |
+| Compliance Group        | PII;GDPR;CCPA     |
+| Security Classification | Confidential      |
+| Business Status         | Active            |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="Priority__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="true" data-search="priority__c priority">
+
+### `Priority__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Priority     |
+| Type                    | Picklist     |
+| Required                | No           |
+| Track History           | Yes          |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+**Picklist Values**
+
+| API Value | Label  | Default |
+| --------- | ------ | ------- |
+| `High`    | High   | No      |
+| `Medium`  | Medium | No      |
+| `Low`     | Low    | Yes     |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ProfileId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="profileid__c profile id">
+
+### `ProfileId__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Profile ID    |
+| Type                    | Text          |
+| Length                  | 18            |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ProfileLink__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="profilelink__c profile">
+
+### `ProfileLink__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Profile       |
+| Type                    | Text          |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+**Formula**
+
+```
+HYPERLINK('/' + ProfileId__c, ProfileName__c, '_top')
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ProfileName__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="profilename__c profile name">
+
+### `ProfileName__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Profile Name  |
+| Type                    | Text          |
+| Length                  | 255           |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="RequestId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="requestid__c request id the value returned when calling system.request.getcurrent().getrequestid()">
+
+### `RequestId__c`
+
+> The value returned when calling System.Request.getCurrent().getRequestId()
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Request ID   |
+| Type                    | Text         |
+| Length                  | 36           |
+| Required                | No           |
+| External ID             | Yes          |
+| Track History           | No           |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="Scenario__c" data-field-types="Text" data-required="false" data-deprecated="true" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="scenario__c deprecated: scenario">
+
+### `Scenario__c`
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | DEPRECATED: Scenario |
+| Type                    | Text                 |
+| Length                  | 255                  |
+| Required                | No                   |
+| External ID             | Yes                  |
+| Track History           | No                   |
+| Compliance Group        | PII;GDPR;CCPA        |
+| Security Classification | Confidential         |
+| Business Status         | DeprecateCandidate   |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SessionId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="sessionid__c session id">
+
+### `SessionId__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Session ID    |
+| Type                    | Text          |
+| Length                  | 120           |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SessionSecurityLevel__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="sessionsecuritylevel__c session security level">
+
+### `SessionSecurityLevel__c`
+
+| Attribute               | Value                  |
+| ----------------------- | ---------------------- |
+| Label                   | Session Security Level |
+| Type                    | Picklist               |
+| Required                | No                     |
+| Track History           | No                     |
+| Compliance Group        | PII;GDPR;CCPA          |
+| Security Classification | Confidential           |
+| Business Status         | Active                 |
+
+**Picklist Values**
+
+| API Value        | Label          | Default |
+| ---------------- | -------------- | ------- |
+| `LOW`            | LOW            | No      |
+| `STANDARD`       | STANDARD       | No      |
+| `HIGH_ASSURANCE` | HIGH_ASSURANCE | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SessionType__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="sessiontype__c session type">
+
+### `SessionType__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Session Type  |
+| Type                    | Picklist      |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+**Picklist Values**
+
+| API Value     | Label       | Default |
+| ------------- | ----------- | ------- |
+| `Aura`        | Aura        | No      |
+| `Oauth2`      | Oauth2      | No      |
+| `UI`          | UI          | No      |
+| `Visualforce` | Visualforce | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SourceIp__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="sourceip__c source ip">
+
+### `SourceIp__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Source IP     |
+| Type                    | Text          |
+| Length                  | 255           |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="StartTime__c" data-field-types="Summary" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="starttime__c start time">
+
+### `StartTime__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Start Time   |
+| Type                    | Summary      |
+| Required                | No           |
+| Track History           | No           |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="Status__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="true" data-search="status__c status">
+
+### `Status__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Status       |
+| Type                    | Picklist     |
+| Required                | No           |
+| Track History           | Yes          |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+**Picklist Values**
+
+| API Value     | Label       | Default |
+| ------------- | ----------- | ------- |
+| `New`         | New         | Yes     |
+| `Ignored`     | Ignored     | No      |
+| `On Hold`     | On Hold     | No      |
+| `In Progress` | In Progress | No      |
+| `Done`        | Done        | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SystemMode__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="systemmode__c system mode">
+
+### `SystemMode__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | System Mode  |
+| Type                    | Picklist     |
+| Required                | No           |
+| Track History           | No           |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+**Picklist Values**
+
+| API Value              | Label                | Default |
+| ---------------------- | -------------------- | ------- |
+| `ANONYMOUS`            | ANONYMOUS            | No      |
+| `AURA`                 | AURA                 | No      |
+| `BATCH_ACS`            | BATCH_ACS            | No      |
+| `BATCH_APEX`           | BATCH_APEX           | No      |
+| `BATCH_CHUNK_PARALLEL` | BATCH_CHUNK_PARALLEL | No      |
+| `BATCH_CHUNK_SERIAL`   | BATCH_CHUNK_SERIAL   | No      |
+| `BULK_API`             | BULK_API             | No      |
+| `COMMERCE_INTEGRATION` | COMMERCE_INTEGRATION | No      |
+| `DISCOVERABLE_LOGIN`   | DISCOVERABLE_LOGIN   | No      |
+| `FUNCTION_CALLBACK`    | FUNCTION_CALLBACK    | No      |
+| `FUTURE`               | FUTURE               | No      |
+| `INBOUND_EMAIL_SERVIC` | INBOUND_EMAIL_SERVIC | No      |
+| `INVOCABLE_ACTION`     | INVOCABLE_ACTION     | No      |
+| `IOT`                  | IOT                  | No      |
+| `QUEUEABLE`            | QUEUEABLE            | No      |
+| `QUICK_ACTION`         | QUICK_ACTION         | No      |
+| `REMOTE_ACTION`        | REMOTE_ACTION        | No      |
+| `REST`                 | REST                 | No      |
+| `RUNTEST_ASYNC`        | RUNTEST_ASYNC        | No      |
+| `RUNTEST_DEPLOY`       | RUNTEST_DEPLOY       | No      |
+| `RUNTEST_SYNC`         | RUNTEST_SYNC         | No      |
+| `SCHEDULED`            | SCHEDULED            | No      |
+| `SOAP`                 | SOAP                 | No      |
+| `SYNCHRONOUS`          | SYNCHRONOUS          | No      |
+| `TRANSACTION_FINALIZE` | TRANSACTION_FINALIZE | No      |
+| `VF`                   | VF                   | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SystemModeSummary__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="systemmodesummary__c system mode">
+
+### `SystemModeSummary__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | System Mode  |
+| Type                    | Text         |
+| Required                | No           |
+| Track History           | No           |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+**Formula**
+
+```
+'API.' +  TEXT(ApiVersion__c) + '.' + TEXT(SystemMode__c)
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ThemeDisplayed__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="themedisplayed__c theme displayed">
+
+### `ThemeDisplayed__c`
+
+| Attribute               | Value           |
+| ----------------------- | --------------- |
+| Label                   | Theme Displayed |
+| Type                    | Picklist        |
+| Required                | No              |
+| Track History           | No              |
+| Compliance Group        | None            |
+| Security Classification | Confidential    |
+| Business Status         | Active          |
+
+**Picklist Values**
+
+| API Value       | Label                     | Default |
+| --------------- | ------------------------- | ------- |
+| `Theme1`        | Obsolete Salesforce Theme | No      |
+| `Theme2`        | Salesforce Classic 2005   | No      |
+| `Theme3`        | Salesforce Classic        | No      |
+| `Theme4d`       | Lightning Experience      | No      |
+| `Theme4t`       | Salesforce Mobile App     | No      |
+| `Theme4u`       | Lightning Console         | No      |
+| `PortalDefault` | Customer Portal           | No      |
+| `Webstore`      | AppExchange               | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TimeZoneId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="timezoneid__c time zone id">
+
+### `TimeZoneId__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Time Zone ID  |
+| Type                    | Text          |
+| Length                  | 255           |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TimeZoneName__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="timezonename__c time zone name">
+
+### `TimeZoneName__c`
+
+| Attribute               | Value          |
+| ----------------------- | -------------- |
+| Label                   | Time Zone Name |
+| Type                    | Text           |
+| Length                  | 255            |
+| Required                | No             |
+| Track History           | No             |
+| Compliance Group        | PII;GDPR;CCPA  |
+| Security Classification | Confidential   |
+| Business Status         | Active         |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TotalDEBUGLogEntries__c" data-field-types="Summary" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="totaldebuglogentries__c total debug entries the total number of log entries with logging level == 'debug' the total number of log entries with logging level == 'debug'">
+
+### `TotalDEBUGLogEntries__c`
+
+The total number of log entries with logging level == 'DEBUG'
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Total DEBUG Entries |
+| Type                    | Summary             |
+| Required                | No                  |
+| Track History           | No                  |
+| Compliance Group        | None                |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TotalERRORLogEntries__c" data-field-types="Summary" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="totalerrorlogentries__c total error entries the total number of log entries with logging level == 'error' the total number of log entries with logging level == 'error'">
+
+### `TotalERRORLogEntries__c`
+
+The total number of log entries with logging level == 'ERROR'
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Total ERROR Entries |
+| Type                    | Summary             |
+| Required                | No                  |
+| Track History           | No                  |
+| Compliance Group        | None                |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TotalFINELogEntries__c" data-field-types="Summary" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="totalfinelogentries__c total fine entries the total number of log entries with logging level == 'fine' the total number of log entries with logging level == 'fine'">
+
+### `TotalFINELogEntries__c`
+
+The total number of log entries with logging level == 'FINE'
+
+| Attribute               | Value              |
+| ----------------------- | ------------------ |
+| Label                   | Total FINE Entries |
+| Type                    | Summary            |
+| Required                | No                 |
+| Track History           | No                 |
+| Compliance Group        | None               |
+| Security Classification | Confidential       |
+| Business Status         | Active             |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TotalFINERLogEntries__c" data-field-types="Summary" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="totalfinerlogentries__c total finer entries the total number of log entries with logging level == 'finer' the total number of log entries with logging level == 'finer'">
+
+### `TotalFINERLogEntries__c`
+
+The total number of log entries with logging level == 'FINER'
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Total FINER Entries |
+| Type                    | Summary             |
+| Required                | No                  |
+| Track History           | No                  |
+| Compliance Group        | None                |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TotalFINESTLogEntries__c" data-field-types="Summary" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="totalfinestlogentries__c total finest entries the total number of log entries with logging level == 'finest' the total number of log entries with logging level == 'finest'">
+
+### `TotalFINESTLogEntries__c`
+
+The total number of log entries with logging level == 'FINEST'
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Total FINEST Entries |
+| Type                    | Summary              |
+| Required                | No                   |
+| Track History           | No                   |
+| Compliance Group        | None                 |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TotalINFOLogEntries__c" data-field-types="Summary" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="totalinfologentries__c total info entries the total number of log entries with logging level == 'info' the total number of log entries with logging level == 'info'">
+
+### `TotalINFOLogEntries__c`
+
+The total number of log entries with logging level == 'INFO'
+
+| Attribute               | Value              |
+| ----------------------- | ------------------ |
+| Label                   | Total INFO Entries |
+| Type                    | Summary            |
+| Required                | No                 |
+| Track History           | No                 |
+| Compliance Group        | None               |
+| Security Classification | Confidential       |
+| Business Status         | Active             |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TotalLimitsCpuTimeUsed__c" data-field-types="Summary" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="totallimitscputimeused__c total cpu">
+
+### `TotalLimitsCpuTimeUsed__c`
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Total CPU    |
+| Type                    | Summary      |
+| Required                | No           |
+| Track History           | No           |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TotalLogEntries__c" data-field-types="Formula Number" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="totallogentries__c total entries">
+
+### `TotalLogEntries__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Total Entries |
+| Type                    | Number        |
+| Precision / Scale       | 18 / 0        |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | None          |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+**Formula**
+
+```
+TotalERRORLogEntries__c
++ TotalWARNLogEntries__c
++ TotalINFOLogEntries__c
++ TotalDEBUGLogEntries__c
++ TotalFINELogEntries__c
++ TotalFINERLogEntries__c
++ TotalFINESTLogEntries__c
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TotalWARNLogEntries__c" data-field-types="Summary" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="totalwarnlogentries__c total warn entries the total number of log entries with logging level == 'warn' the total number of log entries with logging level == 'warn'">
+
+### `TotalWARNLogEntries__c`
+
+The total number of log entries with logging level == 'WARN'
+
+| Attribute               | Value              |
+| ----------------------- | ------------------ |
+| Label                   | Total WARN Entries |
+| Type                    | Summary            |
+| Required                | No                 |
+| Track History           | No                 |
+| Compliance Group        | None               |
+| Security Classification | Confidential       |
+| Business Status         | Active             |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TransactionId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="transactionid__c transaction id the unique id generated by nebula logger for a particular transaction">
+
+### `TransactionId__c`
+
+> The unique ID generated by Nebula Logger for a particular transaction
+
+| Attribute               | Value          |
+| ----------------------- | -------------- |
+| Label                   | Transaction ID |
+| Type                    | Text           |
+| Length                  | 36             |
+| Required                | No             |
+| Unique                  | Yes            |
+| External ID             | Yes            |
+| Track History           | No             |
+| Compliance Group        | None           |
+| Security Classification | Confidential   |
+| Business Status         | Active         |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TransactionScenario__c" data-field-types="Lookup" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="true" data-search="transactionscenario__c transaction scenario">
+
+### `TransactionScenario__c`
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Transaction Scenario |
+| Type                    | Lookup               |
+| Required                | No                   |
+| References              | `LoggerScenario__c`  |
+| Relationship Name       | `Logs`               |
+| Relationship Label      | Logs                 |
+| Delete Constraint       | SetNull              |
+| Track History           | Yes                  |
+| Compliance Group        | PII;GDPR;CCPA        |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TransactionScenarioLink__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="transactionscenariolink__c transaction scenario">
+
+### `TransactionScenarioLink__c`
+
+| Attribute     | Value                |
+| ------------- | -------------------- |
+| Label         | Transaction Scenario |
+| Type          | Text                 |
+| Required      | No                   |
+| Track History | No                   |
+
+**Formula**
+
+```
+IF(
+    ISBLANK(TransactionScenario__c),
+    TransactionScenarioName__c,
+    HYPERLINK(
+        '/' + TransactionScenario__c,
+        TransactionScenario__r.Name,
+        '_top'
+    )
+)
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TransactionScenarioName__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="transactionscenarioname__c transaction scenario name">
+
+### `TransactionScenarioName__c`
+
+| Attribute               | Value                     |
+| ----------------------- | ------------------------- |
+| Label                   | Transaction Scenario Name |
+| Type                    | Text                      |
+| Length                  | 255                       |
+| Required                | No                        |
+| Track History           | No                        |
+| Compliance Group        | None                      |
+| Security Classification | Confidential              |
+| Business Status         | Active                    |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TransactionScenarioText__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="transactionscenariotext__c transaction scenario">
+
+### `TransactionScenarioText__c`
+
+| Attribute     | Value                |
+| ------------- | -------------------- |
+| Label         | Transaction Scenario |
+| Type          | Text                 |
+| Required      | No                   |
+| Track History | No                   |
+
+**Formula**
+
+```
+IF(
+    NOT(ISBLANK(TransactionScenario__c)),
+    TransactionScenario__r.Name,
+    TransactionScenarioName__c
+)
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="UserLicenseDefinitionKey__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="true" data-track-history="false" data-search="userlicensedefinitionkey__c user license definition key https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_userlicense.htm">
+
+### `UserLicenseDefinitionKey__c`
+
+https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_userlicense.htm
+
+| Attribute               | Value                       |
+| ----------------------- | --------------------------- |
+| Label                   | User License Definition Key |
+| Type                    | Picklist                    |
+| Required                | No                          |
+| Track History           | No                          |
+| Compliance Group        | PII;GDPR;CCPA               |
+| Security Classification | Confidential                |
+| Business Status         | Active                      |
+
+**Picklist Values**
+
+| API Value                              | Label                                | Default |
+| -------------------------------------- | ------------------------------------ | ------- |
+| `AUL`                                  | AUL                                  | No      |
+| `AUL_LIGHT`                            | AUL_LIGHT                            | No      |
+| `AUL1`                                 | AUL1                                 | No      |
+| `FDC_ONE`                              | FDC_ONE                              | No      |
+| `FDC_SUB`                              | FDC_SUB                              | No      |
+| `Overage_Platform_Portal_User`         | Overage_Platform_Portal_User         | No      |
+| `PID_CHATTER`                          | PID_CHATTER                          | No      |
+| `PID_CONTENT`                          | PID_CONTENT                          | No      |
+| `PID_Customer_Community`               | PID_Customer_Community               | No      |
+| `PID_Customer_Community_Login`         | PID_Customer_Community_Login         | No      |
+| `PID_Customer_Portal_Basic`            | PID_Customer_Portal_Basic            | No      |
+| `PID_Customer_Portal_Standard`         | PID_Customer_Portal_Standard         | No      |
+| `PID_FDC_FREE`                         | PID_FDC_FREE                         | No      |
+| `PID_IDEAS`                            | PID_IDEAS                            | No      |
+| `PID_Ideas_Only_Portal`                | PID_Ideas_Only_Portal                | No      |
+| `PID_Ideas_Only_Site`                  | PID_Ideas_Only_Site                  | No      |
+| `PID_KNOWLEDGE`                        | PID_KNOWLEDGE                        | No      |
+| `PID_Limited_Customer_Portal_Basic`    | PID_Limited_Customer_Portal_Basic    | No      |
+| `PID_Limited_Customer_Portal_Standard` | PID_Limited_Customer_Portal_Standard | No      |
+| `PID_Overage_Customer_Portal_Basic`    | PID_Overage_Customer_Portal_Basic    | No      |
+| `PID_Overage_High`                     | PID_Overage_High                     | No      |
+| `PID_Partner_Community`                | PID_Partner_Community                | No      |
+| `PID_Partner_Community_Login`          | PID_Partner_Community_Login          | No      |
+| `PID_STRATEGIC_PRM`                    | PID_STRATEGIC_PRM                    | No      |
+| `Platform_Portal_User`                 | Platform_Portal_User                 | No      |
+| `POWER_PRM`                            | POWER_PRM                            | No      |
+| `POWER_SSP`                            | POWER_SSP                            | No      |
+| `SFDC`                                 | SFDC                                 | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="UserLicenseId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="userlicenseid__c user license id">
+
+### `UserLicenseId__c`
+
+| Attribute               | Value           |
+| ----------------------- | --------------- |
+| Label                   | User License ID |
+| Type                    | Text            |
+| Length                  | 18              |
+| Required                | No              |
+| Track History           | No              |
+| Compliance Group        | PII;GDPR;CCPA   |
+| Security Classification | Confidential    |
+| Business Status         | Active          |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="UserLicenseName__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="userlicensename__c user license name">
+
+### `UserLicenseName__c`
+
+| Attribute               | Value             |
+| ----------------------- | ----------------- |
+| Label                   | User License Name |
+| Type                    | Picklist          |
+| Required                | No                |
+| Track History           | No                |
+| Compliance Group        | PII;GDPR;CCPA     |
+| Security Classification | Confidential      |
+| Business Status         | Active            |
+
+**Picklist Values**
+
+| API Value                          | Label                            | Default |
+| ---------------------------------- | -------------------------------- | ------- |
+| `Analytics Cloud Integration User` | Analytics Cloud Integration User | No      |
+| `Authenticated Website`            | Authenticated Website            | No      |
+| `Chatter External`                 | Chatter External                 | No      |
+| `Chatter Free`                     | Chatter Free                     | No      |
+| `Cloud Integration User`           | Cloud Integration User           | No      |
+| `Customer Community`               | Customer Community               | No      |
+| `Customer Community Login`         | Customer Community Login         | No      |
+| `Customer Community Plus`          | Customer Community Plus          | No      |
+| `Customer Community Plus Login`    | Customer Community Plus Login    | No      |
+| `Customer Portal Manager Custom`   | Customer Portal Manager Custom   | No      |
+| `Customer Portal Manager Standard` | Customer Portal Manager Standard | No      |
+| `External Identity`                | External Identity                | No      |
+| `Force.com - App Subscription`     | Force.com - App Subscription     | No      |
+| `Force.com - Free`                 | Force.com - Free                 | No      |
+| `Gold Partner`                     | Gold Partner                     | No      |
+| `High Volume Customer Portal`      | High Volume Customer Portal      | No      |
+| `Identity`                         | Identity                         | No      |
+| `Partner App Subscription`         | Partner App Subscription         | No      |
+| `Partner Community`                | Partner Community                | No      |
+| `Partner Community Login`          | Partner Community Login          | No      |
+| `Salesforce`                       | Salesforce                       | No      |
+| `Salesforce Platform`              | Salesforce Platform              | No      |
+| `Silver Partner`                   | Silver Partner                   | No      |
+| `Work.com Only`                    | Work.com Only                    | No      |
+| `XOrg Proxy User`                  | XOrg Proxy User                  | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="UserLoggingLevel__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="userlogginglevel__c user logging level">
+
+### `UserLoggingLevel__c`
+
+| Attribute               | Value              |
+| ----------------------- | ------------------ |
+| Label                   | User Logging Level |
+| Type                    | Picklist           |
+| Required                | No                 |
+| Track History           | No                 |
+| Compliance Group        | PII;GDPR;CCPA      |
+| Security Classification | Confidential       |
+| Business Status         | Active             |
+
+**Global Value Set:** `LoggingLevel`
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="UserLoggingLevelOrdinal__c" data-field-types="Number" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="userlogginglevelordinal__c user logging level ordinal">
+
+### `UserLoggingLevelOrdinal__c`
+
+| Attribute               | Value                      |
+| ----------------------- | -------------------------- |
+| Label                   | User Logging Level Ordinal |
+| Type                    | Number                     |
+| Precision / Scale       | 2 / 0                      |
+| Required                | No                         |
+| Track History           | No                         |
+| Compliance Group        | PII;GDPR;CCPA              |
+| Security Classification | Confidential               |
+| Business Status         | Active                     |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="UserRoleId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="userroleid__c user role id">
+
+### `UserRoleId__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | User Role ID  |
+| Type                    | Text          |
+| Length                  | 18            |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="UserRoleLink__c" data-field-types="Formula Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="userrolelink__c user role">
+
+### `UserRoleLink__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | User Role     |
+| Type                    | Text          |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+**Formula**
+
+```
+HYPERLINK('/' + UserRoleId__c, UserRoleName__c, '_top')
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="UserRoleName__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="userrolename__c user role name">
+
+### `UserRoleName__c`
+
+| Attribute               | Value          |
+| ----------------------- | -------------- |
+| Label                   | User Role Name |
+| Type                    | Text           |
+| Length                  | 255            |
+| Required                | No             |
+| Track History           | No             |
+| Compliance Group        | PII;GDPR;CCPA  |
+| Security Classification | Confidential   |
+| Business Status         | Active         |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="UserType__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="usertype__c user type">
+
+### `UserType__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | User Type     |
+| Type                    | Picklist      |
+| Required                | No            |
+| Track History           | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+**Picklist Values**
+
+| API Value              | Label                | Default |
+| ---------------------- | -------------------- | ------- |
+| `Standard`             | Standard             | No      |
+| `PowerPartner`         | PowerPartner         | No      |
+| `CSPLitePortal`        | CSPLitePortal        | No      |
+| `CustomerSuccess`      | CustomerSuccess      | No      |
+| `PowerCustomerSuccess` | PowerCustomerSuccess | No      |
+| `CsnOnly`              | CsnOnly              | No      |
+| `AutomatedProcess`     | AutomatedProcess     | No      |
+| `Guest`                | Guest                | No      |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="WasLoggedByCurrentUser__c" data-field-types="Checkbox Formula" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="wasloggedbycurrentuser__c logged by current user">
+
+### `WasLoggedByCurrentUser__c`
+
+| Attribute               | Value                  |
+| ----------------------- | ---------------------- |
+| Label                   | Logged By Current User |
+| Type                    | Checkbox               |
+| Required                | No                     |
+| Track History           | No                     |
+| Compliance Group        | PII;GDPR;CCPA          |
+| Security Classification | Confidential           |
+| Business Status         | Active                 |
+
+**Formula**
+
+```
+$User.Id ==  LoggedBy__c
+```
+
+_Treat blank values as: BlankAsZero_
+
+</div>

@@ -124,5 +124,5 @@ Assert on the arguments passed to logger methods (`toHaveBeenCalledWith(...)`), 
 
 - [Aura](/NebulaLogger/logging-guide/aura/) - the equivalent for Aura components.
 - [Testing your instrumentation](/NebulaLogger/logging-guide/testing/) - jest mocking patterns.
-- [`logger` LWC reference](/NebulaLogger/reference/lwc/logger/) - the exported API.
-- [`logEntryBuilder` LWC reference](/NebulaLogger/reference/lwc/logentrybuilder/) - the builder returned by level methods.
+- [`logger` LWC reference](/NebulaLogger/metadata-reference/lwc/logger/) - the exported API.
+- [`logEntryBuilder` LWC reference](/NebulaLogger/metadata-reference/lwc/logentrybuilder/) - the builder returned by level methods.

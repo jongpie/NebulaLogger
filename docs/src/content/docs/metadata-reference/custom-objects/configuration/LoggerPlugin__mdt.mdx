@@ -1,0 +1,292 @@
+---
+title: LoggerPlugin__mdt
+description: 'Used to configure additional Apex classes and Flows that should be executed by Nebula Logger. Plugins can be built to be either a trigger-based plugin (automatically executed for all trigger operations on the included objects LogEntryEvent__e, LoggerScenario__c, Log__c, LogEntry__c, LogEntryTag__c, and LoggerTag__c), or either a batchable-based plugin (automatically executed the batch job LogBatchPurger), or both triggerable & batchable'
+---
+
+import FieldFilters from '/src/components/FieldFilters.astro';
+
+Used to configure additional Apex classes and Flows that should be executed by Nebula Logger. Plugins can be built to be either a trigger-based plugin (automatically executed for all trigger operations on the included objects LogEntryEvent**e, LoggerScenario**c, Log**c, LogEntry**c, LogEntryTag**c, and LoggerTag**c), or either a batchable-based plugin (automatically executed the batch job LogBatchPurger), or both triggerable & batchable
+
+<div class="sobject-attributes">
+
+| Attribute    | Value                        |
+| ------------ | ---------------------------- |
+| Object Type  | Custom Metadata Type         |
+| Label        | Logger Plugin                |
+| Plural Label | Logger Plugins               |
+| Fields       | 14 (10 active, 4 deprecated) |
+
+</div>
+
+<h2 id="fields-heading" data-field-total="14">
+  Fields (<span data-field-visible-count>14</span> of 14)
+</h2>
+
+<FieldFilters types={['Checkbox', 'LongTextArea', 'MetadataRelationship', 'Number', 'Picklist', 'Text', 'Url']} showTrackHistoryFilter={false} />
+
+<div data-field-entry="true" data-field-api-name="BatchPurgerApexClass__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="batchpurgerapexclass__c batch purger apex class">
+
+### `BatchPurgerApexClass__c`
+
+| Attribute               | Value                   |
+| ----------------------- | ----------------------- |
+| Label                   | Batch Purger Apex Class |
+| Type                    | Text                    |
+| Length                  | 255                     |
+| Required                | No                      |
+| Compliance Group        | None                    |
+| Security Classification | Confidential            |
+| Business Status         | Active                  |
+| Field Manageability     | DeveloperControlled     |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="BatchPurgerExecutionOrder__c" data-field-types="Number" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="batchpurgerexecutionorder__c batch purger execution order the specific order to execute plugins in the org. plugins are executed in order by sorting by execution order, then plugin name (order by batchpurgerexecutionorder__c nulls last, developername). the specific order to execute plugins in the org. plugins are executed in order by sorting by execution order, then plugin name (order by batchpurgerexecutionorder__c nulls last, developername).">
+
+### `BatchPurgerExecutionOrder__c`
+
+The specific order to execute plugins in the org. Plugins are executed in order by sorting by execution order, then plugin name (ORDER BY BatchPurgerExecutionOrder\_\_c NULLS LAST, DeveloperName).
+
+| Attribute               | Value                        |
+| ----------------------- | ---------------------------- |
+| Label                   | Batch Purger Execution Order |
+| Type                    | Number                       |
+| Precision / Scale       | 3 / 0                        |
+| Required                | No                           |
+| Compliance Group        | None                         |
+| Security Classification | Confidential                 |
+| Business Status         | Active                       |
+| Field Manageability     | SubscriberControlled         |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="BatchPurgerFlowName__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="batchpurgerflowname__c batch purger flow name">
+
+### `BatchPurgerFlowName__c`
+
+| Attribute               | Value                  |
+| ----------------------- | ---------------------- |
+| Label                   | Batch Purger Flow Name |
+| Type                    | Text                   |
+| Length                  | 255                    |
+| Required                | No                     |
+| Compliance Group        | None                   |
+| Security Classification | Confidential           |
+| Business Status         | Active                 |
+| Field Manageability     | DeveloperControlled    |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="Description__c" data-field-types="LongTextArea" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="description__c description used purely for documentation purposes to store any important details about this parameter used purely for documentation purposes to store any important details about this parameter">
+
+### `Description__c`
+
+Used purely for documentation purposes to store any important details about this parameter
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Description         |
+| Type                    | LongTextArea        |
+| Length                  | 131072              |
+| Required                | No                  |
+| Compliance Group        | None                |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+| Field Manageability     | DeveloperControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="ExecutionOrder__c" data-field-types="Number" data-required="false" data-deprecated="true" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="executionorder__c deprecated: execution order deprecated: this field is no longer used. deprecated: this field is no longer used.">
+
+### `ExecutionOrder__c`
+
+Deprecated: This field is no longer used.
+
+| Attribute               | Value                       |
+| ----------------------- | --------------------------- |
+| Label                   | DEPRECATED: Execution Order |
+| Type                    | Number                      |
+| Precision / Scale       | 3 / 0                       |
+| Required                | No                          |
+| Compliance Group        | None                        |
+| Security Classification | Confidential                |
+| Business Status         | DeprecateCandidate          |
+| Field Manageability     | SubscriberControlled        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="isenabled__c is enabled controls if the plugin is enabled/disabled. only enabled plugins will be executed by the logging system. controls if the plugin is enabled/disabled. only enabled plugins will be executed by the logging system.">
+
+### `IsEnabled__c`
+
+Controls if the plugin is enabled/disabled. Only enabled plugins will be executed by the logging system.
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Is Enabled           |
+| Type                    | Checkbox             |
+| Required                | No                   |
+| Default Value           | `true`               |
+| Compliance Group        | None                 |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+| Field Manageability     | SubscriberControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="Link__c" data-field-types="Url" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="link__c link an optional link for documentation about this plugin - useful for plugins that are packaged or deployed to multiple orgs">
+
+### `Link__c`
+
+> An optional link for documentation about this plugin - useful for plugins that are packaged or deployed to multiple orgs
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Link                |
+| Type                    | Url                 |
+| Required                | No                  |
+| Compliance Group        | None                |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+| Field Manageability     | DeveloperControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="PluginApiName__c" data-field-types="Text" data-required="false" data-deprecated="true" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="pluginapiname__c deprecated: plugin api name deprecated: this field is no longer used. deprecated: this field is no longer used.">
+
+### `PluginApiName__c`
+
+Deprecated: This field is no longer used.
+
+| Attribute               | Value                       |
+| ----------------------- | --------------------------- |
+| Label                   | DEPRECATED: Plugin API Name |
+| Type                    | Text                        |
+| Length                  | 255                         |
+| Required                | No                          |
+| Compliance Group        | None                        |
+| Security Classification | Confidential                |
+| Business Status         | DeprecateCandidate          |
+| Field Manageability     | DeveloperControlled         |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="PluginType__c" data-field-types="Picklist" data-required="false" data-deprecated="true" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="plugintype__c deprecated: plugin type deprecated: this field is no longer used. deprecated: this field is no longer used.">
+
+### `PluginType__c`
+
+Deprecated: This field is no longer used.
+
+| Attribute               | Value                   |
+| ----------------------- | ----------------------- |
+| Label                   | DEPRECATED: Plugin Type |
+| Type                    | Picklist                |
+| Required                | No                      |
+| Compliance Group        | None                    |
+| Security Classification | Confidential            |
+| Business Status         | DeprecateCandidate      |
+| Field Manageability     | DeveloperControlled     |
+
+**Picklist Values**
+
+| API Value | Label | Default |
+| --------- | ----- | ------- |
+| `Apex`    | Apex  | Yes     |
+| `Flow`    | Flow  | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SObjectHandlerApexClass__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="sobjecthandlerapexclass__c sobject handler apex class">
+
+### `SObjectHandlerApexClass__c`
+
+| Attribute               | Value                      |
+| ----------------------- | -------------------------- |
+| Label                   | SObject Handler Apex Class |
+| Type                    | Text                       |
+| Length                  | 255                        |
+| Required                | No                         |
+| Compliance Group        | None                       |
+| Security Classification | Confidential               |
+| Business Status         | Active                     |
+| Field Manageability     | DeveloperControlled        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SObjectHandlerExecutionOrder__c" data-field-types="Number" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="sobjecthandlerexecutionorder__c sobject handler execution order the specific order to execute plugins within logger's trigger framework. plugins are executed in order by sorting by execution order, then plugin name (order by sobjecthandlerexecutionorder__c nulls last, developername). the specific order to execute plugins within logger's trigger framework. plugins are executed in order by sorting by execution order, then plugin name (order by sobjecthandlerexecutionorder__c nulls last, developername).">
+
+### `SObjectHandlerExecutionOrder__c`
+
+The specific order to execute plugins within Logger's trigger framework. Plugins are executed in order by sorting by execution order, then plugin name (ORDER BY SObjectHandlerExecutionOrder\_\_c NULLS LAST, DeveloperName).
+
+| Attribute               | Value                           |
+| ----------------------- | ------------------------------- |
+| Label                   | SObject Handler Execution Order |
+| Type                    | Number                          |
+| Precision / Scale       | 3 / 0                           |
+| Required                | No                              |
+| Compliance Group        | None                            |
+| Security Classification | Confidential                    |
+| Business Status         | Active                          |
+| Field Manageability     | SubscriberControlled            |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SObjectHandlerFlowName__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="sobjecthandlerflowname__c sobject handler flow name">
+
+### `SObjectHandlerFlowName__c`
+
+| Attribute               | Value                     |
+| ----------------------- | ------------------------- |
+| Label                   | SObject Handler Flow Name |
+| Type                    | Text                      |
+| Length                  | 255                       |
+| Required                | No                        |
+| Compliance Group        | None                      |
+| Security Classification | Confidential              |
+| Business Status         | Active                    |
+| Field Manageability     | DeveloperControlled       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SObjectType__c" data-field-types="MetadataRelationship" data-required="false" data-deprecated="true" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="sobjecttype__c deprecated: logger sobject type deprecated: this field is no longer used. deprecated: this field is no longer used.">
+
+### `SObjectType__c`
+
+Deprecated: This field is no longer used.
+
+| Attribute               | Value                           |
+| ----------------------- | ------------------------------- |
+| Label                   | DEPRECATED: Logger SObject Type |
+| Type                    | MetadataRelationship            |
+| Required                | No                              |
+| References              | `EntityDefinition`              |
+| Relationship Name       | `LoggerSObjectHandlerPlugins`   |
+| Relationship Label      | Logger Plugins                  |
+| Compliance Group        | None                            |
+| Security Classification | Confidential                    |
+| Business Status         | DeprecateCandidate              |
+| Field Manageability     | DeveloperControlled             |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="VersionNumber__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="versionnumber__c version number an optional version number for the plugin - useful for plugins that are packaged or deployed to multiple orgs">
+
+### `VersionNumber__c`
+
+> An optional version number for the plugin - useful for plugins that are packaged or deployed to multiple orgs
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Version Number      |
+| Type                    | Text                |
+| Length                  | 18                  |
+| Required                | No                  |
+| Compliance Group        | None                |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+| Field Manageability     | DeveloperControlled |
+
+</div>

@@ -52,4 +52,4 @@ The scenario rule beats the hierarchy for transactions with a matching scenario.
 
 - [LoggerSettings\_\_c hierarchy](/NebulaLogger/configuration/logger-settings/) - the hierarchy custom setting.
 - [Scenarios](/NebulaLogger/logging-guide/scenarios/) - how to set the scenario on a transaction.
-- [`LoggerScenarioRule__mdt` reference](/NebulaLogger/reference/custom-objects/loggerscenariorule__mdt/) - full field list.
+- [`LoggerScenarioRule__mdt` reference](/NebulaLogger/metadata-reference/custom-objects/loggerscenariorule__mdt/) - full field list.

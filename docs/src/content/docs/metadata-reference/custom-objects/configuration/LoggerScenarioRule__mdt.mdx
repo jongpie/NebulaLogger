@@ -1,0 +1,468 @@
+---
+title: LoggerScenarioRule__mdt
+description: 'Used to configure rules in Nebula Logger to provide scenario-specific customizations'
+---
+
+import FieldFilters from '/src/components/FieldFilters.astro';
+
+Used to configure rules in Nebula Logger to provide scenario-specific customizations
+
+<div class="sobject-attributes">
+
+| Attribute    | Value                 |
+| ------------ | --------------------- |
+| Object Type  | Custom Metadata Type  |
+| Label        | Logger Scenario Rule  |
+| Plural Label | Logger Scenario Rules |
+| Fields       | 19                    |
+
+</div>
+
+<h2 id="fields-heading" data-field-total="19">
+  Fields (<span data-field-visible-count>19</span> of 19)
+</h2>
+
+<FieldFilters types={['Checkbox', 'DateTime', 'Number', 'Picklist', 'Text']} showTrackHistoryFilter={false} />
+
+<div data-field-entry="true" data-field-api-name="EndTime__c" data-field-types="DateTime" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="endtime__c end time">
+
+### `EndTime__c`
+
+| Attribute           | Value               |
+| ------------------- | ------------------- |
+| Label               | End Time            |
+| Type                | DateTime            |
+| Required            | No                  |
+| Field Manageability | DeveloperControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsAnonymousModeEnabled__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="isanonymousmodeenabled__c enable anonymous mode when enabled, any logs generated will not have any user-specific details set - any fields related to the user, profile, etc. will be null. note: this feature only works properly when using the save method event_bus.">
+
+### `IsAnonymousModeEnabled__c`
+
+> When enabled, any logs generated will not have any user-specific details set - any fields related to the User, Profile, etc. will be null. Note: this feature only works properly when using the save method EVENT_BUS.
+
+| Attribute               | Value                 |
+| ----------------------- | --------------------- |
+| Label                   | Enable Anonymous Mode |
+| Type                    | Picklist              |
+| Required                | No                    |
+| Compliance Group        | PII;GDPR;CCPA         |
+| Security Classification | Confidential          |
+| Business Status         | Active                |
+| Field Manageability     | DeveloperControlled   |
+
+**Picklist Values**
+
+| API Value | Label | Default |
+| --------- | ----- | ------- |
+| `true`    | true  | No      |
+| `false`   | false | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsApexSystemDebugLoggingEnabled__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="isapexsystemdebugloggingenabled__c enable apex system.debug() when enabled, nebula logger will automatically call apex's system.debug(). to help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.">
+
+### `IsApexSystemDebugLoggingEnabled__c`
+
+> When enabled, Nebula Logger will automatically call Apex's System.debug(). To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.
+
+| Attribute               | Value                      |
+| ----------------------- | -------------------------- |
+| Label                   | Enable Apex System.debug() |
+| Type                    | Picklist                   |
+| Required                | No                         |
+| Compliance Group        | PII;GDPR;CCPA              |
+| Security Classification | Confidential               |
+| Business Status         | Active                     |
+| Field Manageability     | DeveloperControlled        |
+
+**Picklist Values**
+
+| API Value | Label | Default |
+| --------- | ----- | ------- |
+| `true`    | true  | No      |
+| `false`   | false | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsDataMaskingEnabled__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="isdatamaskingenabled__c enable data masking when enabled, any data-mask rules (configured in logentrydatamaskrule__mdt) will be automatically applied to log entry messages.">
+
+### `IsDataMaskingEnabled__c`
+
+> When enabled, any data-mask rules (configured in LogEntryDataMaskRule\_\_mdt) will be automatically applied to log entry messages.
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Enable Data Masking |
+| Type                    | Picklist            |
+| Required                | No                  |
+| Compliance Group        | PII;GDPR;CCPA       |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+| Field Manageability     | DeveloperControlled |
+
+**Picklist Values**
+
+| API Value | Label | Default |
+| --------- | ----- | ------- |
+| `true`    | true  | No      |
+| `false`   | false | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="isenabled__c is enabled">
+
+### `IsEnabled__c`
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Is Enabled          |
+| Type                    | Checkbox            |
+| Required                | No                  |
+| Default Value           | `true`              |
+| Compliance Group        | None                |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+| Field Manageability     | DeveloperControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsJavaScriptConsoleLoggingEnabled__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="isjavascriptconsoleloggingenabled__c enable javascript console.log() when enabled, nebula logger will automatically call the browser's console.log() function when logging via lightning components. to help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.">
+
+### `IsJavaScriptConsoleLoggingEnabled__c`
+
+> When enabled, Nebula Logger will automatically call the browser's console.log() function when logging via lightning components. To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.
+
+| Attribute               | Value                           |
+| ----------------------- | ------------------------------- |
+| Label                   | Enable JavaScript console.log() |
+| Type                    | Picklist                        |
+| Required                | No                              |
+| Compliance Group        | PII;GDPR;CCPA                   |
+| Security Classification | Confidential                    |
+| Business Status         | Active                          |
+| Field Manageability     | DeveloperControlled             |
+
+**Picklist Values**
+
+| API Value | Label | Default |
+| --------- | ----- | ------- |
+| `true`    | true  | No      |
+| `false`   | false | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsJavaScriptLightningLoggerEnabled__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="isjavascriptlightningloggerenabled__c enable javascript lightning-logger when enabled, nebula logger will automatically call salesforce's lightning-logger lwc when logging via lightning components. this then creates a 'lightning logger' event in event monitoring.">
+
+### `IsJavaScriptLightningLoggerEnabled__c`
+
+> When enabled, Nebula Logger will automatically call Salesforce's lightning-logger LWC when logging via lightning components. This then creates a 'Lightning Logger' event in Event Monitoring.
+
+| Attribute               | Value                              |
+| ----------------------- | ---------------------------------- |
+| Label                   | Enable JavaScript lightning-logger |
+| Type                    | Picklist                           |
+| Required                | No                                 |
+| Compliance Group        | PII;GDPR;CCPA                      |
+| Security Classification | Confidential                       |
+| Business Status         | Active                             |
+| Field Manageability     | DeveloperControlled                |
+
+**Picklist Values**
+
+| API Value | Label | Default |
+| --------- | ----- | ------- |
+| `true`    | true  | No      |
+| `false`   | false | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsLogAssignmentEnabled__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="islogassignmentenabled__c assign logs to logger scenario owner controls if new log__c records associated with the scenario (based on log__c.transactionscenario__c) are automatically assigned to the owner of the loggerscenario__c record.">
+
+### `IsLogAssignmentEnabled__c`
+
+> Controls if new Log**c records associated with the scenario (based on Log**c.TransactionScenario**c) are automatically assigned to the owner of the LoggerScenario**c record.
+
+| Attribute               | Value                                |
+| ----------------------- | ------------------------------------ |
+| Label                   | Assign Logs To Logger Scenario Owner |
+| Type                    | Picklist                             |
+| Required                | No                                   |
+| Compliance Group        | PII;GDPR;CCPA                        |
+| Security Classification | Confidential                         |
+| Business Status         | Active                               |
+| Field Manageability     | DeveloperControlled                  |
+
+**Picklist Values**
+
+| API Value | Label | Default |
+| --------- | ----- | ------- |
+| `true`    | true  | No      |
+| `false`   | false | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsLoggerEnabled__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="isloggerenabled__c is logger enabled">
+
+### `IsLoggerEnabled__c`
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Is Logger Enabled   |
+| Type                    | Picklist            |
+| Required                | No                  |
+| Compliance Group        | PII;GDPR;CCPA       |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+| Field Manageability     | DeveloperControlled |
+
+**Picklist Values**
+
+| API Value | Label | Default |
+| --------- | ----- | ------- |
+| `true`    | true  | No      |
+| `false`   | false | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsLogRetentionOverrideEnabled__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="islogretentionoverrideenabled__c enable log retention override when enabled, the value specified in numberofdaystoretainlogs__c (including null) will override the value specified in loggersettings__c.">
+
+### `IsLogRetentionOverrideEnabled__c`
+
+> When enabled, the value specified in NumberOfDaysToRetainLogs**c (including null) will override the value specified in LoggerSettings**c.
+
+| Attribute               | Value                         |
+| ----------------------- | ----------------------------- |
+| Label                   | Enable Log Retention Override |
+| Type                    | Picklist                      |
+| Required                | No                            |
+| Compliance Group        | PII;GDPR;CCPA                 |
+| Security Classification | Confidential                  |
+| Business Status         | Active                        |
+| Field Manageability     | DeveloperControlled           |
+
+**Picklist Values**
+
+| API Value | Label | Default |
+| --------- | ----- | ------- |
+| `true`    | true  | No      |
+| `false`   | false | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsPlatformEventStorageLocationEnabled__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="isplatformeventstoragelocationenabled__c enable platform event storage override">
+
+### `IsPlatformEventStorageLocationEnabled__c`
+
+| Attribute               | Value                                  |
+| ----------------------- | -------------------------------------- |
+| Label                   | Enable Platform Event Storage Override |
+| Type                    | Picklist                               |
+| Required                | No                                     |
+| Compliance Group        | PII;GDPR;CCPA                          |
+| Security Classification | Confidential                           |
+| Business Status         | Active                                 |
+| Field Manageability     | DeveloperControlled                    |
+
+**Picklist Values**
+
+| API Value | Label | Default |
+| --------- | ----- | ------- |
+| `true`    | true  | No      |
+| `false`   | false | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsRecordFieldStrippingEnabled__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="isrecordfieldstrippingenabled__c strip inaccessible record fields when enabled, any time an sobject record is logged, only fields that the current user can access will be included in the record's json.">
+
+### `IsRecordFieldStrippingEnabled__c`
+
+> When enabled, any time an SObject record is logged, only fields that the current user can access will be included in the record's JSON.
+
+| Attribute               | Value                            |
+| ----------------------- | -------------------------------- |
+| Label                   | Strip Inaccessible Record Fields |
+| Type                    | Picklist                         |
+| Required                | No                               |
+| Compliance Group        | PII;GDPR;CCPA                    |
+| Security Classification | Confidential                     |
+| Business Status         | Active                           |
+| Field Manageability     | DeveloperControlled              |
+
+**Picklist Values**
+
+| API Value | Label | Default |
+| --------- | ----- | ------- |
+| `true`    | true  | No      |
+| `false`   | false | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsSavingEnabled__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="issavingenabled__c enable saving controls if saving is enabled - when disabled, any calls to savelog() are ignored.">
+
+### `IsSavingEnabled__c`
+
+> Controls if saving is enabled - when disabled, any calls to saveLog() are ignored.
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Enable Saving       |
+| Type                    | Picklist            |
+| Required                | No                  |
+| Compliance Group        | PII;GDPR;CCPA       |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+| Field Manageability     | DeveloperControlled |
+
+**Picklist Values**
+
+| API Value | Label | Default |
+| --------- | ----- | ------- |
+| `true`    | true  | No      |
+| `false`   | false | No      |
+
+_Restricted_
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="NumberOfDaysToRetainLogs__c" data-field-types="Number" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="numberofdaystoretainlogs__c days to retain logs this value is used to set the field log__c.logretentiondate__c, which is then used by logbatchpurger to delete old logs. to keep logs indefinitely, set this field to a blank value (null).">
+
+### `NumberOfDaysToRetainLogs__c`
+
+> This value is used to set the field Log**c.LogRetentionDate**c, which is then used by LogBatchPurger to delete old logs. To keep logs indefinitely, set this field to a blank value (null).
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Days to Retain Logs |
+| Type                    | Number              |
+| Precision / Scale       | 4 / 0               |
+| Required                | No                  |
+| Compliance Group        | None                |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+| Field Manageability     | DeveloperControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="PlatformEventStorageLocation__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="platformeventstoragelocation__c platform event storage location this controls the default location where logentryevent__e records are stored - when null, logentryevent__e records will not be stored.">
+
+### `PlatformEventStorageLocation__c`
+
+> This controls the default location where LogEntryEvent**e records are stored - when null, LogEntryEvent**e records will not be stored.
+
+| Attribute               | Value                           |
+| ----------------------- | ------------------------------- |
+| Label                   | Platform Event Storage Location |
+| Type                    | Text                            |
+| Length                  | 255                             |
+| Required                | No                              |
+| Compliance Group        | PII;GDPR;CCPA                   |
+| Security Classification | Confidential                    |
+| Business Status         | Active                          |
+| Field Manageability     | DeveloperControlled             |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SaveMethod__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="savemethod__c save method this controls the default save method used by logger when calling savelog(). in most situations, event_bus should be used.">
+
+### `SaveMethod__c`
+
+> This controls the default save method used by Logger when calling saveLog(). In most situations, EVENT_BUS should be used.
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Save Method         |
+| Type                    | Text                |
+| Length                  | 255                 |
+| Required                | No                  |
+| Compliance Group        | PII;GDPR;CCPA       |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+| Field Manageability     | DeveloperControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="Scenario__c" data-field-types="Text" data-required="true" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="scenario__c scenario">
+
+### `Scenario__c`
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Scenario            |
+| Type                    | Text                |
+| Length                  | 255                 |
+| Required                | Yes                 |
+| Unique                  | Yes                 |
+| Compliance Group        | PII;GDPR;CCPA       |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+| Field Manageability     | DeveloperControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="StartTime__c" data-field-types="DateTime" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="starttime__c start time">
+
+### `StartTime__c`
+
+| Attribute           | Value               |
+| ------------------- | ------------------- |
+| Label               | Start Time          |
+| Type                | DateTime            |
+| Required            | No                  |
+| Field Manageability | DeveloperControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="UserLoggingLevel__c" data-field-types="Picklist" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="userlogginglevel__c user logging level overrides the user's logging level (normally controlled via loggersettings__c.logginglevel__c) for any transactions with the specified scenario">
+
+### `UserLoggingLevel__c`
+
+> Overrides the user's logging level (normally controlled via LoggerSettings**c.LoggingLevel**c) for any transactions with the specified Scenario
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | User Logging Level  |
+| Type                    | Picklist            |
+| Required                | No                  |
+| Compliance Group        | PII;GDPR;CCPA       |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+| Field Manageability     | DeveloperControlled |
+
+**Picklist Values**
+
+| API Value | Label  | Default |
+| --------- | ------ | ------- |
+| `ERROR`   | ERROR  | No      |
+| `WARN`    | WARN   | No      |
+| `INFO`    | INFO   | No      |
+| `DEBUG`   | DEBUG  | No      |
+| `FINE`    | FINE   | No      |
+| `FINER`   | FINER  | No      |
+| `FINEST`  | FINEST | No      |
+
+_Restricted_
+
+</div>

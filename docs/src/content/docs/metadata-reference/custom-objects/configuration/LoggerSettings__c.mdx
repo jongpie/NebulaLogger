@@ -1,0 +1,362 @@
+---
+title: LoggerSettings__c
+description: 'Used to configure hierarchial settings in Nebula Logger to provide user-specific & profile-specific customizations'
+---
+
+import FieldFilters from '/src/components/FieldFilters.astro';
+
+Used to configure hierarchial settings in Nebula Logger to provide user-specific & profile-specific customizations
+
+<div class="sobject-attributes">
+
+| Attribute   | Value                    |
+| ----------- | ------------------------ |
+| Object Type | Hierarchy Custom Setting |
+| Label       | Logger Settings          |
+| Fields      | 19                       |
+
+</div>
+
+<h2 id="fields-heading" data-field-total="19">
+  Fields (<span data-field-visible-count>19</span> of 19)
+</h2>
+
+<FieldFilters types={['Checkbox', 'DateTime', 'Number', 'Text']} showTrackHistoryFilter={false} />
+
+<div data-field-entry="true" data-field-api-name="DefaultLogOwner__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="defaultlogowner__c log owner specifies the default owner for new log__c records. this can be a user id, a username, a queue id, or a queue's developer name.">
+
+### `DefaultLogOwner__c`
+
+> Specifies the default owner for new Log\_\_c records. This can be a user ID, a username, a queue ID, or a queue's developer name.
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Log Owner     |
+| Type                    | Text          |
+| Length                  | 255           |
+| Required                | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="DefaultLogPurgeAction__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="defaultlogpurgeaction__c log purge action sets the value of log__c.logpurgeaction__c, which is used by the batch job logbatchpurger to indicate the action that should be taken for a log__c record when logretentiondate__c &lt; today.">
+
+### `DefaultLogPurgeAction__c`
+
+> Sets the value of Log**c.LogPurgeAction**c, which is used by the batch job LogBatchPurger to indicate the action that should be taken for a Log**c record when LogRetentionDate**c &lt; TODAY.
+
+| Attribute               | Value            |
+| ----------------------- | ---------------- |
+| Label                   | Log Purge Action |
+| Type                    | Text             |
+| Length                  | 255              |
+| Required                | No               |
+| Default Value           | `'Delete'`       |
+| Compliance Group        | PII;GDPR;CCPA    |
+| Security Classification | Confidential     |
+| Business Status         | Active           |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="DefaultLogShareAccessLevel__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="defaultlogshareaccesslevel__c log access level uses apex managed sharing to grants users read or edit access to their log records (on insert only). when no access level is specified, no apex sharing logic is executed. this only gives record-level access - users will still need to be granted access to the log__c object using permission sets or profiles. uses apex managed sharing to grants users read or edit access to their log records (on insert only). when no access level is specified, no apex sharing logic is executed. this only gives record-level access - users will still need to be granted access to the log__c object using permission sets or profiles.">
+
+### `DefaultLogShareAccessLevel__c`
+
+Uses Apex managed sharing to grants users read or edit access to their log records (on insert only). When no access level is specified, no Apex sharing logic is executed. This only gives record-level access - users will still need to be granted access to the Log\_\_c object using permission sets or profiles.
+
+| Attribute               | Value            |
+| ----------------------- | ---------------- |
+| Label                   | Log Access Level |
+| Type                    | Text             |
+| Length                  | 255              |
+| Required                | No               |
+| Default Value           | `'Read'`         |
+| Compliance Group        | PII;GDPR;CCPA    |
+| Security Classification | Confidential     |
+| Business Status         | Active           |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="DefaultNumberOfDaysToRetainLogs__c" data-field-types="Number" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="defaultnumberofdaystoretainlogs__c days to retain logs this value is used to set the field log__c.logretentiondate__c,  which is then used by logbatchpurger to delete old logs. to keep  logs indefinitely, set this field to blank (null). this value is used to set the field log__c.logretentiondate__c,  which is then used by logbatchpurger to delete old logs. to keep  logs indefinitely, set this field to blank (null).">
+
+### `DefaultNumberOfDaysToRetainLogs__c`
+
+This value is used to set the field Log**c.LogRetentionDate**c, which is then used by LogBatchPurger to delete old logs. To keep logs indefinitely, set this field to blank (null).
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Days to Retain Logs |
+| Type                    | Number              |
+| Precision / Scale       | 4 / 0               |
+| Required                | No                  |
+| Default Value           | `14`                |
+| Compliance Group        | PII;GDPR;CCPA       |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="DefaultPlatformEventStorageLocation__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="defaultplatformeventstoragelocation__c platform event storage location defaults to custom_objects. this controls the default location where logentryevent__e records are stored - when null, logentryevent__e records will not be stored. defaults to custom_objects. this controls the default location where logentryevent__e records are stored - when null, logentryevent__e records will not be stored.">
+
+### `DefaultPlatformEventStorageLocation__c`
+
+Defaults to CUSTOM_OBJECTS. This controls the default location where LogEntryEvent**e records are stored - when null, LogEntryEvent**e records will not be stored.
+
+| Attribute               | Value                           |
+| ----------------------- | ------------------------------- |
+| Label                   | Platform Event Storage Location |
+| Type                    | Text                            |
+| Length                  | 255                             |
+| Required                | No                              |
+| Default Value           | `'CUSTOM_OBJECTS'`              |
+| Compliance Group        | PII;GDPR;CCPA                   |
+| Security Classification | Confidential                    |
+| Business Status         | Active                          |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="DefaultPlatformEventStorageLoggingLevel__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="defaultplatformeventstoragelogginglevel__c platform event storage logging level optional - when set, nebula logger will only save logentryevent__e records in custom objects if the entry's logging level has the same or greater logging level">
+
+### `DefaultPlatformEventStorageLoggingLevel__c`
+
+> Optional - when set, Nebula Logger will only save LogEntryEvent\_\_e records in custom objects if the entry's logging level has the same or greater logging level
+
+| Attribute               | Value                                |
+| ----------------------- | ------------------------------------ |
+| Label                   | Platform Event Storage Logging Level |
+| Type                    | Text                                 |
+| Length                  | 255                                  |
+| Required                | No                                   |
+| Compliance Group        | PII;GDPR;CCPA                        |
+| Security Classification | Confidential                         |
+| Business Status         | Active                               |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="DefaultSaveMethod__c" data-field-types="Text" data-required="true" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="defaultsavemethod__c save method defaults to event_bus. this controls the default save method used by logger when calling savelog(). in most situations, event_bus should be used. defaults to event_bus. this controls the default save method used by logger when calling savelog(). in most situations, event_bus should be used.">
+
+### `DefaultSaveMethod__c`
+
+Defaults to EVENT_BUS. This controls the default save method used by Logger when calling saveLog(). In most situations, EVENT_BUS should be used.
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Save Method   |
+| Type                    | Text          |
+| Length                  | 255           |
+| Required                | Yes           |
+| Default Value           | `'EVENT_BUS'` |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="DefaultScenario__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="defaultscenario__c scenario sets a default scenario for the transaction sets a default scenario for the transaction">
+
+### `DefaultScenario__c`
+
+Sets a default scenario for the transaction
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Scenario      |
+| Type                    | Text          |
+| Length                  | 255           |
+| Required                | No            |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="EndTime__c" data-field-types="DateTime" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="endtime__c end time optional - when set, the loggersettings__c record is only used when endtime__c &gt;= system.now()">
+
+### `EndTime__c`
+
+> Optional - when set, the LoggerSettings**c record is only used when EndTime**c &gt;= System.now()
+
+| Attribute | Value    |
+| --------- | -------- |
+| Label     | End Time |
+| Type      | DateTime |
+| Required  | No       |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsAnonymousModeEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="isanonymousmodeenabled__c enable anonymous mode when enabled, any logs generated will not have any user-specific details set - any fields related to the user, profile, etc. will be null. note: this feature only works properly when using the save method event_bus.">
+
+### `IsAnonymousModeEnabled__c`
+
+> When enabled, any logs generated will not have any user-specific details set - any fields related to the User, Profile, etc. will be null. Note: this feature only works properly when using the save method EVENT_BUS.
+
+| Attribute               | Value                 |
+| ----------------------- | --------------------- |
+| Label                   | Enable Anonymous Mode |
+| Type                    | Checkbox              |
+| Required                | No                    |
+| Default Value           | `false`               |
+| Compliance Group        | PII;GDPR;CCPA         |
+| Security Classification | Confidential          |
+| Business Status         | Active                |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsApexSystemDebugLoggingEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="isapexsystemdebugloggingenabled__c enable apex system.debug() when enabled, nebula logger will automatically call apex's system.debug(). to help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.">
+
+### `IsApexSystemDebugLoggingEnabled__c`
+
+> When enabled, Nebula Logger will automatically call Apex's System.debug(). To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.
+
+| Attribute               | Value                      |
+| ----------------------- | -------------------------- |
+| Label                   | Enable Apex System.debug() |
+| Type                    | Checkbox                   |
+| Required                | No                         |
+| Default Value           | `true`                     |
+| Compliance Group        | PII;GDPR;CCPA              |
+| Security Classification | Confidential               |
+| Business Status         | Active                     |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsDataMaskingEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="isdatamaskingenabled__c enable data masking when enabled, any data-mask rules (configured in logentrydatamaskrule__mdt) will be automatically applied to log entry messages.">
+
+### `IsDataMaskingEnabled__c`
+
+> When enabled, any data-mask rules (configured in LogEntryDataMaskRule\_\_mdt) will be automatically applied to log entry messages.
+
+| Attribute               | Value               |
+| ----------------------- | ------------------- |
+| Label                   | Enable Data Masking |
+| Type                    | Checkbox            |
+| Required                | No                  |
+| Default Value           | `true`              |
+| Compliance Group        | PII;GDPR;CCPA       |
+| Security Classification | Confidential        |
+| Business Status         | Active              |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="isenabled__c enabled controls if logger is enabled for the specified level (organization, profile, or user)">
+
+### `IsEnabled__c`
+
+> Controls if Logger is enabled for the specified level (organization, profile, or user)
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Enabled       |
+| Type                    | Checkbox      |
+| Required                | No            |
+| Default Value           | `true`        |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsJavaScriptConsoleLoggingEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="isjavascriptconsoleloggingenabled__c enable javascript console.log() when enabled, nebula logger will automatically call the browser's console.log() function when logging via lightning components. to help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.">
+
+### `IsJavaScriptConsoleLoggingEnabled__c`
+
+> When enabled, Nebula Logger will automatically call the browser's console.log() function when logging via lightning components. To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.
+
+| Attribute               | Value                           |
+| ----------------------- | ------------------------------- |
+| Label                   | Enable JavaScript console.log() |
+| Type                    | Checkbox                        |
+| Required                | No                              |
+| Default Value           | `true`                          |
+| Compliance Group        | PII;GDPR;CCPA                   |
+| Security Classification | Confidential                    |
+| Business Status         | Active                          |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsJavaScriptLightningLoggerEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="isjavascriptlightningloggerenabled__c enable javascript lightning-logger when enabled, nebula logger will automatically call salesforce's lightning-logger lwc when logging via lightning components. this then creates a 'lightning logger' event in event monitoring.">
+
+### `IsJavaScriptLightningLoggerEnabled__c`
+
+> When enabled, Nebula Logger will automatically call Salesforce's lightning-logger LWC when logging via lightning components. This then creates a 'Lightning Logger' event in Event Monitoring.
+
+| Attribute               | Value                              |
+| ----------------------- | ---------------------------------- |
+| Label                   | Enable JavaScript lightning-logger |
+| Type                    | Checkbox                           |
+| Required                | No                                 |
+| Default Value           | `false`                            |
+| Compliance Group        | PII;GDPR;CCPA                      |
+| Security Classification | Confidential                       |
+| Business Status         | Active                             |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsRecordFieldStrippingEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="isrecordfieldstrippingenabled__c strip inaccessible record fields when enabled, any time an sobject record is logged, only fields that the current user can access will be included in the record's json.">
+
+### `IsRecordFieldStrippingEnabled__c`
+
+> When enabled, any time an SObject record is logged, only fields that the current user can access will be included in the record's JSON.
+
+| Attribute               | Value                            |
+| ----------------------- | -------------------------------- |
+| Label                   | Strip Inaccessible Record Fields |
+| Type                    | Checkbox                         |
+| Required                | No                               |
+| Default Value           | `false`                          |
+| Compliance Group        | PII;GDPR;CCPA                    |
+| Security Classification | Confidential                     |
+| Business Status         | Active                           |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="IsSavingEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="issavingenabled__c enable saving controls if saving is enabled - when disabled, any calls to savelog() are ignored. controls if saving is enabled - when disabled, any calls to savelog() are ignored.">
+
+### `IsSavingEnabled__c`
+
+Controls if saving is enabled - when disabled, any calls to saveLog() are ignored.
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Enable Saving |
+| Type                    | Checkbox      |
+| Required                | No            |
+| Default Value           | `true`        |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="LoggingLevel__c" data-field-types="Text" data-required="true" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="logginglevel__c logging level">
+
+### `LoggingLevel__c`
+
+| Attribute               | Value         |
+| ----------------------- | ------------- |
+| Label                   | Logging Level |
+| Type                    | Text          |
+| Length                  | 255           |
+| Required                | Yes           |
+| Default Value           | `'FINEST'`    |
+| Compliance Group        | PII;GDPR;CCPA |
+| Security Classification | Confidential  |
+| Business Status         | Active        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="StartTime__c" data-field-types="DateTime" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="starttime__c start time optional - when set, the loggersettings__c record is only used when starttime__c &lt;= system.now()">
+
+### `StartTime__c`
+
+> Optional - when set, the LoggerSettings**c record is only used when StartTime**c &lt;= System.now()
+
+| Attribute | Value      |
+| --------- | ---------- |
+| Label     | Start Time |
+| Type      | DateTime   |
+| Required  | No         |
+
+</div>

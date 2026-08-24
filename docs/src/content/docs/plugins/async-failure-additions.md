@@ -27,6 +27,6 @@ Beyond enabling it, most configuration lives in the plugin's own README under [n
 
 ## Where next
 
-- [Async Failure Additions plugin reference](/NebulaLogger/reference/plugins/async-failure-additions/) - auto-generated Apex reference.
+- [Async Failure Additions plugin reference](/NebulaLogger/metadata-reference/plugins/async-failure-additions/) - auto-generated Apex reference.
 - [Plugin framework overview](/NebulaLogger/plugins/overview/) - how plugins hook in.
 - [Logging Guide - Apex - Async parent/child linking](/NebulaLogger/logging-guide/apex/#async-parentchild-linking) - manual pattern for correlating async logs.

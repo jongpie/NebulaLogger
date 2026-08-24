@@ -38,6 +38,6 @@ After installation, assign the `LoggerSlackPluginAdmin` permission set to admins
 
 ## Where next
 
-- [Slack plugin reference](/NebulaLogger/reference/plugins/slack/) - auto-generated `SlackLoggerPlugin` API reference.
+- [Slack plugin reference](/NebulaLogger/metadata-reference/plugins/slack/) - auto-generated `SlackLoggerPlugin` API reference.
 - [Plugin framework overview](/NebulaLogger/plugins/overview/) - how plugins hook in.
 - [Building your own plugin](/NebulaLogger/plugins/building-your-own/) - write a similar outbound integration.

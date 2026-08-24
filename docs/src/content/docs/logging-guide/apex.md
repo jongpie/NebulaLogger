@@ -58,7 +58,7 @@ Each level method has overloads for common enrichment patterns:
 - `Logger.error(String message, System.Exception ex)`
 - `Logger.error(String message, Database.SaveResult saveResult)`
 
-See the [`Logger` reference](/NebulaLogger/reference/logger-engine/logger/) for the full list.
+See the [`Logger` reference](/NebulaLogger/metadata-reference/logger-engine/logger/) for the full list.
 
 ## Exception logging
 
@@ -145,7 +145,7 @@ LogMessage logMessage = new LogMessage('Processed {0} records with {1} errors', 
 Logger.fine(logMessage);
 ```
 
-There are constructors for zero through five arguments, plus a `List<Object>` variant for more. See the [`LogMessage` reference](/NebulaLogger/reference/logger-engine/logmessage/).
+There are constructors for zero through five arguments, plus a `List<Object>` variant for more. See the [`LogMessage` reference](/NebulaLogger/metadata-reference/logger-engine/logmessage/).
 
 ## Transaction controls
 
@@ -231,4 +231,4 @@ Customize the format of the auto-emitted debug string via `LoggerSettings__c.Sys
 - [Testing your instrumentation](/NebulaLogger/logging-guide/testing/) - asserting on buffered and persisted entries in tests.
 - [Scenarios](/NebulaLogger/logging-guide/scenarios/) - grouping transactions by business process.
 - [Tags](/NebulaLogger/logging-guide/tags/) - labeling individual entries.
-- [`Logger` reference](/NebulaLogger/reference/logger-engine/logger/) - the full API surface.
+- [`Logger` reference](/NebulaLogger/metadata-reference/logger-engine/logger/) - the full API surface.

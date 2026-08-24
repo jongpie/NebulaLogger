@@ -82,4 +82,4 @@ Individual calls can override this via `Logger.saveLog(SaveMethod.QUEUEABLE)`.
 - [LoggerParameter\_\_mdt feature flags](/NebulaLogger/configuration/logger-parameters/) - global framework flags.
 - [Logging levels](/NebulaLogger/configuration/logging-levels/) - level precedence in depth.
 - [Retention date semantics](/NebulaLogger/retention/retention-dates/) - retention field behavior.
-- [`LoggerSettings__c` reference](/NebulaLogger/reference/custom-objects/loggersettings__c/) - full field list.
+- [`LoggerSettings__c` reference](/NebulaLogger/metadata-reference/custom-objects/loggersettings__c/) - full field list.

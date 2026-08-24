@@ -6,9 +6,9 @@ const { join, relative, resolve } = require('node:path');
 const { parseArgs } = require('node:util');
 
 const REPO_ROOT = resolve(__dirname, '..', '..');
-const APEX_OUTPUT_DIR = 'docs/src/content/docs/reference';
-const LWC_OUTPUT_DIR = 'docs/src/content/docs/reference/lwc';
-const PLUGINS_OUTPUT_DIR = 'docs/src/content/docs/reference/plugins';
+const APEX_OUTPUT_DIR = 'docs/src/content/docs/metadata-reference';
+const LWC_OUTPUT_DIR = 'docs/src/content/docs/metadata-reference/lwc';
+const PLUGINS_OUTPUT_DIR = 'docs/src/content/docs/metadata-reference/plugins';
 const LWC_SOURCES = [
   {
     source: 'nebula-logger/core/main/logger-engine/lwc/logger/logger.js',
@@ -24,7 +24,7 @@ const LWC_SOURCES = [
   }
 ];
 
-// Plugins to document under docs/src/content/docs/reference/plugins/<name>.
+// Plugins to document under docs/src/content/docs/metadata-reference/plugins/<name>.
 // logger-admin-dashboard is intentionally omitted - it has no Apex classes.
 // The `plugin/` root folder pattern matches how the plugins are organized.
 const PLUGIN_SOURCES = [
@@ -73,12 +73,17 @@ function cleanApexOutput() {
 }
 
 function generateApexDocs() {
-  console.log('[docs] Generating core Apex + custom object reference via @cparra/apexdocs.');
+  console.log('[docs] Generating core Apex + trigger reference via @cparra/apexdocs.');
   cleanApexOutput();
   ensureDir(APEX_OUTPUT_DIR);
   run('npx', ['--yes', 'apexdocs', 'markdown'], {
     env: { ...process.env, NEBULA_DOCS_CONTEXT: 'core' }
   });
+}
+
+function generateCustomObjectDocs() {
+  console.log('[docs] Generating custom object reference via metadata-reference-generator.');
+  run('npx', ['--yes', 'tsx', 'scripts/dev/metadata-reference-generator/generate.ts']);
 }
 
 function generatePluginDocs() {
@@ -178,6 +183,7 @@ function main() {
 
   if (runApex) {
     generateApexDocs();
+    generateCustomObjectDocs();
     generatePluginDocs();
   }
   if (runLwc) {

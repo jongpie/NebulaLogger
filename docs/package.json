@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@astrojs/mdx": "^4.0.0",
-    "@astrojs/starlight": "^0.30.0",
-    "astro": "^5.0.0",
+    "@astrojs/mdx": "7.0.7",
+    "@astrojs/starlight": "0.41.7",
+    "astro": "7.2.4",
     "sharp": "^0.33.5"
   },
   "scripts": {

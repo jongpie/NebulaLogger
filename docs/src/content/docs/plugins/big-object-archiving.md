@@ -56,6 +56,6 @@ Big object SOQL only supports filters on indexed fields, and there's no `LIMIT` 
 
 ## Where next
 
-- [Big Object Archiving plugin reference](/NebulaLogger/reference/plugins/big-object-archiving/) - auto-generated Apex + `LogEntryArchive__b` big object reference.
+- [Big Object Archiving plugin reference](/NebulaLogger/metadata-reference/plugins/big-object-archiving/) - auto-generated Apex + `LogEntryArchive__b` big object reference.
 - [Purge actions](/NebulaLogger/retention/purge-actions/) - how the `Archive` action fits into the purge flow.
 - [Retention date semantics](/NebulaLogger/retention/retention-dates/) - what "aged out" means.

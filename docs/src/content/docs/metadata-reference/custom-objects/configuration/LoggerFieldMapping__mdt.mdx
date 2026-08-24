@@ -1,0 +1,112 @@
+---
+title: LoggerFieldMapping__mdt
+description: 'Used to configure custom field mappings in Nebula Logger to map data between LogEntryEvent__e and the custom objects Log__c, LogEntry__c, and LoggerScenario__c'
+---
+
+import FieldFilters from '/src/components/FieldFilters.astro';
+
+Used to configure custom field mappings in Nebula Logger to map data between LogEntryEvent**e and the custom objects Log**c, LogEntry**c, and LoggerScenario**c
+
+<div class="sobject-attributes">
+
+| Attribute    | Value                 |
+| ------------ | --------------------- |
+| Object Type  | Custom Metadata Type  |
+| Label        | Logger Field Mapping  |
+| Plural Label | Logger Field Mappings |
+| Fields       | 5                     |
+
+</div>
+
+<h2 id="fields-heading" data-field-total="5">
+  Fields (<span data-field-visible-count>5</span> of 5)
+</h2>
+
+<FieldFilters types={['Checkbox', 'MetadataRelationship']} showTrackHistoryFilter={false} />
+
+<div data-field-entry="true" data-field-api-name="IsEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="isenabled__c is enabled">
+
+### `IsEnabled__c`
+
+| Attribute           | Value                |
+| ------------------- | -------------------- |
+| Label               | Is Enabled           |
+| Type                | Checkbox             |
+| Required            | No                   |
+| Default Value       | `true`               |
+| Field Manageability | SubscriberControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SourceField__c" data-field-types="MetadataRelationship" data-required="true" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="sourcefield__c source field the source field containing the value to map to the target field. any custom fields that you create on the source sobject type must by populated by your own code/customizations.">
+
+### `SourceField__c`
+
+> The source field containing the value to map to the target field. Any custom fields that you create on the source SObject type must by populated by your own code/customizations.
+
+| Attribute           | Value                        |
+| ------------------- | ---------------------------- |
+| Label               | Source Field                 |
+| Type                | MetadataRelationship         |
+| Required            | Yes                          |
+| References          | `FieldDefinition`            |
+| Relationship Name   | `LoggerSourceFieldMappings`  |
+| Relationship Label  | Logger Source Field Mappings |
+| Field Manageability | SubscriberControlled         |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SourceSObjectType__c" data-field-types="MetadataRelationship" data-required="true" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="sourcesobjecttype__c source sobject type only logentryevent__e is supported as the source sobject type">
+
+### `SourceSObjectType__c`
+
+> Only LogEntryEvent\_\_e is supported as the Source SObject Type
+
+| Attribute           | Value                        |
+| ------------------- | ---------------------------- |
+| Label               | Source SObject Type          |
+| Type                | MetadataRelationship         |
+| Required            | Yes                          |
+| References          | `EntityDefinition`           |
+| Relationship Name   | `LoggerSourceFieldMappings`  |
+| Relationship Label  | Logger Source Field Mappings |
+| Field Manageability | SubscriberControlled         |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TargetField__c" data-field-types="MetadataRelationship" data-required="true" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="targetfield__c target field the target field to populate with the value of the source field. the data type of this field must match the data type of the source field - mappings that use different/incompatible data types will be ignored, resulting in lost logging data.">
+
+### `TargetField__c`
+
+> The target field to populate with the value of the source field. The data type of this field must match the data type of the source field - mappings that use different/incompatible data types will be ignored, resulting in lost logging data.
+
+| Attribute           | Value                        |
+| ------------------- | ---------------------------- |
+| Label               | Target Field                 |
+| Type                | MetadataRelationship         |
+| Required            | Yes                          |
+| Unique              | Yes                          |
+| References          | `FieldDefinition`            |
+| Relationship Name   | `LoggerTargetFieldMappings`  |
+| Relationship Label  | Logger Target Field Mappings |
+| Field Manageability | SubscriberControlled         |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="TargetSObjectType__c" data-field-types="MetadataRelationship" data-required="true" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="targetsobjecttype__c target sobject type only log__c, logentry__c, and loggerscenario__c are supported as the target sobject type">
+
+### `TargetSObjectType__c`
+
+> Only Log**c, LogEntry**c, and LoggerScenario\_\_c are supported as the Target SObject Type
+
+| Attribute           | Value                        |
+| ------------------- | ---------------------------- |
+| Label               | Target SObject Type          |
+| Type                | MetadataRelationship         |
+| Required            | Yes                          |
+| References          | `EntityDefinition`           |
+| Relationship Name   | `LoggerTargetFieldMappings`  |
+| Relationship Label  | Logger Target Field Mappings |
+| Field Manageability | SubscriberControlled         |
+
+</div>

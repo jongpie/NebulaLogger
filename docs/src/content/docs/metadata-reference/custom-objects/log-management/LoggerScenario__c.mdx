@@ -1,0 +1,46 @@
+---
+title: LoggerScenario__c
+description: 'Used by Nebula Logger to store unique scenarios (text/String) that can be used to identify Log__c and LogEntry__c records via the lookup fields Log__c.TransactionScenario__c and LogEntry__c.EntryScenario__c'
+---
+
+import FieldFilters from '/src/components/FieldFilters.astro';
+
+Used by Nebula Logger to store unique scenarios (text/String) that can be used to identify Log**c and LogEntry**c records via the lookup fields Log**c.TransactionScenario**c and LogEntry**c.EntryScenario**c
+
+<div class="sobject-attributes">
+
+| Attribute     | Value                      |
+| ------------- | -------------------------- |
+| Object Type   | Custom Object              |
+| Label         | Logger Scenario            |
+| Plural Label  | Logger Scenarios           |
+| Apex Trigger  | `LoggerScenario`           |
+| FlexiPage     | `LoggerScenarioRecordPage` |
+| Track History | Yes                        |
+| Fields        | 1                          |
+
+</div>
+
+<h2 id="fields-heading" data-field-total="1">
+  Fields (<span data-field-visible-count>1</span> of 1)
+</h2>
+
+<FieldFilters types={['Text']} showTrackHistoryFilter={true} />
+
+<div data-field-entry="true" data-field-api-name="UniqueId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="true" data-search="uniqueid__c unique id an external id field used to ensure that logger scenario records are unique">
+
+### `UniqueId__c`
+
+> An external ID field used to ensure that Logger Scenario records are unique
+
+| Attribute     | Value     |
+| ------------- | --------- |
+| Label         | Unique ID |
+| Type          | Text      |
+| Length        | 255       |
+| Required      | No        |
+| Unique        | Yes       |
+| External ID   | Yes       |
+| Track History | Yes       |
+
+</div>

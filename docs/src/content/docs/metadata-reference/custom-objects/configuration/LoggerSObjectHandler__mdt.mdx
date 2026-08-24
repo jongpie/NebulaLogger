@@ -1,0 +1,195 @@
+---
+title: LoggerSObjectHandler__mdt
+description: 'Used to configure Apex trigger handler classes in Nebula Logger that run on the included objects LogEntryEvent__e, LoggerScenario__c, Log__c, LogEntry__c, LogEntryTag__c, and LoggerTag__c'
+---
+
+import FieldFilters from '/src/components/FieldFilters.astro';
+
+Used to configure Apex trigger handler classes in Nebula Logger that run on the included objects LogEntryEvent**e, LoggerScenario**c, Log**c, LogEntry**c, LogEntryTag**c, and LoggerTag**c
+
+<div class="sobject-attributes">
+
+| Attribute    | Value                   |
+| ------------ | ----------------------- |
+| Object Type  | Custom Metadata Type    |
+| Label        | Logger SObject Handler  |
+| Plural Label | Logger SObject Handlers |
+| Fields       | 4                       |
+
+</div>
+
+<h2 id="fields-heading" data-field-total="4">
+  Fields (<span data-field-visible-count>4</span> of 4)
+</h2>
+
+<FieldFilters types={['Checkbox', 'MetadataRelationship', 'Text']} showTrackHistoryFilter={false} />
+
+<div data-field-entry="true" data-field-api-name="IsEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="isenabled__c is enabled controls if the sobject's trigger handler class should execute. this is useful for temporary disabling the logger's trigger handlers, but should typically be enabled. controls if the sobject's trigger handler class should execute. this is useful for temporary disabling the logger's trigger handlers, but should typically be enabled.">
+
+### `IsEnabled__c`
+
+Controls if the SObject's trigger handler class should execute. This is useful for temporary disabling the logger's trigger handlers, but should typically be enabled.
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | Is Enabled           |
+| Type                    | Checkbox             |
+| Required                | No                   |
+| Default Value           | `true`               |
+| Compliance Group        | None                 |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+| Field Manageability     | SubscriberControlled |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SObjectHandlerApexClass__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="sobjecthandlerapexclass__c trigger handler apex class the apex class that extends the abstract loggersobjecthandler for the specified sobject type">
+
+### `SObjectHandlerApexClass__c`
+
+> The Apex class that extends the abstract LoggerSObjectHandler for the specified SObject Type
+
+| Attribute               | Value                      |
+| ----------------------- | -------------------------- |
+| Label                   | Trigger Handler Apex Class |
+| Type                    | Text                       |
+| Length                  | 255                        |
+| Required                | No                         |
+| Unique                  | Yes                        |
+| Compliance Group        | None                       |
+| Security Classification | Confidential               |
+| Business Status         | Active                     |
+| Field Manageability     | DeveloperControlled        |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SObjectType__c" data-field-types="MetadataRelationship" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="sobjecttype__c sobject type">
+
+### `SObjectType__c`
+
+| Attribute               | Value                                 |
+| ----------------------- | ------------------------------------- |
+| Label                   | SObject Type                          |
+| Type                    | MetadataRelationship                  |
+| Required                | No                                    |
+| Unique                  | Yes                                   |
+| References              | `EntityDefinition`                    |
+| Relationship Name       | `LoggerSObjectHandlerConfigurations`  |
+| Relationship Label      | Logger SObject Handler Configurations |
+| Compliance Group        | None                                  |
+| Security Classification | Confidential                          |
+| Business Status         | Active                                |
+| Field Manageability     | DeveloperControlled                   |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="SObjectTypeOverride__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="false" data-search="sobjecttypeoverride__c sobjecttype override not all base platform types can be selected using the sobjecttype picklist. if your object is not supported, supply the api name for the object here instead. not all base platform types can be selected using the sobjecttype picklist. if your object is not supported, supply the api name for the object here instead.">
+
+### `SObjectTypeOverride__c`
+
+Not all base platform types can be selected using the SObjectType picklist. If your object is not supported, supply the API name for the object here instead.
+
+| Attribute               | Value                |
+| ----------------------- | -------------------- |
+| Label                   | SObjectType Override |
+| Type                    | Text                 |
+| Length                  | 255                  |
+| Required                | No                   |
+| Compliance Group        | None                 |
+| Security Classification | Confidential         |
+| Business Status         | Active               |
+| Field Manageability     | SubscriberControlled |
+
+</div>
+
+## Records (6)
+
+<div data-cmdt-record="true" data-cmdt-record-name="LogEntryEventHandler">
+
+### `LogEntryEventHandler`
+
+_LogEntryEventHandler config_
+
+| Field                        | Value                  |
+| ---------------------------- | ---------------------- |
+| `IsEnabled__c`               | `true`                 |
+| `SObjectHandlerApexClass__c` | `LogEntryEventHandler` |
+| `SObjectType__c`             | `LogEntryEvent__e`     |
+| `SObjectTypeOverride__c`     | _(empty)_              |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="LogEntryHandler">
+
+### `LogEntryHandler`
+
+_LogEntryHandler config_
+
+| Field                        | Value             |
+| ---------------------------- | ----------------- |
+| `IsEnabled__c`               | `true`            |
+| `SObjectHandlerApexClass__c` | `LogEntryHandler` |
+| `SObjectType__c`             | `LogEntry__c`     |
+| `SObjectTypeOverride__c`     | _(empty)_         |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="LogEntryTagHandler">
+
+### `LogEntryTagHandler`
+
+_LogEntryTagHandler config_
+
+| Field                        | Value                |
+| ---------------------------- | -------------------- |
+| `IsEnabled__c`               | `true`               |
+| `SObjectHandlerApexClass__c` | `LogEntryTagHandler` |
+| `SObjectType__c`             | `LogEntryTag__c`     |
+| `SObjectTypeOverride__c`     | _(empty)_            |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="LoggerScenarioHandler">
+
+### `LoggerScenarioHandler`
+
+_LoggerScenarioHandler config_
+
+| Field                        | Value                   |
+| ---------------------------- | ----------------------- |
+| `IsEnabled__c`               | `true`                  |
+| `SObjectHandlerApexClass__c` | `LoggerScenarioHandler` |
+| `SObjectType__c`             | `LoggerScenario__c`     |
+| `SObjectTypeOverride__c`     | _(empty)_               |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="LoggerTagHandler">
+
+### `LoggerTagHandler`
+
+_LoggerTagHandler config_
+
+| Field                        | Value              |
+| ---------------------------- | ------------------ |
+| `IsEnabled__c`               | `true`             |
+| `SObjectHandlerApexClass__c` | `LoggerTagHandler` |
+| `SObjectType__c`             | `LoggerTag__c`     |
+| `SObjectTypeOverride__c`     | _(empty)_          |
+
+</div>
+
+<div data-cmdt-record="true" data-cmdt-record-name="LogHandler">
+
+### `LogHandler`
+
+_LogHandler config_
+
+| Field                        | Value        |
+| ---------------------------- | ------------ |
+| `IsEnabled__c`               | `true`       |
+| `SObjectHandlerApexClass__c` | `LogHandler` |
+| `SObjectType__c`             | `Log__c`     |
+| `SObjectTypeOverride__c`     | _(empty)_    |
+
+</div>

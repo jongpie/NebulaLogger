@@ -36,4 +36,4 @@ Where a parameter is marked `SubscriberControlled`, admins in installed orgs can
 ## Where next
 
 - [LoggerSettings\_\_c hierarchy](/NebulaLogger/configuration/logger-settings/) - per-user runtime settings.
-- [`LoggerParameter__mdt` reference](/NebulaLogger/reference/custom-objects/loggerparameter__mdt/) - full field list.
+- [`LoggerParameter__mdt` reference](/NebulaLogger/metadata-reference/custom-objects/loggerparameter__mdt/) - full field list.

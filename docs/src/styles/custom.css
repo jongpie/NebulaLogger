@@ -3,3 +3,277 @@
 :root {
   --sl-font: 'InterVariable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
+
+/* Metadata reference: card-ize each field entry. */
+.sl-markdown-content [data-field-entry] {
+  --field-card-bg: var(--sl-color-bg-inline-code);
+  --field-card-border: var(--sl-color-hairline);
+  --field-card-accent: var(--sl-color-accent);
+  background: var(--field-card-bg);
+  border: 1px solid var(--field-card-border);
+  border-left: 3px solid var(--field-card-accent);
+  border-radius: 0.5rem;
+  padding: 1.1rem 1.35rem 1.25rem;
+  margin-top: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.sl-markdown-content [data-field-entry]:first-of-type {
+  margin-top: 1.75rem;
+}
+
+/* Field heading (API name) sits flush at the top of its card. */
+.sl-markdown-content [data-field-entry] > h3 {
+  margin-top: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--field-card-border);
+  margin-bottom: 0.75rem;
+}
+
+/* Description prose immediately below the heading. */
+.sl-markdown-content [data-field-entry] > h3 + p {
+  margin-top: 0;
+  color: var(--sl-color-gray-2);
+  font-size: 0.95rem;
+}
+
+/* Inline help text - rendered as a blockquote by the generator; style as an info callout. */
+.sl-markdown-content [data-field-entry] blockquote {
+  --help-accent: #4f9fff;
+  --help-accent-bg: color-mix(in srgb, #4f9fff 12%, transparent);
+  position: relative;
+  margin: 0.9rem 0 0.75rem 0;
+  padding: 0.6rem 0.85rem 0.6rem 2.4rem;
+  background: var(--help-accent-bg);
+  border: 1px solid color-mix(in srgb, #4f9fff 35%, transparent);
+  border-radius: 0.5rem;
+  color: var(--sl-color-text);
+  font-size: 0.88rem;
+  font-style: normal;
+  line-height: 1.5;
+}
+.sl-markdown-content [data-field-entry] blockquote::before {
+  content: 'i';
+  position: absolute;
+  left: 0.7rem;
+  top: 0.7rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 999px;
+  background: var(--help-accent);
+  color: #fff;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 0.85rem;
+  line-height: 1.15rem;
+  text-align: center;
+}
+.sl-markdown-content [data-field-entry] blockquote p {
+  margin: 0;
+}
+.sl-markdown-content [data-field-entry] blockquote p + p {
+  margin-top: 0.4rem;
+}
+
+/* Attributes table: bordered cells, zebra rows. */
+.sl-markdown-content [data-field-entry] table {
+  margin: 0.75rem 0 0;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--field-card-border);
+  border-radius: 0.375rem;
+  overflow: hidden;
+  font-size: 0.9rem;
+}
+.sl-markdown-content [data-field-entry] table th,
+.sl-markdown-content [data-field-entry] table td {
+  padding: 0.4rem 0.75rem;
+  border-top: 1px solid var(--field-card-border);
+  border-right: 1px solid var(--field-card-border);
+  text-align: left;
+  vertical-align: top;
+}
+.sl-markdown-content [data-field-entry] table th:last-child,
+.sl-markdown-content [data-field-entry] table td:last-child {
+  border-right: 0;
+}
+.sl-markdown-content [data-field-entry] table thead th {
+  background: var(--sl-color-bg);
+  font-weight: 600;
+  border-top: 0;
+  color: var(--sl-color-text);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+}
+/* Rows: default cell background is the page bg (contrasts with the card body). */
+.sl-markdown-content [data-field-entry] table tbody td {
+  background: var(--sl-color-bg);
+}
+/* Attribute (first) column: accent stripe + accent-colored label text. */
+.sl-markdown-content [data-field-entry] table tbody td:first-child {
+  color: var(--sl-color-accent);
+  font-weight: 600;
+  width: 12rem;
+  border-left: 3px solid var(--sl-color-accent);
+  border-right: 1px solid var(--field-card-border);
+}
+/* Zebra stripes on entire rows (both columns) - field-card tables. */
+.sl-markdown-content [data-field-entry] table tbody tr:nth-child(odd) td {
+  background: var(--sl-color-bg);
+}
+.sl-markdown-content [data-field-entry] table tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--sl-color-bg) 88%, var(--sl-color-accent));
+}
+
+/* Yes/No values get color: Yes = accent-friendly, No = muted */
+.sl-markdown-content [data-field-entry] table tbody td:not(:first-child) {
+  color: var(--sl-color-text);
+}
+
+/* Picklist Values / other 3-col tables: color the first-column code as accent pills. */
+.sl-markdown-content [data-field-entry] table:has(thead th:nth-child(3)) tbody td:first-child {
+  background: transparent;
+  border-right: 1px solid var(--field-card-border);
+  width: auto;
+  color: var(--sl-color-text);
+}
+.sl-markdown-content [data-field-entry] table:has(thead th:nth-child(3)) tbody td:first-child code {
+  background: color-mix(in srgb, var(--sl-color-accent) 18%, transparent);
+  color: var(--sl-color-accent);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 40%, transparent);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* Deprecated fields get a warning accent. */
+.sl-markdown-content [data-field-entry][data-deprecated='true'] {
+  --field-card-accent: var(--sl-color-orange, #ff9d4f);
+  opacity: 0.85;
+}
+
+/* Code blocks inside field cards (formulas). */
+.sl-markdown-content [data-field-entry] pre {
+  margin: 0.5rem 0;
+}
+
+/* CMDT record cards - mirror field-card visual language. */
+.sl-markdown-content [data-cmdt-record] {
+  --field-card-bg: var(--sl-color-bg-inline-code);
+  --field-card-border: var(--sl-color-hairline);
+  --field-card-accent: var(--sl-color-accent);
+  background: var(--field-card-bg);
+  border: 1px solid var(--field-card-border);
+  border-left: 3px solid var(--field-card-accent);
+  border-radius: 0.5rem;
+  padding: 1.1rem 1.35rem 1.25rem;
+  margin-top: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.sl-markdown-content [data-cmdt-record]:first-of-type {
+  margin-top: 1.75rem;
+}
+.sl-markdown-content [data-cmdt-record] > h3 {
+  margin-top: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--field-card-border);
+  margin-bottom: 0.75rem;
+}
+.sl-markdown-content [data-cmdt-record] table {
+  margin: 0.75rem 0 0;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--field-card-border);
+  border-radius: 0.375rem;
+  overflow: hidden;
+  font-size: 0.9rem;
+}
+.sl-markdown-content [data-cmdt-record] table th,
+.sl-markdown-content [data-cmdt-record] table td {
+  padding: 0.4rem 0.75rem;
+  border-top: 1px solid var(--field-card-border);
+  border-right: 1px solid var(--field-card-border);
+  text-align: left;
+  vertical-align: top;
+}
+.sl-markdown-content [data-cmdt-record] table th:last-child,
+.sl-markdown-content [data-cmdt-record] table td:last-child {
+  border-right: 0;
+}
+.sl-markdown-content [data-cmdt-record] table thead th {
+  background: var(--sl-color-bg);
+  font-weight: 600;
+  border-top: 0;
+  color: var(--sl-color-text);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+}
+.sl-markdown-content [data-cmdt-record] table tbody td:first-child {
+  color: var(--sl-color-accent);
+  font-weight: 600;
+  width: 14rem;
+  border-left: 3px solid var(--sl-color-accent);
+  border-right: 1px solid var(--field-card-border);
+}
+.sl-markdown-content [data-cmdt-record] table tbody tr:nth-child(odd) td {
+  background: var(--sl-color-bg);
+}
+.sl-markdown-content [data-cmdt-record] table tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--sl-color-bg) 88%, var(--sl-color-accent));
+}
+
+/* Object-level attributes table: matches the field cards' color scheme. */
+.sl-markdown-content .sobject-attributes {
+  --field-card-bg: var(--sl-color-bg-inline-code);
+  --field-card-border: var(--sl-color-hairline);
+  display: block;
+  width: 100%;
+  margin: 1rem 0 1.5rem;
+}
+.sl-markdown-content .sobject-attributes table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--field-card-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  font-size: 0.9rem;
+  background: var(--field-card-bg);
+  table-layout: auto;
+}
+.sl-markdown-content .sobject-attributes table th,
+.sl-markdown-content .sobject-attributes table td {
+  padding: 0.5rem 0.85rem;
+  border-top: 1px solid var(--field-card-border);
+  border-right: 1px solid var(--field-card-border);
+  text-align: left;
+  vertical-align: top;
+}
+.sl-markdown-content .sobject-attributes table th:last-child,
+.sl-markdown-content .sobject-attributes table td:last-child {
+  border-right: 0;
+}
+.sl-markdown-content .sobject-attributes table thead th {
+  background: color-mix(in srgb, var(--sl-color-bg) 60%, var(--field-card-bg));
+  font-weight: 600;
+  border-top: 0;
+  color: var(--sl-color-text);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+}
+.sl-markdown-content .sobject-attributes table tbody td:first-child {
+  color: var(--sl-color-accent);
+  font-weight: 600;
+  width: 14rem;
+  border-left: 3px solid var(--sl-color-accent);
+}
+.sl-markdown-content .sobject-attributes table tbody tr:nth-child(odd) td {
+  background: var(--field-card-bg);
+}
+.sl-markdown-content .sobject-attributes table tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--field-card-bg) 82%, var(--sl-color-accent));
+}

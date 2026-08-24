@@ -1,0 +1,65 @@
+---
+title: LoggerTag__c
+description: 'Used by Nebula Logger for storing unique tags (text/String) that can be associated with LogEntry__c records via the junction object LogEntryTag__c'
+---
+
+import FieldFilters from '/src/components/FieldFilters.astro';
+
+Used by Nebula Logger for storing unique tags (text/String) that can be associated with LogEntry**c records via the junction object LogEntryTag**c
+
+<div class="sobject-attributes">
+
+| Attribute     | Value                 |
+| ------------- | --------------------- |
+| Object Type   | Custom Object         |
+| Label         | Logger Tag            |
+| Plural Label  | Logger Tags           |
+| Apex Trigger  | `LoggerTag`           |
+| FlexiPage     | `LoggerTagRecordPage` |
+| Track History | Yes                   |
+| Fields        | 2                     |
+
+</div>
+
+<h2 id="fields-heading" data-field-total="2">
+  Fields (<span data-field-visible-count>2</span> of 2)
+</h2>
+
+<FieldFilters types={['Summary', 'Text']} showTrackHistoryFilter={true} />
+
+<div data-field-entry="true" data-field-api-name="TotalLogEntries__c" data-field-types="Summary" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="totallogentries__c total log entries">
+
+### `TotalLogEntries__c`
+
+| Attribute               | Value             |
+| ----------------------- | ----------------- |
+| Label                   | Total Log Entries |
+| Type                    | Summary           |
+| Required                | No                |
+| Track History           | No                |
+| Compliance Group        | None              |
+| Security Classification | Confidential      |
+| Business Status         | Active            |
+
+</div>
+
+<div data-field-entry="true" data-field-api-name="UniqueId__c" data-field-types="Text" data-required="false" data-deprecated="false" data-has-help-text="true" data-has-description="true" data-track-history="true" data-search="uniqueid__c unique id an external id field used to ensure that logger tag records are unique an external id field used to ensure that logger tag records are unique">
+
+### `UniqueId__c`
+
+An external ID field used to ensure that Logger Tag records are unique
+
+| Attribute               | Value        |
+| ----------------------- | ------------ |
+| Label                   | Unique ID    |
+| Type                    | Text         |
+| Length                  | 255          |
+| Required                | No           |
+| Unique                  | Yes          |
+| External ID             | Yes          |
+| Track History           | Yes          |
+| Compliance Group        | None         |
+| Security Classification | Confidential |
+| Business Status         | Active       |
+
+</div>
