@@ -260,6 +260,8 @@ function walkFindAll(root: string, predicate: (entryName: string, fullPath: stri
   return matches;
 }
 
+const EXCLUDED_FIELDS = new Set<string>(['ApplyToMessage__c', 'ApplyToRecordJson__c']);
+
 function parseCustomMetadataRecord(xmlPath: string): CustomMetadataRecord {
   const filename = basename(xmlPath).replace(/\.md-meta\.xml$/, '');
   const developerName = filename.includes('.') ? filename.slice(filename.indexOf('.') + 1) : filename;
@@ -269,10 +271,12 @@ function parseCustomMetadataRecord(xmlPath: string): CustomMetadataRecord {
   const root = parsed.CustomMetadata ?? {};
 
   const rawValues = asArray(root.values);
-  const values = rawValues.map(entry => ({
-    field: asString(entry.field) ?? '',
-    value: asString(entry.value)
-  }));
+  const values = rawValues
+    .map(entry => ({
+      field: asString(entry.field) ?? '',
+      value: asString(entry.value)
+    }))
+    .filter(entry => !EXCLUDED_FIELDS.has(entry.field));
 
   return {
     developerName,
@@ -308,7 +312,10 @@ export function parseSObject(objectDir: string, functionalArea: string, sourceTr
   const fieldsDir = join(objectDir, 'fields');
   const fieldFiles = existsSync(fieldsDir) ? readdirSync(fieldsDir).filter(name => name.endsWith('.field-meta.xml')) : [];
 
-  const fields = fieldFiles.map(name => parseFieldXml(join(fieldsDir, name))).sort((a, b) => a.apiName.localeCompare(b.apiName));
+  const fields = fieldFiles
+    .map(name => parseFieldXml(join(fieldsDir, name)))
+    .filter(field => !EXCLUDED_FIELDS.has(field.apiName))
+    .sort((a, b) => a.apiName.localeCompare(b.apiName));
 
   return {
     apiName,

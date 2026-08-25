@@ -9,58 +9,20 @@ Used to configure regex-based rules in Nebula Logger to mask sensitive data in l
 
 <div class="sobject-attributes">
 
-| Attribute    | Value                      |
-| ------------ | -------------------------- |
-| Object Type  | Custom Metadata Type       |
-| Label        | Log Entry Data Mask Rule   |
-| Plural Label | Log Entry Data Mask Rules  |
-| Fields       | 5 (3 active, 2 deprecated) |
+| Attribute    | Value                     |
+| ------------ | ------------------------- |
+| Object Type  | Custom Metadata Type      |
+| Label        | Log Entry Data Mask Rule  |
+| Plural Label | Log Entry Data Mask Rules |
+| Fields       | 3                         |
 
 </div>
 
-<h2 id="fields-heading" data-field-total="5">
-  Fields (<span data-field-visible-count>5</span> of 5)
+<h2 id="fields-heading" data-field-total="3">
+  Fields (<span data-field-visible-count>3</span> of 3)
 </h2>
 
 <FieldFilters types={['Checkbox', 'Text']} showTrackHistoryFilter={false} />
-
-<div data-field-entry="true" data-field-api-name="ApplyToMessage__c" data-field-types="Checkbox" data-required="false" data-deprecated="true" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="applytomessage__c deprecated: apply to message when checked, the data mask rule is applied to log entry messages (stored in logentryevent__e.message__c and logentry__c.message__c)">
-
-### `ApplyToMessage__c`
-
-> When checked, the data mask rule is applied to log entry messages (stored in LogEntryEvent**e.Message**c and LogEntry**c.Message**c)
-
-| Attribute               | Value                        |
-| ----------------------- | ---------------------------- |
-| Label                   | DEPRECATED: Apply to Message |
-| Type                    | Checkbox                     |
-| Required                | No                           |
-| Default Value           | `true`                       |
-| Compliance Group        | None                         |
-| Security Classification | Confidential                 |
-| Business Status         | DeprecateCandidate           |
-| Field Manageability     | DeveloperControlled          |
-
-</div>
-
-<div data-field-entry="true" data-field-api-name="ApplyToRecordJson__c" data-field-types="Checkbox" data-required="false" data-deprecated="true" data-has-help-text="true" data-has-description="false" data-track-history="false" data-search="applytorecordjson__c apply to record json when checked, the data mask rule is applied to log entry messages (stored in logentryevent__e.recordjson__c and logentry__c.recordjson__c)">
-
-### `ApplyToRecordJson__c`
-
-> When checked, the data mask rule is applied to log entry messages (stored in LogEntryEvent**e.RecordJson**c and LogEntry**c.RecordJson**c)
-
-| Attribute               | Value                |
-| ----------------------- | -------------------- |
-| Label                   | Apply to Record JSON |
-| Type                    | Checkbox             |
-| Required                | No                   |
-| Default Value           | `true`               |
-| Compliance Group        | None                 |
-| Security Classification | Confidential         |
-| Business Status         | DeprecateCandidate   |
-| Field Manageability     | DeveloperControlled  |
-
-</div>
 
 <div data-field-entry="true" data-field-api-name="IsEnabled__c" data-field-types="Checkbox" data-required="false" data-deprecated="false" data-has-help-text="false" data-has-description="false" data-track-history="false" data-search="isenabled__c is enabled">
 
@@ -123,8 +85,6 @@ _American Express Credit Card Number_
 
 | Field                   | Value                                                                   |
 | ----------------------- | ----------------------------------------------------------------------- |
-| `ApplyToMessage__c`     | `true`                                                                  |
-| `ApplyToRecordJson__c`  | `true`                                                                  |
 | `IsEnabled__c`          | `true`                                                                  |
 | `ReplacementRegEx__c`   | `$1****-******-$4`                                                      |
 | `SensitiveDataRegEx__c` | `(^\|[^0-9A-Za-z])(3[47]\d{2})([- ]?)\d{6}\3(\d{5})(?=[^0-9A-Za-z]\|$)` |
@@ -139,8 +99,6 @@ _Mastercard Credit Card Number_
 
 | Field                   | Value                                                                                                          |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `ApplyToMessage__c`     | `true`                                                                                                         |
-| `ApplyToRecordJson__c`  | `true`                                                                                                         |
 | `IsEnabled__c`          | `true`                                                                                                         |
 | `ReplacementRegEx__c`   | `$1****-****-****-$4`                                                                                          |
 | `SensitiveDataRegEx__c` | `(^\|[^0-9])(5[1-5]\d{2}\|222[1-9]\|22[3-9]\d\|2[3-6]\d{2}\|27[01]\d\|2720)([- ]?)\d{4}\3\d{4}\3(\d{4})(?!\d)` |
@@ -155,8 +113,6 @@ _Social Security Number_
 
 | Field                   | Value                                                                 |
 | ----------------------- | --------------------------------------------------------------------- |
-| `ApplyToMessage__c`     | `true`                                                                |
-| `ApplyToRecordJson__c`  | `true`                                                                |
 | `IsEnabled__c`          | `true`                                                                |
 | `ReplacementRegEx__c`   | `$1XXX-XX-$4`                                                         |
 | `SensitiveDataRegEx__c` | `(^\|[^0-9A-Za-z])(\d{3})[- ]?(\d{2})[- ]?(\d{4})(?=[^0-9A-Za-z]\|$)` |
@@ -171,8 +127,6 @@ _Visa Credit Card Number_
 
 | Field                   | Value                                                   |
 | ----------------------- | ------------------------------------------------------- |
-| `ApplyToMessage__c`     | `true`                                                  |
-| `ApplyToRecordJson__c`  | `true`                                                  |
 | `IsEnabled__c`          | `true`                                                  |
 | `ReplacementRegEx__c`   | `$1****-****-****-$4`                                   |
 | `SensitiveDataRegEx__c` | `(^\|[^0-9])(4\d{3})([- ]?)\d{4}\3\d{4}\3(\d{4})(?!\d)` |
