@@ -250,6 +250,54 @@ private class FlowLogger_Tests {
   }
 
   @IsTest
+  static void it_should_treat_null_saveLog_as_false() {
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    System.LoggingLevel entryLoggingLevel = System.LoggingLevel.DEBUG;
+    Logger.getUserSettings().LoggingLevel__c = entryLoggingLevel.name();
+    LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+    FlowLogger.LogEntry flowEntry = new FlowLogger.LogEntry();
+    flowEntry.flowName = 'MyFlow';
+    flowEntry.message = 'hello from Flow';
+    flowEntry.loggingLevelName = entryLoggingLevel.name();
+    flowEntry.saveLog = null;
+    flowEntry.shouldThrowFaultMessageException = null;
+    flowEntry.timestamp = System.now();
+
+    FlowLogger.addEntries(new List<FlowLogger.LogEntry>{ flowEntry });
+
+    System.Assert.areEqual(1, Logger.getBufferSize(), 'Entry should have been buffered without saving');
+    System.Assert.areEqual(0, Logger.saveLogCallCount, 'A null saveLog should not trigger an auto-save');
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+  }
+
+  @IsTest
+  static void it_should_treat_null_shouldThrowFaultMessageException_as_false_when_faultMessage_is_provided() {
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    System.LoggingLevel entryLoggingLevel = System.LoggingLevel.ERROR;
+    Logger.getUserSettings().LoggingLevel__c = entryLoggingLevel.name();
+    LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+    FlowLogger.LogEntry flowEntry = new FlowLogger.LogEntry();
+    flowEntry.flowName = 'MyFlow';
+    flowEntry.message = 'hello from Flow';
+    flowEntry.loggingLevelName = entryLoggingLevel.name();
+    flowEntry.saveLog = null;
+    flowEntry.faultMessage = 'Something went wrong';
+    flowEntry.shouldThrowFaultMessageException = null;
+    flowEntry.timestamp = System.now();
+
+    Exception thrownException;
+    try {
+      FlowLogger.addEntries(new List<FlowLogger.LogEntry>{ flowEntry });
+    } catch (Exception ex) {
+      thrownException = ex;
+    }
+
+    System.Assert.isNull(thrownException, 'A null shouldThrowFaultMessageException should not throw');
+    System.Assert.areEqual(1, Logger.getBufferSize(), 'Entry should still be buffered with a fault message');
+    System.Assert.areEqual(0, Logger.saveLogCallCount, 'A null saveLog should not trigger an auto-save');
+  }
+
+  @IsTest
   static void it_truncates_too_long_exception_messages() {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
     System.LoggingLevel entryLoggingLevel = System.LoggingLevel.ERROR;
