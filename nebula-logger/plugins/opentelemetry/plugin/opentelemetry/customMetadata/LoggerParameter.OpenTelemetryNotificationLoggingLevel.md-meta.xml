@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>OpenTelemetry Notification Logging Level</label>
+    <protected>false</protected>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">The logging level name that triggers logs to be sent to OpenTelemetry. Possible logging levels are: ERROR, WARN, INFO, DEBUG, FINE, FINER, or FINEST</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value xsi:type="xsd:string">WARN</value>
+    </values>
+</CustomMetadata>
+
