@@ -452,6 +452,59 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
+  static void it_adds_new_entry_with_http_request_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
+    String message = 'some log entry message';
+    System.HttpRequest request = new System.HttpRequest();
+    request.setMethod('GET');
+    request.setEndpoint('callout:Some_Named_Credential/some/path');
+    request.setHeader('Some-Header', 'some header value');
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call(
+      'newEntry',
+      new Map<String, Object>{
+        'httpRequest' => request,
+        'httpRequestHeadersToLog' => new List<String>{ 'Some-Header' },
+        'loggingLevel' => loggingLevel,
+        'message' => message
+      }
+    );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(request.getMethod(), logEntryEvent.HttpRequestMethod__c);
+    System.Assert.areEqual(request.getEndpoint(), logEntryEvent.HttpRequestEndpoint__c);
+    System.Assert.isTrue(logEntryEvent.HttpRequestHeaders__c.contains('Some-Header'), 'Expected the requested header to be included in HttpRequestHeaders__c');
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_http_response_when_using_standard_approach() {
+    System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
+    String message = 'some log entry message';
+    System.HttpResponse response = new System.HttpResponse();
+    response.setStatus('OK');
+    response.setStatusCode(200);
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call(
+      'newEntry',
+      new Map<String, Object>{ 'httpResponse' => response, 'loggingLevel' => loggingLevel, 'message' => message }
+    );
+
+    System.Assert.areEqual(5, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(loggingLevel.name(), logEntryEvent.LoggingLevel__c);
+    System.Assert.areEqual(message, logEntryEvent.Message__c);
+    System.Assert.areEqual(response.getStatus(), logEntryEvent.HttpResponseStatus__c);
+    System.Assert.areEqual(response.getStatusCode(), logEntryEvent.HttpResponseStatusCode__c);
+  }
+
+  @IsTest
   static void it_adds_new_entry_with_record_id_when_using_standard_approach() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     String message = 'some log entry message';
