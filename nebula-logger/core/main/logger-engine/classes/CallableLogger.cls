@@ -15,6 +15,9 @@
 global without sharing class CallableLogger implements System.Callable {
   // Names of arguments used for both input & output (depending on which action is called)
   private static final String ARGUMENT_EXCEPTION = 'exception';
+  private static final String ARGUMENT_HTTP_REQUEST = 'httpRequest';
+  private static final String ARGUMENT_HTTP_REQUEST_HEADERS_TO_LOG = 'httpRequestHeadersToLog';
+  private static final String ARGUMENT_HTTP_RESPONSE = 'httpResponse';
   private static final String ARGUMENT_LOG_ENTRY_EVENT_BUILDER = 'logEntryEventBuilder';
   private static final String ARGUMENT_LOGGING_LEVEL = 'loggingLevel';
   private static final String ARGUMENT_MESSAGE = 'message';
@@ -145,6 +148,24 @@ global without sharing class CallableLogger implements System.Callable {
 
       if (input.containsKey(ARGUMENT_EXCEPTION)) {
         logEntryEventBuilder.setExceptionDetails((System.Exception) input.get(ARGUMENT_EXCEPTION));
+      }
+      if (input.containsKey(ARGUMENT_HTTP_REQUEST)) {
+        System.HttpRequest request = (System.HttpRequest) input.get(ARGUMENT_HTTP_REQUEST);
+        if (input.containsKey(ARGUMENT_HTTP_REQUEST_HEADERS_TO_LOG)) {
+          // Same defensive pattern as ARGUMENT_TAGS above - avoid a direct (List<String>) cast,
+          // since the concrete list instance provided by a caller may not itself be a List<String>.
+          List<Object> headersToLogInput = (List<Object>) input.get(ARGUMENT_HTTP_REQUEST_HEADERS_TO_LOG);
+          List<String> headersToLog = new List<String>();
+          for (Object headerToLog : headersToLogInput) {
+            headersToLog.add(headerToLog?.toString());
+          }
+          logEntryEventBuilder.setHttpRequestDetails(request, headersToLog);
+        } else {
+          logEntryEventBuilder.setHttpRequestDetails(request);
+        }
+      }
+      if (input.containsKey(ARGUMENT_HTTP_RESPONSE)) {
+        logEntryEventBuilder.setHttpResponseDetails((System.HttpResponse) input.get(ARGUMENT_HTTP_RESPONSE));
       }
       if (input.containsKey(ARGUMENT_RECORD_ID)) {
         logEntryEventBuilder.setRecord((String) input.get(ARGUMENT_RECORD_ID));
