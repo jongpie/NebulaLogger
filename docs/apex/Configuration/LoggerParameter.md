@@ -62,6 +62,18 @@ Indicates if Nebula Logger will store tags in the custom objects `LoggerTag__c` 
 
 The name of the Platform Cache partition to use for caching (when platform cache is enabled). Controlled by the custom metadata record `LoggerParameter.PlatformCachePartitionName`, or `LoggerCache` as the default
 
+#### `REST_API_NAMED_CREDENTIAL` → `String`
+
+The API name of the Named Credential used when saving logs via the REST API. Values may be entered as either `MyNamedCredential` or `callout:MyNamedCredential`; both are normalized to the same endpoint. Configure the Named Credential and its External Credential principal permissions in the subscriber org; no credential metadata or secret is included in the package. When this parameter is blank, Nebula Logger uses the current user's session ID and the org domain URL instead. Controlled by the custom metadata record `LoggerParameter.RestApiNamedCredential`, or the session ID fallback when blank.
+
+For JWT, SAML, API-only, and other machine-to-machine contexts, set `LoggerParameter.RestApiRequireNamedCredential` to `true`. This prevents the uncatchable platform exception that can occur when `System.UserInfo.getSessionId()` is unavailable and returns a catchable configuration error instead.
+
+REST saves are split into requests of no more than 200 records and are also capped at a conservative 5 MB serialized request body. The implementation checks the remaining transaction callout budget before sending any request. Every 2xx response must contain one successful result with a record ID for each submitted record; HTTP 200 responses with item-level errors are treated as failures and the logger buffer is retained for retry. Because `allOrNone` is enabled, a failed response retains the complete chunk, including any mixed-success response, so retries are at-least-once and callers should design downstream handling accordingly.
+
+#### `REST_API_REQUIRE_NAMED_CREDENTIAL` → `Boolean`
+
+Requires `Logger.SaveMethod.REST` to use a Named Credential. Set this to `true` for JWT, SAML, API-only, and other machine-to-machine contexts where a session ID is unavailable; a missing `RestApiNamedCredential` then produces a catchable configuration error before any callout. Controlled by the custom metadata record `LoggerParameter.RestApiRequireNamedCredential`, or `false` as the default for backwards compatibility.
+
 #### `QUERY_APEX_CLASS_DATA` → `Boolean`
 
 Controls if Nebula Logger queries `Schema.ApexClass` data. When set to `false`, any `Schema.ApexClass` fields on `LogEntryEvent__e` and `Log__c` will not be populated Controlled by the custom metadata record `LoggerParameter.QueryApexClassData`, or `true` as the default

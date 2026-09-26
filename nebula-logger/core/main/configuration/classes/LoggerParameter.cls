@@ -216,6 +216,41 @@ public class LoggerParameter {
   }
 
   /**
+   * @description The API name of the Named Credential used when saving logs via the REST API. The optional
+   *              `callout:` prefix is accepted and normalized. When this parameter is blank, Nebula Logger
+   *              uses the current user's session ID and the org domain URL instead.
+   *              Controlled by the custom metadata record `LoggerParameter.RestApiNamedCredential`,
+   *              or the session ID fallback when blank
+   */
+  public static final String REST_API_NAMED_CREDENTIAL {
+    get {
+      if (REST_API_NAMED_CREDENTIAL == null) {
+        REST_API_NAMED_CREDENTIAL = getString('RestApiNamedCredential', null);
+      }
+      return REST_API_NAMED_CREDENTIAL;
+    }
+    private set;
+  }
+
+  /**
+   * @description Indicates if REST log saving must use a Named Credential rather than the current user's session ID.
+   *              Set this to `true` for JWT, SAML, API-only, and other machine-to-machine contexts where
+   *              `System.UserInfo.getSessionId()` is not available. When `false`, the session ID fallback is
+   *              retained for backwards compatibility with interactive transactions.
+   *              Controlled by the custom metadata record `LoggerParameter.RestApiRequireNamedCredential`,
+   *              or `false` as the default
+   */
+  public static final Boolean REST_API_REQUIRE_NAMED_CREDENTIAL {
+    get {
+      if (REST_API_REQUIRE_NAMED_CREDENTIAL == null) {
+        REST_API_REQUIRE_NAMED_CREDENTIAL = getBoolean('RestApiRequireNamedCredential', false);
+      }
+      return REST_API_REQUIRE_NAMED_CREDENTIAL;
+    }
+    private set;
+  }
+
+  /**
    * @description Controls if Nebula Logger queries `Schema.ApexClass` data.
    *              When set to `false`, any `Schema.ApexClass` fields on `LogEntryEvent__e` and `Log__c` will not be populated
    *              Controlled by the custom metadata record `LoggerParameter.QueryApexClassData`, or `true` as the default
