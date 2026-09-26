@@ -19,6 +19,8 @@ global with sharing class Logger {
   private static final System.LoggingLevel FALLBACK_LOGGING_LEVEL = System.LoggingLevel.DEBUG;
   private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
   private static final String MISSING_SCENARIO_ERROR_MESSAGE = 'No logger scenario specified. A scenario is required for logging in this org.';
+  private static final Integer REST_API_MAX_RECORDS_PER_REQUEST = 200;
+  private static final Integer REST_API_DEFAULT_MAX_REQUEST_BODY_SIZE_BYTES = 5 * 1024 * 1024;
   private static final String ORGANIZATION_DOMAIN_URL = System.URL.getOrgDomainUrl()?.toExternalForm();
   private static final String REQUEST_ID = System.Request.getCurrent()?.getRequestId();
   private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
@@ -4071,11 +4073,16 @@ global with sharing class Logger {
     }
 
     List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
+    Map<Decimal, LogEntryEventBuilder> logEntryEventBuildersByEntryNumber = new Map<Decimal, LogEntryEventBuilder>();
     for (LogEntryEventBuilder logEntryEventBuilder : LOG_ENTRIES_BUFFER) {
       if (logEntryEventBuilder.shouldSave()) {
         LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
         finalizeEntry(logEntryEvent);
         logEntryEvents.add(logEntryEvent);
+        Decimal entryNumber = logEntryEvent.TransactionEntryNumber__c;
+        if (entryNumber != null) {
+          logEntryEventBuildersByEntryNumber.put(entryNumber, logEntryEventBuilder);
+        }
       }
     }
 
@@ -4106,7 +4113,7 @@ global with sharing class Logger {
         LoggerDataStore.getJobQueue().enqueueJob(new QueueableSaver(logEntryEvents));
       }
       when REST {
-        new RestApiSaver(System.UserInfo.getSessionId()).insertRecords(logEntryEvents);
+        new RestApiSaver().insertRecords(logEntryEvents, getBuildersForRecords(logEntryEvents, logEntryEventBuildersByEntryNumber));
       }
       when SYNCHRONOUS_DML {
         LoggerTriggerableContext logEntryEventsAfterContext = new LoggerTriggerableContext(
@@ -4119,6 +4126,25 @@ global with sharing class Logger {
     }
 
     flushBuffer();
+  }
+
+  private static List<LogEntryEventBuilder> getBuildersForRecords(List<LogEntryEvent__e> records, Map<Decimal, LogEntryEventBuilder> buildersByEntryNumber) {
+    if (records == null || buildersByEntryNumber == null || records.size() != buildersByEntryNumber.size()) {
+      throw new System.IllegalArgumentException('REST API log entries and log entry builders must have the same size.');
+    }
+
+    List<LogEntryEventBuilder> builders = new List<LogEntryEventBuilder>();
+    Set<Decimal> matchedEntryNumbers = new Set<Decimal>();
+    for (LogEntryEvent__e record : records) {
+      Decimal entryNumber = record?.TransactionEntryNumber__c;
+      LogEntryEventBuilder builder = entryNumber == null ? null : buildersByEntryNumber.get(entryNumber);
+      if (builder == null || matchedEntryNumbers.contains(entryNumber)) {
+        throw new System.IllegalArgumentException('REST API log entries must preserve unique transaction entry numbers.');
+      }
+      matchedEntryNumbers.add(entryNumber);
+      builders.add(builder);
+    }
+    return builders;
   }
 
   // Utility methods
@@ -4414,62 +4440,208 @@ global with sharing class Logger {
     }
   }
 
-  // Inner class for saving log entries via the REST API (using the current user's session ID)
+  // Inner class for saving log entries via the REST API
+  @TestVisible
   private class RestApiSaver {
-    private final String baseURL = ORGANIZATION_DOMAIN_URL + '/services/data/' + getOrganizationApiVersion();
     private final String compositeEndpoint = '/composite/sobjects';
+    // Salesforce accepts at most 200 records in an sObject Collections request. Keep the
+    // body below the synchronous 6 MB Apex callout limit to leave room for platform framing.
+    private final Integer maxRecordsPerRequest = REST_API_MAX_RECORDS_PER_REQUEST;
+    private final Integer maxRequestBodySizeBytes;
+    private final Boolean allOrNone = true;
+    private final String namedCredentialName;
     private final String sessionId;
 
-    public RestApiSaver(String sessionId) {
-      this.sessionId = sessionId;
+    @SuppressWarnings('PMD.AvoidUnauthorizedGetSessionIdInApex')
+    public RestApiSaver() {
+      this(REST_API_DEFAULT_MAX_REQUEST_BODY_SIZE_BYTES);
+    }
+
+    @TestVisible
+    @SuppressWarnings('PMD.AvoidUnauthorizedGetSessionIdInApex')
+    private RestApiSaver(Integer maxRequestBodySizeBytes) {
+      this.maxRequestBodySizeBytes = maxRequestBodySizeBytes;
+      String configuredNamedCredential = LoggerParameter.REST_API_NAMED_CREDENTIAL;
+      String normalizedNamedCredential = String.isBlank(configuredNamedCredential) ? null : configuredNamedCredential.trim();
+      if (normalizedNamedCredential != null && normalizedNamedCredential.startsWith('callout:')) {
+        normalizedNamedCredential = normalizedNamedCredential.substringAfter('callout:').trim();
+      }
+      if (String.isNotBlank(configuredNamedCredential) && String.isBlank(normalizedNamedCredential)) {
+        throw new System.CalloutException('LoggerParameter.RestApiNamedCredential must contain a Named Credential API name.');
+      }
+      this.namedCredentialName = normalizedNamedCredential;
+      if (String.isBlank(this.namedCredentialName) && LoggerParameter.REST_API_REQUIRE_NAMED_CREDENTIAL) {
+        throw new System.CalloutException('Saving via REST API requires LoggerParameter.RestApiNamedCredential in this transaction context.');
+      }
+      this.sessionId = String.isBlank(this.namedCredentialName) ? System.UserInfo.getSessionId() : null;
+    }
+
+    private String getBaseUrl() {
+      if (String.isBlank(this.namedCredentialName)) {
+        return ORGANIZATION_DOMAIN_URL + '/services/data/' + getOrganizationApiVersion();
+      }
+
+      return 'callout:' + this.namedCredentialName + '/services/data/' + getOrganizationApiVersion();
     }
 
     @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
     /**
      * @description Inserts records via the REST api.
      * @param records The records to save.
+     * @param builders The builders that own the records, in the same order as records.
      */
-    public void insertRecords(List<SObject> records) {
-      System.HttpRequest request = new System.HttpRequest();
-      request.setEndpoint(baseURL + compositeEndpoint);
-      request.setHeader('Authorization', 'Bearer ' + this.sessionId);
-      request.setHeader('Content-Type', 'application/json; charset=utf-8');
-      request.setMethod('POST');
+    public void insertRecords(List<SObject> records, List<LogEntryEventBuilder> builders) {
+      if (records == null || records.isEmpty()) {
+        return;
+      }
+      if (builders == null || builders.size() != records.size()) {
+        throw new System.IllegalArgumentException('REST API records and log entry builders must have the same size.');
+      }
 
-      Boolean allOrNone = true;
-      RestSaveRequest saveRequest = new RestSaveRequest(records, allOrNone);
-      request.setBody(System.JSON.serialize(saveRequest));
+      List<RestApiRecordChunk> recordChunks = getRecordChunks(records, builders);
+      Integer availableCallouts = Limits.getLimitCallouts() - Limits.getCallouts();
+      if (recordChunks.size() > availableCallouts) {
+        throw new System.CalloutException(
+          'Saving via REST API requires ' + recordChunks.size() + ' callouts, but only ' + availableCallouts + ' remain in this transaction.'
+        );
+      }
 
-      System.HttpResponse response = new System.Http().send(request);
-      this.validateResponse(response);
+      for (RestApiRecordChunk recordChunk : recordChunks) {
+        System.HttpResponse response = new System.Http().send(buildRequest(recordChunk));
+        this.validateResponse(response, recordChunk.records.size());
+        // allOrNone is enabled, so remove a chunk only after its complete response has been validated.
+        // If a later chunk fails, earlier confirmed chunks stay removed and the failed chunk remains buffered for retry.
+        removeSavedEntries(recordChunk.builders);
+      }
     }
 
-    private void validateResponse(System.HttpResponse response) {
+    @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
+    private System.HttpRequest buildRequest(RestApiRecordChunk recordChunk) {
+      System.HttpRequest request = new System.HttpRequest();
+      request.setEndpoint(getBaseUrl() + compositeEndpoint);
+      if (String.isBlank(this.namedCredentialName)) {
+        request.setHeader('Authorization', 'Bearer ' + this.sessionId);
+      }
+      request.setHeader('Content-Type', 'application/json; charset=utf-8');
+      request.setMethod('POST');
+      request.setBody(serializeSaveRequest(recordChunk.serializedRecords));
+      return request;
+    }
+
+    private List<RestApiRecordChunk> getRecordChunks(List<SObject> records, List<LogEntryEventBuilder> builders) {
+      List<RestApiRecordChunk> recordChunks = new List<RestApiRecordChunk>();
+      RestApiRecordChunk currentChunk = new RestApiRecordChunk();
+      Integer emptyRequestBodySize = Blob.valueOf(serializeSaveRequest(new List<String>())).size();
+      Integer currentBodySize = emptyRequestBodySize;
+
+      for (Integer index = 0; index < records.size(); index++) {
+        SObject record = records.get(index);
+        String serializedRecord = System.JSON.serialize(record);
+        Integer serializedRecordSize = Blob.valueOf(serializedRecord).size();
+        Integer separatorSize = currentChunk.records.isEmpty() ? 0 : 1;
+        Integer candidateBodySize = currentBodySize + separatorSize + serializedRecordSize;
+        Boolean exceedsRecordLimit = currentChunk.records.size() >= maxRecordsPerRequest;
+        Boolean exceedsBodyLimit = candidateBodySize > maxRequestBodySizeBytes;
+
+        if (exceedsRecordLimit || exceedsBodyLimit) {
+          if (currentChunk.records.isEmpty()) {
+            throw new System.CalloutException('A single log record exceeds the maximum REST request body size of ' + maxRequestBodySizeBytes + ' bytes.');
+          }
+
+          recordChunks.add(currentChunk);
+          currentChunk = new RestApiRecordChunk();
+          currentBodySize = emptyRequestBodySize;
+          candidateBodySize = currentBodySize + serializedRecordSize;
+          if (candidateBodySize > maxRequestBodySizeBytes) {
+            throw new System.CalloutException('A single log record exceeds the maximum REST request body size of ' + maxRequestBodySizeBytes + ' bytes.');
+          }
+        }
+
+        currentChunk.records.add(record);
+        currentChunk.serializedRecords.add(serializedRecord);
+        currentChunk.builders.add(builders.get(index));
+        currentBodySize = candidateBodySize;
+      }
+
+      if (!currentChunk.records.isEmpty()) {
+        recordChunks.add(currentChunk);
+      }
+      return recordChunks;
+    }
+
+    private String serializeSaveRequest(List<String> serializedRecords) {
+      return '{"allOrNone":' + (allOrNone ? 'true' : 'false') + ',"records":[' + String.join(serializedRecords, ',') + ']}';
+    }
+
+    private void removeSavedEntries(List<LogEntryEventBuilder> builders) {
+      Set<LogEntryEventBuilder> savedBuilders = new Set<LogEntryEventBuilder>(builders);
+      List<LogEntryEventBuilder> remainingBuilders = new List<LogEntryEventBuilder>();
+      for (LogEntryEventBuilder bufferedBuilder : LOG_ENTRIES_BUFFER) {
+        if (savedBuilders.contains(bufferedBuilder) == false) {
+          remainingBuilders.add(bufferedBuilder);
+        }
+      }
+      LOG_ENTRIES_BUFFER.clear();
+      LOG_ENTRIES_BUFFER.addAll(remainingBuilders);
+    }
+
+    private void validateResponse(System.HttpResponse response, Integer expectedRecordCount) {
       Integer statusCode = response.getStatusCode();
-      if (statusCode >= 400) {
-        String errorMessage = 'Saving via REST API failed. Received request status code ' + statusCode + ', status message: ' + response.getStatus();
-        throw new System.CalloutException(errorMessage);
+      if (statusCode < 200 || statusCode >= 300) {
+        throw new System.CalloutException(
+          'Saving via REST API failed. Received request status code ' + statusCode + ', status message: ' + response.getStatus()
+        );
+      }
+
+      String responseBody = response.getBody();
+      if (String.isBlank(responseBody)) {
+        throw new System.CalloutException('Saving via REST API returned an empty response for ' + expectedRecordCount + ' records.');
+      }
+
+      List<RestSaveResult> saveResults;
+      try {
+        saveResults = (List<RestSaveResult>) System.JSON.deserialize(responseBody, List<RestSaveResult>.class);
+      } catch (System.Exception ex) {
+        throw new System.CalloutException('Saving via REST API returned an invalid response body: ' + ex.getMessage());
+      }
+
+      if (saveResults == null || saveResults.size() != expectedRecordCount) {
+        throw new System.CalloutException(
+          'Saving via REST API returned ' + (saveResults == null ? 0 : saveResults.size()) + ' results for ' + expectedRecordCount + ' records.'
+        );
+      }
+
+      for (Integer index = 0; index < saveResults.size(); index++) {
+        RestSaveResult saveResult = saveResults.get(index);
+        if (saveResult == null || saveResult.success != true) {
+          String errorDetails = saveResult == null || saveResult.errors == null ? 'No error details returned.' : System.JSON.serialize(saveResult.errors);
+          throw new System.CalloutException('Saving via REST API failed for record ' + index + ': ' + errorDetails);
+        }
+        if (String.isBlank(saveResult.id)) {
+          throw new System.CalloutException('Saving via REST API returned no record ID for successful record ' + index + '.');
+        }
       }
     }
   }
 
-  // Inner class that matches the format expected by the REST API for saving SObjects
-  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
-  private class RestSaveRequest {
-    /**
-     * @description Boolean used when saving records.  If true, all records must save correctly or an exception
-     * is thrown.  If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
-     */
-    public Boolean allOrNone { get; set; }
+  @SuppressWarnings('PMD.ApexDoc')
+  private class RestApiRecordChunk {
+    public List<SObject> records = new List<SObject>();
+    public List<String> serializedRecords = new List<String>();
+    public List<LogEntryEventBuilder> builders = new List<LogEntryEventBuilder>();
+  }
 
-    /**
-     * @description List of records to save.
-     */
-    public List<SObject> records { get; set; }
+  @SuppressWarnings('PMD.ApexDoc, PMD.AvoidBooleanMethodParameters')
+  private class RestSaveResult {
+    public String id { get; set; }
+    public Boolean success { get; set; }
+    public List<RestSaveError> errors { get; set; }
+  }
 
-    private RestSaveRequest(List<SObject> records, Boolean allOrNone) {
-      this.allOrNone = allOrNone;
-      this.records = records;
-    }
+  @SuppressWarnings('PMD.ApexDoc')
+  private class RestSaveError {
+    public String statusCode { get; set; }
+    public String message { get; set; }
+    public List<String> fields { get; set; }
   }
 }

@@ -1572,6 +1572,20 @@ private class Logger_Tests {
   }
 
   @IsTest
+  static void it_should_not_require_a_named_credential_for_non_rest_save_methods() {
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RestApiNamedCredential', Value__c = ''));
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RestApiRequireNamedCredential', Value__c = 'true'));
+    Logger.ignoreOrigin(Logger_Tests.class);
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    Logger.debug('non-REST save method should not resolve REST credentials');
+
+    System.Test.startTest();
+    Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
+    System.Assert.areEqual(0, System.Limits.getCallouts());
+    System.Test.stopTest();
+  }
+
+  @IsTest
   static void it_should_save_via_event_bus_when_specified_via_setSaveMethod() {
     // Temp workaround: the Logger_Tests class is now very large, resulting in some test failures caused by LogEntryHandler trying
     // to split & parse an Apex source snippet of Logger_Tests. Until some tests are cleaned up / moved elsewhere, just simply
@@ -1718,7 +1732,7 @@ private class Logger_Tests {
   @IsTest
   static void it_should_save_via_rest_api_when_defaulted() {
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
-    System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
+    System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setRestSaveResponse(true));
 
     Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
     System.Assert.areEqual(0, countOfLogEntries);
@@ -1748,7 +1762,7 @@ private class Logger_Tests {
   @IsTest
   static void it_should_save_via_rest_api_when_specified_via_settings() {
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
-    System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
+    System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setRestSaveResponse(true));
 
     Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
     System.Assert.areEqual(0, countOfLogEntries);
@@ -1772,9 +1786,396 @@ private class Logger_Tests {
   }
 
   @IsTest
+  static void it_should_save_via_rest_api_using_named_credential_when_configured() {
+    // TODO eliminate references to Log__c, find alternative way to assert on expected data
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setRestSaveResponse(true);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RestApiNamedCredential', Value__c = 'NebulaLoggerSelf'));
+
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    Logger.debug('test log entry');
+
+    System.Test.startTest();
+
+    Logger.saveLog(Logger.SaveMethod.REST);
+
+    System.Test.stopTest();
+
+    String expectedEndpoint = 'callout:NebulaLoggerSelf/services/data/' + Logger.getOrganizationApiVersion() + '/composite/sobjects';
+    System.Assert.areEqual(expectedEndpoint, calloutMock.request.getEndpoint());
+    System.Assert.isNull(calloutMock.request.getHeader('Authorization'));
+    System.Assert.areEqual('application/json; charset=utf-8', calloutMock.request.getHeader('Content-Type'));
+  }
+
+  @IsTest
+  static void it_should_normalize_named_credential_prefix_and_whitespace() {
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(201).setRestSaveResponse(true);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RestApiNamedCredential', Value__c = '  callout:NebulaLoggerSelf  '));
+
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    Logger.debug('test log entry');
+
+    System.Test.startTest();
+    Logger.saveLog(Logger.SaveMethod.REST);
+    System.Test.stopTest();
+
+    String expectedEndpoint = 'callout:NebulaLoggerSelf/services/data/' + Logger.getOrganizationApiVersion() + '/composite/sobjects';
+    System.Assert.areEqual(expectedEndpoint, calloutMock.request.getEndpoint());
+    System.Assert.isNull(calloutMock.request.getHeader('Authorization'));
+  }
+
+  @IsTest
+  static void it_should_use_session_id_fallback_when_named_credential_is_blank_or_whitespace() {
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setRestSaveResponse(true);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RestApiNamedCredential', Value__c = '   '));
+
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    Logger.debug('test log entry');
+
+    System.Test.startTest();
+    Logger.saveLog(Logger.SaveMethod.REST);
+    System.Test.stopTest();
+
+    System.Assert.isTrue(calloutMock.request.getEndpoint().startsWith(System.URL.getOrgDomainUrl().toExternalForm()));
+    System.Assert.isTrue(calloutMock.request.getHeader('Authorization').startsWith('Bearer '));
+  }
+
+  @IsTest
+  static void it_should_fail_before_session_id_lookup_when_named_credential_is_required() {
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setRestSaveResponse(true);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RestApiNamedCredential', Value__c = ''));
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RestApiRequireNamedCredential', Value__c = 'true'));
+
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    Logger.debug('test log entry');
+
+    System.Test.startTest();
+    try {
+      Logger.saveLog(Logger.SaveMethod.REST);
+      System.Assert.fail('Expected REST logging to require a Named Credential.');
+    } catch (System.Exception apexException) {
+      System.Assert.isInstanceOfType(apexException, System.CalloutException.class);
+      System.Assert.isTrue(apexException.getMessage().contains('RestApiNamedCredential'));
+    }
+    System.Test.stopTest();
+
+    System.Assert.areEqual(0, calloutMock.requests.size());
+  }
+
+  @IsTest
+  static void it_should_reject_a_prefix_without_a_named_credential_name() {
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setRestSaveResponse(true);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+    LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'RestApiNamedCredential', Value__c = 'callout:'));
+
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    Logger.debug('test log entry');
+
+    System.Test.startTest();
+    try {
+      Logger.saveLog(Logger.SaveMethod.REST);
+      System.Assert.fail('Expected an invalid Named Credential configuration to throw.');
+    } catch (System.Exception apexException) {
+      System.Assert.isInstanceOfType(apexException, System.CalloutException.class);
+      System.Assert.isTrue(apexException.getMessage().contains('must contain a Named Credential API name'));
+    }
+    System.Test.stopTest();
+
+    System.Assert.areEqual(0, calloutMock.requests.size());
+  }
+
+  @IsTest
+  static void it_should_reject_item_level_failures_in_successful_http_response() {
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setRestSaveResponse(false);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    Logger.debug('test log entry');
+
+    System.Test.startTest();
+    try {
+      Logger.saveLog(Logger.SaveMethod.REST);
+      System.Assert.fail('Expected item-level REST save failure to throw.');
+    } catch (System.Exception apexException) {
+      System.Assert.isInstanceOfType(apexException, System.CalloutException.class);
+      System.Assert.isTrue(apexException.getMessage().contains('record 0'));
+    }
+    System.Test.stopTest();
+
+    System.Assert.isTrue(Logger.getBufferSize() > 0, 'Failed REST saves must remain buffered for a retry.');
+  }
+
+  @IsTest
+  static void it_should_reject_mixed_item_level_failures_in_successful_http_response() {
+    String responseBody = '[{"id":"a00xx0000000001AAA","success":true,"errors":[]},{"id":null,"success":false,"errors":[{"statusCode":"TEST_ERROR","message":"Synthetic REST save failure","fields":[]}]}]';
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(responseBody);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    Logger.debug('test log entry');
+    Logger.debug('another test log entry');
+
+    System.Test.startTest();
+    try {
+      Logger.saveLog(Logger.SaveMethod.REST);
+      System.Assert.fail('Expected a mixed REST save response to throw.');
+    } catch (System.Exception apexException) {
+      System.Assert.isInstanceOfType(apexException, System.CalloutException.class);
+      System.Assert.isTrue(apexException.getMessage().contains('record 1'));
+    }
+    System.Test.stopTest();
+
+    System.Assert.areEqual(2, Logger.getBufferSize(), 'allOrNone failures must retain the complete chunk for retry.');
+  }
+
+  @IsTest
+  static void it_should_reject_malformed_success_responses() {
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody('not-json');
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    Logger.debug('test log entry');
+
+    System.Test.startTest();
+    try {
+      Logger.saveLog(Logger.SaveMethod.REST);
+      System.Assert.fail('Expected malformed REST save response to throw.');
+    } catch (System.Exception apexException) {
+      System.Assert.isInstanceOfType(apexException, System.CalloutException.class);
+      System.Assert.isTrue(apexException.getMessage().contains('invalid response body'));
+    }
+    System.Test.stopTest();
+  }
+
+  @IsTest
+  static void it_should_reject_incomplete_success_responses() {
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody('[]');
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    Logger.debug('test log entry');
+
+    System.Test.startTest();
+    try {
+      Logger.saveLog(Logger.SaveMethod.REST);
+      System.Assert.fail('Expected incomplete REST save response to throw.');
+    } catch (System.Exception apexException) {
+      System.Assert.isInstanceOfType(apexException, System.CalloutException.class);
+      System.Assert.isTrue(apexException.getMessage().contains('returned 0 results'));
+    }
+    System.Test.stopTest();
+  }
+
+  @IsTest
+  static void it_should_reject_successful_results_without_record_ids() {
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout()
+      .setStatusCode(200)
+      .setResponseBody('[{"id":null,"success":true,"errors":[]}]');
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    Logger.debug('test log entry');
+
+    System.Test.startTest();
+    try {
+      Logger.saveLog(Logger.SaveMethod.REST);
+      System.Assert.fail('Expected a successful REST result without an ID to throw.');
+    } catch (System.Exception apexException) {
+      System.Assert.isInstanceOfType(apexException, System.CalloutException.class);
+      System.Assert.isTrue(apexException.getMessage().contains('no record ID'));
+    }
+    System.Test.stopTest();
+  }
+
+  @IsTest
+  static void it_should_chunk_exactly_at_two_hundred_records() {
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setRestSaveResponse(true);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+
+    for (Integer index = 0; index < 201; index++) {
+      Logger.debug('bulk log entry ' + index);
+    }
+
+    System.Test.startTest();
+    Logger.saveLog(Logger.SaveMethod.REST);
+    System.Test.stopTest();
+
+    System.Assert.areEqual(2, calloutMock.requests.size());
+    List<Integer> recordsPerRequest = new List<Integer>();
+    for (System.HttpRequest request : calloutMock.requests) {
+      Map<String, Object> requestBody = (Map<String, Object>) System.JSON.deserializeUntyped(request.getBody());
+      recordsPerRequest.add(((List<Object>) requestBody.get('records')).size());
+    }
+    System.Assert.areEqual(200, recordsPerRequest.get(0));
+    System.Assert.areEqual(1, recordsPerRequest.get(1));
+  }
+
+  @IsTest
+  static void it_should_chunk_large_serialized_request_bodies() {
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setRestSaveResponse(true);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+
+    String largeMessage = '';
+    for (Integer index = 0; index < 100; index++) {
+      largeMessage += '0123456789';
+    }
+    List<SObject> records = new List<SObject>();
+    List<LogEntryEventBuilder> builders = new List<LogEntryEventBuilder>();
+    for (Integer index = 0; index < 20; index++) {
+      records.add(new LogEntryEvent__e(Message__c = largeMessage));
+      builders.add(null);
+    }
+
+    Logger.RestApiSaver restApiSaver = new Logger.RestApiSaver(5000);
+    System.Test.startTest();
+    restApiSaver.insertRecords(records, builders);
+    System.Test.stopTest();
+
+    Integer totalRecords = 0;
+    for (System.HttpRequest request : calloutMock.requests) {
+      Map<String, Object> requestBody = (Map<String, Object>) System.JSON.deserializeUntyped(request.getBody());
+      Integer recordsInRequest = ((List<Object>) requestBody.get('records')).size();
+      totalRecords += recordsInRequest;
+      System.Assert.isTrue(recordsInRequest <= 200);
+      System.Assert.isTrue(Blob.valueOf(request.getBody()).size() <= 5000);
+    }
+    System.Assert.areEqual(20, totalRecords);
+    System.Assert.isTrue(calloutMock.requests.size() > 1, 'Large payloads must be split before the callout.');
+  }
+
+  @IsTest
+  static void it_should_reject_a_single_record_larger_than_the_request_limit() {
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setRestSaveResponse(true);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+    String oversizedMessage = '';
+    for (Integer index = 0; index < 100; index++) {
+      oversizedMessage += '0123456789';
+    }
+
+    System.Test.startTest();
+    try {
+      new Logger.RestApiSaver(100)
+        .insertRecords(new List<SObject>{ new LogEntryEvent__e(Message__c = oversizedMessage) }, new List<LogEntryEventBuilder>{ null });
+      System.Assert.fail('Expected an oversized single REST record to throw.');
+    } catch (System.Exception apexException) {
+      System.Assert.isInstanceOfType(apexException, System.CalloutException.class);
+      System.Assert.isTrue(apexException.getMessage().contains('single log record exceeds'));
+    }
+    System.Test.stopTest();
+
+    System.Assert.areEqual(0, calloutMock.requests.size(), 'An oversized record must be rejected before any callout.');
+  }
+
+  @IsTest
+  static void it_should_not_resend_successful_chunks_after_a_later_chunk_fails() {
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout()
+      .setStatusCode(200)
+      .setRestSaveResponse(true)
+      .setRestSaveResponseFailureOnCall(2);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    for (Integer index = 0; index < 201; index++) {
+      Logger.debug('bulk log entry ' + index);
+    }
+
+    System.Test.startTest();
+    try {
+      Logger.saveLog(Logger.SaveMethod.REST);
+      System.Assert.fail('Expected the second REST chunk to fail.');
+    } catch (System.CalloutException apexException) {
+      System.Assert.isTrue(apexException.getMessage().contains('record 0'));
+    }
+    System.Assert.areEqual(1, Logger.getBufferSize(), 'Only the failed chunk should remain buffered.');
+
+    calloutMock.setRestSaveResponseFailureOnCall(null);
+    Logger.saveLog(Logger.SaveMethod.REST);
+    System.Test.stopTest();
+
+    System.Assert.areEqual(3, calloutMock.requests.size());
+    Map<String, Object> retryBody = (Map<String, Object>) System.JSON.deserializeUntyped(calloutMock.requests.get(2).getBody());
+    System.Assert.areEqual(1, ((List<Object>) retryBody.get('records')).size(), 'Retry must send only the failed record.');
+    System.Assert.areEqual(0, Logger.getBufferSize());
+  }
+
+  @IsTest
+  static void it_should_keep_builder_mapping_when_handlers_reorder_records() {
+    LoggerSObjectHandler.setMock(
+      new LoggerSObjectHandler__mdt(
+        DeveloperName = 'Reordering_Log_Entry_Event_Config',
+        IsEnabled__c = true,
+        SObjectHandlerApexClass__c = ReorderingMockSObjectHandler.class.getName(),
+        SObjectType__c = Schema.LogEntryEvent__e.SObjectType.toString()
+      )
+    );
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout()
+      .setStatusCode(200)
+      .setRestSaveResponse(true)
+      .setRestSaveResponseFailureOnCall(2);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    for (Integer index = 0; index < 201; index++) {
+      Logger.debug('bulk log entry ' + index);
+    }
+
+    System.Test.startTest();
+    try {
+      Logger.saveLog(Logger.SaveMethod.REST);
+      System.Assert.fail('Expected the second REST chunk to fail.');
+    } catch (System.CalloutException apexException) {
+      System.Assert.isTrue(apexException.getMessage().contains('record 0'));
+    }
+    System.Assert.areEqual(1, Logger.getBufferSize(), 'Only the failed reordered record should remain buffered.');
+
+    calloutMock.setRestSaveResponseFailureOnCall(null);
+    Logger.saveLog(Logger.SaveMethod.REST);
+    System.Test.stopTest();
+
+    System.Assert.areEqual(3, calloutMock.requests.size());
+    Map<String, Object> retryBody = (Map<String, Object>) System.JSON.deserializeUntyped(calloutMock.requests.get(2).getBody());
+    Map<String, Object> retryRecord = (Map<String, Object>) ((List<Object>) retryBody.get('records')).get(0);
+    System.Assert.areEqual(1, retryRecord.get('TransactionEntryNumber__c'), 'The retry must contain the failed reordered record.');
+    System.Assert.areEqual(0, Logger.getBufferSize());
+  }
+
+  @IsTest
+  static void it_should_fail_before_partial_save_when_callout_budget_is_insufficient() {
+    LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setRestSaveResponse(true);
+    System.Test.setMock(System.HttpCalloutMock.class, calloutMock);
+    setUserLoggingLevel(System.LoggingLevel.DEBUG);
+    for (Integer index = 0; index < 201; index++) {
+      Logger.debug('bulk log entry ' + index);
+    }
+
+    System.Test.startTest();
+    for (Integer index = 0; index < 99; index++) {
+      System.HttpRequest request = new System.HttpRequest();
+      request.setEndpoint('https://example.invalid/' + index);
+      request.setMethod('POST');
+      request.setBody('{"records":[]}');
+      new System.Http().send(request);
+    }
+
+    try {
+      Logger.saveLog(Logger.SaveMethod.REST);
+      System.Assert.fail('Expected the remaining callout budget check to fail before sending a partial save.');
+    } catch (System.Exception apexException) {
+      System.Assert.isInstanceOfType(apexException, System.CalloutException.class);
+      System.Assert.isTrue(apexException.getMessage().contains('only 1 remain'));
+    }
+    System.Test.stopTest();
+
+    System.Assert.areEqual(99, calloutMock.requests.size());
+    System.Assert.isTrue(Logger.getBufferSize() > 0);
+  }
+
+  @IsTest
   static void it_should_save_via_rest_api_when_specified_via_setSaveMethod() {
     // TODO eliminate references to Log__c, find alternative way to assert on expected data
-    System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
+    System.Test.setMock(System.HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setRestSaveResponse(true));
 
     Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
     System.Assert.areEqual(0, countOfLogEntries);
@@ -1817,11 +2218,14 @@ private class Logger_Tests {
 
     System.Test.startTest();
 
+    Boolean exceptionThrown = false;
     try {
       Logger.saveLog(Logger.SaveMethod.REST);
-    } catch (System.Exception apexException) {
+    } catch (System.CalloutException apexException) {
+      exceptionThrown = true;
       System.Assert.isInstanceOfType(apexException, System.CalloutException.class);
     }
+    System.Assert.isTrue(exceptionThrown, 'Expected a non-2xx REST response to throw.');
     System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
     System.Assert.areEqual(0, System.Limits.getQueueableJobs());
     System.Assert.areEqual(1, System.Limits.getCallouts());
@@ -12793,7 +13197,22 @@ private class Logger_Tests {
     }
   }
 
-  public class MockSObjectHandler extends LoggerSObjectHandler {
+  public class ReorderingMockSObjectHandler extends MockSObjectHandler {
+    protected override void executeBeforeInsert(List<SObject> triggerNew) {
+      Integer leftIndex = 0;
+      Integer rightIndex = triggerNew.size() - 1;
+      while (leftIndex < rightIndex) {
+        SObject leftRecord = triggerNew.get(leftIndex);
+        triggerNew.set(leftIndex, triggerNew.get(rightIndex));
+        triggerNew.set(rightIndex, leftRecord);
+        leftIndex++;
+        rightIndex--;
+      }
+      super.executeBeforeInsert(triggerNew);
+    }
+  }
+
+  public virtual class MockSObjectHandler extends LoggerSObjectHandler {
     public Integer executionCount = 0;
     public System.TriggerOperation executedTriggerOperationType;
     public List<SObject> executedTriggerNew;
@@ -12815,7 +13234,7 @@ private class Logger_Tests {
       return this;
     }
 
-    protected override void executeBeforeInsert(List<SObject> triggerNew) {
+    protected virtual override void executeBeforeInsert(List<SObject> triggerNew) {
       this.executionCount++;
       this.executedTriggerOperationType = System.TriggerOperation.BEFORE_INSERT;
       this.executedTriggerNew = triggerNew;

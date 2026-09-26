@@ -657,12 +657,16 @@ public class LoggerMockDataCreator {
   @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
   public class MockHttpCallout implements System.HttpCalloutMock {
     public System.HttpRequest request { get; private set; }
+    public List<System.HttpRequest> requests { get; private set; }
     public System.HttpResponse response { get; private set; }
     public String responseBody { get; private set; }
     public Integer statusCode { get; private set; }
     public String statusMessage { get; private set; }
+    private Boolean restSaveResponseSuccess;
+    private Integer restSaveResponseFailureCall;
 
     public MockHttpCallout() {
+      this.requests = new List<System.HttpRequest>();
     }
 
     public MockHttpCallout setResponseBody(String responseBody) {
@@ -680,12 +684,46 @@ public class LoggerMockDataCreator {
       return this;
     }
 
+    public MockHttpCallout setRestSaveResponse(Boolean success) {
+      this.restSaveResponseSuccess = success;
+      return this;
+    }
+
+    public MockHttpCallout setRestSaveResponseFailureOnCall(Integer callNumber) {
+      this.restSaveResponseFailureCall = callNumber;
+      return this;
+    }
+
     public System.HttpResponse respond(System.HttpRequest request) {
       this.request = request;
+      this.requests.add(request);
 
       this.response = new System.HttpResponse();
-      if (String.isNotBlank(this.responseBody)) {
-        response.setBody(this.responseBody);
+      String body = this.responseBody;
+      if (this.restSaveResponseSuccess != null) {
+        Map<String, Object> requestBody = (Map<String, Object>) System.JSON.deserializeUntyped(request.getBody());
+        List<Object> records = (List<Object>) requestBody.get('records');
+        Boolean responseSuccess = this.restSaveResponseSuccess;
+        if (this.restSaveResponseFailureCall == this.requests.size()) {
+          responseSuccess = false;
+        }
+        List<Object> results = new List<Object>();
+        for (Integer index = 0; index < records.size(); index++) {
+          Map<String, Object> result = new Map<String, Object>{
+            'id' => responseSuccess ? 'a00TEST' + String.valueOf(this.requests.size()) + String.valueOf(index) : null,
+            'success' => responseSuccess,
+            'errors' => responseSuccess
+              ? new List<Object>()
+              : new List<Object>{
+                  new Map<String, Object>{ 'statusCode' => 'TEST_ERROR', 'message' => 'Synthetic REST save failure', 'fields' => new List<Object>() }
+                }
+          };
+          results.add(result);
+        }
+        body = System.JSON.serialize(results);
+      }
+      if (String.isNotBlank(body)) {
+        response.setBody(body);
       }
       response.setStatusCode(this.statusCode);
       if (String.isNotBlank(this.statusMessage)) {
