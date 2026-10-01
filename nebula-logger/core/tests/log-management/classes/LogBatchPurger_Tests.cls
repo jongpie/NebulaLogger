@@ -86,6 +86,32 @@ private class LogBatchPurger_Tests {
   }
 
   @IsTest
+  static void it_should_partially_delete_records_when_batch_delete_throws_dml_exception() {
+    LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
+    Log__c deletableLog = new Log__c(Id = LoggerMockDataCreator.createId(Schema.Log__c.SObjectType));
+    Log__c undeletableLog = new Log__c(Id = LoggerMockDataCreator.createId(Schema.Log__c.SObjectType));
+    List<Log__c> scopeRecords = new List<Log__c>{ deletableLog, undeletableLog };
+    MockPartiallyFailingDatabase mockDatabase = new MockPartiallyFailingDatabase();
+    mockDatabase.undeletableRecordIds.add(undeletableLog.Id);
+    LoggerDataStore.setMock(mockDatabase);
+    LogBatchPurger batchJobInstance = new LogBatchPurger();
+    batchJobInstance.currentSObjectType = Schema.Log__c.SObjectType;
+    Database.BatchableContext mockBatchableContext = new LoggerMockDataCreator.MockBatchableContext();
+
+    batchJobInstance.execute(mockBatchableContext, scopeRecords);
+
+    System.Assert.areEqual(1, mockDatabase.allOrNoneDeleteCallCount, 'The all-or-none delete should have been attempted once');
+    System.Assert.areEqual(1, mockDatabase.partialDeleteCallCount, 'The partial delete should have been attempted once');
+    System.Assert.areEqual(1, mockDatabase.emptyRecycleBinCallCount, 'Deleted records should have been removed from the recycle bin');
+    System.Assert.areEqual(
+      new List<SObject>{ deletableLog },
+      mockDatabase.hardDeletedRecords,
+      'Only the records that were successfully deleted should have been removed from the recycle bin'
+    );
+    LoggerDataStore.setMock((LoggerDataStore.Database) null);
+  }
+
+  @IsTest
   static void it_should_default_batch_size_for_chained_job_batch_size() {
     LogBatchPurger batchJobInstance = new LogBatchPurger();
 
@@ -433,6 +459,40 @@ private class LogBatchPurger_Tests {
       ranPluginFinish = true;
       pluginConfiguration = configuration;
       batchInput = input;
+    }
+  }
+
+  public class MockPartiallyFailingDatabase extends LoggerDataStore.Database {
+    public final Set<Id> undeletableRecordIds = new Set<Id>();
+    public Integer allOrNoneDeleteCallCount = 0;
+    public Integer emptyRecycleBinCallCount = 0;
+    public List<SObject> hardDeletedRecords;
+    public Integer partialDeleteCallCount = 0;
+
+    public override List<Database.DeleteResult> deleteRecords(List<SObject> records) {
+      this.allOrNoneDeleteCallCount++;
+      System.DmlException dmlException = new System.DmlException();
+      dmlException.setMessage('Cascade deleting too many records: DELETE_OPERATION_TOO_LARGE');
+      throw dmlException;
+    }
+
+    public override List<Database.DeleteResult> deleteRecords(List<SObject> records, Boolean allOrNone) {
+      this.partialDeleteCallCount++;
+      List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>();
+      for (SObject record : records) {
+        deleteResults.add(LoggerMockDataCreator.createDatabaseDeleteResult(this.undeletableRecordIds.contains(record.Id) == false, record.Id));
+      }
+      return deleteResults;
+    }
+
+    public override List<Database.EmptyRecycleBinResult> emptyRecycleBin(List<SObject> records) {
+      this.emptyRecycleBinCallCount++;
+      this.hardDeletedRecords = records;
+      List<Database.EmptyRecycleBinResult> emptyRecycleBinResults = new List<Database.EmptyRecycleBinResult>();
+      for (SObject record : records) {
+        emptyRecycleBinResults.add(LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true, record.Id));
+      }
+      return emptyRecycleBinResults;
     }
   }
 }
