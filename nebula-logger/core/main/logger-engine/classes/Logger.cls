@@ -412,7 +412,7 @@ global with sharing class Logger {
     }
 
     // Next, use the org defaults (if configured)
-    if (loggingUserSettings == null && loggingUser.Id != null && LoggerSettings__c.getOrgDefaults().Id != null) {
+    if (loggingUserSettings == null && LoggerSettings__c.getOrgDefaults().Id != null) {
       LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
       if (hasValidStartAndEndTimes(orgDefaults)) {
         loggingUserSettings = orgDefaults;
