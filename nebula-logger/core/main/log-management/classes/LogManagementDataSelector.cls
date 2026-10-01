@@ -365,29 +365,6 @@ public without sharing virtual class LogManagementDataSelector {
   }
 
   /**
-   * @description Returns the list of `LogEntry__c` records related to the specified record ID
-   * @param  recordId      The `ID` to use for filtering `LogEntry__c` records
-   * @param  fieldsClause  A comma-separated `String` of field API names to include in the query
-   * @param  orderByClause A comma-separated `String` of field API names to use for sorting the query results
-   * @param  rowLimit      The maximum number of records to return
-   * @return               The list of matching `LogEntry__c` records
-   */
-  @SuppressWarnings('PMD.ExcessiveParameterList')
-  public virtual List<LogEntry__c> getRecordLogEntries(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit) {
-    List<Object> queryTextReplacements = new List<Object>{
-      fieldsClause,
-      Schema.LogEntry__c.SObjectType.toString(),
-      Schema.LogEntry__c.RecordId__c.toString(),
-      orderByClause,
-      rowLimit
-    };
-    String logEntryQuery = 'SELECT {0} FROM {1} WHERE {2} = :recordId ORDER BY {3} LIMIT {4}';
-    logEntryQuery = String.format(logEntryQuery, queryTextReplacements);
-
-    return (List<LogEntry__c>) System.Database.query(String.escapeSingleQuotes(logEntryQuery));
-  }
-
-  /**
    * @description Returns a list of `LoggerTag__c` records with one of the specified tag names
    * @param  tagNames The set of `String` tag names to query
    * @return          The list of matching `LoggerTag__c` records

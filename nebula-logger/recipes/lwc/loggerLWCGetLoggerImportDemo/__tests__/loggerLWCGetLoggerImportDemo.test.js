@@ -1,4 +1,4 @@
-import { createElement } from 'lwc';
+import { createElement } from '@lwc/engine-dom';
 import loggerLWCGetLoggerImportDemo from 'c/loggerLWCGetLoggerImportDemo';
 
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';

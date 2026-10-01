@@ -108,6 +108,7 @@
                 <showPercentage>false</showPercentage>
                 <showValues>false</showValues>
                 <sortBy>RowLabelAscending</sortBy>
+                <sortLegendValues>false</sortLegendValues>
                 <useReportChart>true</useReportChart>
             </dashboardComponent>
             <rowIndex>0</rowIndex>
@@ -155,6 +156,7 @@
                 <showTotal>true</showTotal>
                 <showValues>true</showValues>
                 <sortBy>RowLabelAscending</sortBy>
+                <sortLegendValues>false</sortLegendValues>
                 <useReportChart>false</useReportChart>
             </dashboardComponent>
             <rowIndex>0</rowIndex>
@@ -200,6 +202,7 @@
                 <showPercentage>false</showPercentage>
                 <showValues>true</showValues>
                 <sortBy>RowLabelAscending</sortBy>
+                <sortLegendValues>false</sortLegendValues>
                 <useReportChart>false</useReportChart>
             </dashboardComponent>
             <rowIndex>9</rowIndex>
@@ -244,6 +247,7 @@
                         <sortOrder>1</sortOrder>
                     </flexTableSortInfo>
                     <hideChatterPhotos>true</hideChatterPhotos>
+                    <useReportTableSetting>false</useReportTableSetting>
                 </flexComponentProperties>
                 <groupingSortProperties>
                     <groupingSorts>
@@ -289,6 +293,7 @@
                 <showPercentage>false</showPercentage>
                 <showValues>false</showValues>
                 <sortBy>RowLabelAscending</sortBy>
+                <sortLegendValues>false</sortLegendValues>
                 <useReportChart>true</useReportChart>
             </dashboardComponent>
             <rowIndex>21</rowIndex>
@@ -321,6 +326,7 @@
                 <showPercentage>false</showPercentage>
                 <showValues>false</showValues>
                 <sortBy>RowLabelAscending</sortBy>
+                <sortLegendValues>false</sortLegendValues>
                 <useReportChart>true</useReportChart>
             </dashboardComponent>
             <rowIndex>21</rowIndex>
@@ -331,8 +337,8 @@
     </dashboardGridLayout>
     <dashboardType>SpecifiedUser</dashboardType>
     <isGridLayout>true</isGridLayout>
-    <owner>test-klphaysttpzn@example.com</owner>
-    <runningUser>test-klphaysttpzn@example.com</runningUser>
+    <owner>test-fd77o9yu2dky@example.com</owner>
+    <runningUser>test-fd77o9yu2dky@example.com</runningUser>
     <textColor>#000000</textColor>
     <title>Logger Admin Dashboard</title>
     <titleColor>#000000</titleColor>

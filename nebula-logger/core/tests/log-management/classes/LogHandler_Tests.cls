@@ -239,10 +239,13 @@ private class LogHandler_Tests {
     insert expectedLogOwnerUser;
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
     currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Id;
-    insert currentUserSettings;
     Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
 
-    LoggerDataStore.getDatabase().insertRecord(log);
+    System.runAs(currentuser) {
+      insert currentUserSettings;
+
+      LoggerDataStore.getDatabase().insertRecord(log);
+    }
 
     System.Assert.areEqual(
       2,
@@ -261,10 +264,13 @@ private class LogHandler_Tests {
     insert expectedLogOwnerUser;
     LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
     currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Username;
-    insert currentUserSettings;
     Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
 
-    LoggerDataStore.getDatabase().insertRecord(log);
+    System.runAs(currentuser) {
+      insert currentUserSettings;
+
+      LoggerDataStore.getDatabase().insertRecord(log);
+    }
 
     System.Assert.areEqual(
       2,

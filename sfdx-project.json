@@ -1,7 +1,7 @@
 {
   "name": "Nebula Logger",
   "namespace": "",
-  "sourceApiVersion": "63.0",
+  "sourceApiVersion": "66.0",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "packageDirectories": [
     {
@@ -9,9 +9,9 @@
       "path": "./nebula-logger/core",
       "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
       "scopeProfiles": true,
-      "versionNumber": "4.16.2.NEXT",
-      "versionName": "Origin Location Parsing Improvements",
-      "versionDescription": "Tweaked how origin location is parsed when External entry point is the first line of a stack trace",
+      "versionNumber": "4.19.5.NEXT",
+      "versionName": "Fixed NullPointerException on Flow Logging Actions",
+      "versionDescription": "Fixed #997 NullPointerException that occurs when Flow passes a null value for the optional Save Log and Throw FlowException for Fault Error Message inputs, which happens now that Salesforce has removed the per-input include toggles from the Flow Builder action panel",
       "postInstallUrl": "https://github.com/jongpie/NebulaLogger/wiki",
       "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
       "unpackagedMetadata": {
@@ -82,6 +82,13 @@
     {
       "path": "./nebula-logger/recipes",
       "default": false
+    }
+  ],
+  "replacements": [
+    {
+      "filename": "nebula-logger/extra-tests/integration-tests/emailservices/ExampleInboundEmailService.xml-meta.xml",
+      "stringToReplace": "{{EMAIL_SERVICE_RUN_AS_USER}}",
+      "replaceWithEnv": "EMAIL_SERVICE_RUN_AS_USER"
     }
   ],
   "packageAliases": {
@@ -218,6 +225,26 @@
     "Nebula Logger - Core@4.16.0-spring-'25-release": "04t5Y0000015pGyQAI",
     "Nebula Logger - Core@4.16.1-data-masking-&-string-truncation-improvements": "04tKe0000011MXEIA2",
     "Nebula Logger - Core@4.16.2-origin-location-parsing-improvements": "04tKe0000011Mi9IAE",
+    "Nebula Logger - Core@4.16.3-configurable-batch-size-for-logbatchpurger": "04tKe0000011Mr1IAE",
+    "Nebula Logger - Core@4.16.4-bugfix:-logger-lwc-initialization-message": "04tKe0000011MyWIAU",
+    "Nebula Logger - Core@4.16.5-capture-apex-cursor-transaction-limits": "04tKe0000011N4KIAU",
+    "Nebula Logger - Core@4.17.0-summer-'25-release": "04tg70000000rNhAAI",
+    "Nebula Logger - Core@4.17.1-bugfix:-allowing-to-log-sobject-without-id-field": "04tg7000000157JAAQ",
+    "Nebula Logger - Core@4.17.2-bugfix:-modal-close-buttons-not-rendered-correctly": "04tg700000015gnAAA",
+    "Nebula Logger - Core@4.17.3-relatedlogentries-lwc-improvements": "04tg70000001IMHAA2",
+    "Nebula Logger - Core@4.17.4-loggeremailsender_tests-fix-for-new-platform-requirement-of-verified-email-domains": "04tg70000004jmXAAQ",
+    "Nebula Logger - Core@4.17.5-adds-new-flag-to-relatedlogentries-lwc-for-strict-search-based-on-recordid": "04tg70000007XnFAAU",
+    "Nebula Logger - Core@4.18.0-winter-'26-release": "04tg700000086Y5AAI",
+    "Nebula Logger - Core@4.18.1-new-declarative-configuration-for-ignoring-apex-classes-in-stack-traces": "04tg70000008GVpAAM",
+    "Nebula Logger - Core@4.18.2-new-field-logentry__c.wasloggedbycurrentuser__c": "04tg70000008YZBAA2",
+    "Nebula Logger - Core@4.18.3-prismjs-loading-improvements-&-error-handling": "04tg70000009GaDAAU",
+    "Nebula Logger - Core@4.18.4-bugfix:-removed-most-of-the-usage-of-userinfo.getsessionid()": "04tg7000000Bb13AAC",
+    "Nebula Logger - Core@4.19.0-spring-'26-release": "04tg7000000GZg9AAG",
+    "Nebula Logger - Core@4.19.1-new-method-overloads-for-logger.logdatabaseerrors()": "04tg7000000GqibAAC",
+    "Nebula Logger - Core@4.19.2-optimized-data-masking": "04tg7000000HNrRAAW",
+    "Nebula Logger - Core@4.19.3-fixed-mixed_dml_operation-errors-in-tests": "04tg7000000IEirAAG",
+    "Nebula Logger - Core@4.19.4-capture-apex-cursor-and-apex-pagination-cursor-transaction-limits": "04tg7000000IawHAAS",
+    "Nebula Logger - Core@4.19.5-fixed-nullpointerexception-on-flow-logging-actions": "04tg7000000IzRdAAK",
     "Nebula Logger - Core Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
     "Nebula Logger - Core Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

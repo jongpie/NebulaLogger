@@ -1,5 +1,5 @@
 # This script is used to create a new package version for the specified package alias
-# It then auto-adds the new package version the files sfdx-project.json and README.md
+# It then auto-adds the new package version the files sfdx-project.json, README.md, and the install skill
 # Finally, the new package version is installed it into an org, using the specified target username
 param ([string]$targetpackagealias, [string]$targetreadme, [string]$targetusername)
 
@@ -124,6 +124,29 @@ function Update-README-Package-Version-Id {
     ((Get-Content -path $targetreadme -Raw) -replace "sf package install --wait 20 --security-type AdminsOnly --package .{0,18}", $sfUnlockedPackageReplacement) | Set-Content -Path $targetreadme -NoNewline
 }
 
+function Update-Install-Skill-Package-Version-Id {
+    param (
+        $packageVersionId
+    )
+
+    $installSkillPath = "./skills/nebula-logger-install/SKILL.md"
+    if (-not (Test-Path $installSkillPath)) {
+        Write-Debug "Install skill not found at $installSkillPath, skipping"
+        return
+    }
+
+    $packageVersionId = "$packageVersionId".Trim()
+    # Only the unlocked package IDs are refreshed here - the managed package IDs are updated manually on managed releases.
+    # The regex only matches the unlocked URLs because the managed URLs include "mgd=true&" between the query string and "p0="
+    $sandboxUnlockedReplacement = "Sandbox install link: ``https://test.salesforce.com/packaging/installPackage.apexp?p0=$packageVersionId``"
+    ((Get-Content -path $installSkillPath -Raw) -replace "Sandbox install link: ``https:\/\/test.salesforce.com\/packaging\/installPackage.apexp\?p0=.{0,18}``", $sandboxUnlockedReplacement) | Set-Content -Path $installSkillPath -NoNewline
+    $productionUnlockedReplacement = "Production install link: ``https://login.salesforce.com/packaging/installPackage.apexp?p0=$packageVersionId``"
+    ((Get-Content -path $installSkillPath -Raw) -replace "Production install link: ``https:\/\/login.salesforce.com\/packaging\/installPackage.apexp\?p0=.{0,18}``", $productionUnlockedReplacement) | Set-Content -Path $installSkillPath -NoNewline
+    # The `--wait 20` value disambiguates the unlocked CLI command from the managed one (which uses `--wait 30`)
+    $sfUnlockedReplacement = "Salesforce CLI: ``sf package install --wait 20 --security-type AdminsOnly --package $packageVersionId``"
+    ((Get-Content -path $installSkillPath -Raw) -replace "Salesforce CLI: ``sf package install --wait 20 --security-type AdminsOnly --package .{0,18}``", $sfUnlockedReplacement) | Set-Content -Path $installSkillPath -NoNewline
+}
+
 function Install-Package-Version {
     param (
         $packageVersionId
@@ -155,6 +178,14 @@ Write-Debug "Adding new package version ID $packageVersionId to $targetreadme"
 Update-README-Package-Version-Id $packageVersionId
 npx prettier --write $targetreadme
 git add $targetreadme
+
+$installSkillPath = "./skills/nebula-logger-install/SKILL.md"
+if (Test-Path $installSkillPath) {
+    Write-Debug "Adding new package version ID $packageVersionId to $installSkillPath"
+    Update-Install-Skill-Package-Version-Id $packageVersionId
+    npx prettier --write $installSkillPath
+    git add $installSkillPath
+}
 
 Write-Debug "Installing new package version ID $packageVersionId for target user $targetusername"
 Install-Package-Version $packageVersionId

@@ -201,7 +201,7 @@ export default class LogBatchPurge extends LightningElement {
   }
 
   pollPurgeBatchJobRecords() {
-    // eslint-disable-next-line @lwc/lwc/no-async-operation
+    // eslint-disable-next-line
     setTimeout(() => {
       this.loadPurgeBatchJobRecords();
       this.loadMetricRecords();
@@ -211,7 +211,7 @@ export default class LogBatchPurge extends LightningElement {
 
   _handleError = error => {
     const errorMessage = error.body ? error.body.message : error.message;
-    /* eslint-disable-next-line no-console */
+    // eslint-disable-next-line
     console.error(errorMessage, error);
     this.dispatchEvent(
       new ShowToastEvent({

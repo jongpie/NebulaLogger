@@ -89,6 +89,10 @@ private class LogEntryEventHandler_Tests_FieldMappings {
     logEntryEvent.UserLoggingLevelOrdinal__c = System.LoggingLevel.INFO.ordinal();
     logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.setReadOnlyField(logEntryEvent, Schema.LogEntryEvent__e.EventUuid, System.UUID.randomUUID());
 
+    // This is an extra set of fields used only in the pipeline for testing field mappings from a text field to a restricted picklist value.
+    // Since it's a restricted picklist value, on LogEntry__c (not LogEntryEvent__e), we have to handle this one a little bit differently here in the test.
+    logEntryEvent.SomeRestrictedPicklistField__c = LogEntry__c.SomeRestrictedPicklistField__c.getDescribe().getPicklistValues().get(0).getValue();
+
     return logEntryEvent;
   }
 }

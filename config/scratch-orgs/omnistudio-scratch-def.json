@@ -4,7 +4,7 @@
   "hasSampleData": true,
   "country": "US",
   "language": "en_US",
-  "features": ["OmniStudioDesigner", "OmniStudioMetadata", "OmniStudioRuntime"],
+  "features": ["OmniStudioDesigner", "OmniStudioRuntime"],
   "settings": {
     "chatterSettings": {
       "enableChatter": false
@@ -19,6 +19,10 @@
       "enableDeleteMonitoringData": false,
       "enableEventLogGeneration": false,
       "eventLogRetentionDuration": 0
+    },
+    "omniStudioSettings": {
+      "enableOmniStudioMetadata": true,
+      "enableStandardOmniStudioRuntime": true
     },
     "pathAssistantSettings": {
       "pathAssistantEnabled": false

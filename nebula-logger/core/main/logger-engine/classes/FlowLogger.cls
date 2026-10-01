@@ -137,7 +137,7 @@ public inherited sharing class FlowLogger {
       this.logEntryEvent.ExceptionSourceActionName__c = null;
 
       Boolean hasFaultMessage = String.isNotBlank(this.faultMessage);
-      if (hasFaultMessage || this.shouldThrowFaultMessageException) {
+      if (hasFaultMessage || this.shouldThrowFaultMessageException == true) {
         // For now, this code takes the approach of treating the Flow itself as the source of the exception.
         // But, if the exception actually came from Apex (and is surfaced by Flow), it'd be more accurate to list
         // the Apex class/trigger/whatever as the exception's "source" fields.
@@ -173,8 +173,8 @@ public inherited sharing class FlowLogger {
     for (LogEntry flowEntry : flowEntries) {
       flowEntry.addToLoggerBuffer();
 
-      if (flowEntry.saveLog) {
-        saveLog = flowEntry.saveLog;
+      if (flowEntry.saveLog == true) {
+        saveLog = true;
         if (String.isNotBlank(flowEntry.saveMethodName)) {
           saveMethod = Logger.SaveMethod.valueOf(flowEntry.saveMethodName);
         }
@@ -182,8 +182,8 @@ public inherited sharing class FlowLogger {
       if (String.isNotBlank(flowEntry.faultMessage)) {
         faultMessage = flowEntry.faultMessage;
       }
-      if (flowEntry.shouldThrowFaultMessageException) {
-        shouldThrowFaultMessageException = flowEntry.shouldThrowFaultMessageException;
+      if (flowEntry.shouldThrowFaultMessageException == true) {
+        shouldThrowFaultMessageException = true;
       }
     }
 

@@ -66,7 +66,7 @@ private class LogEntryFieldSetPicklist_Tests {
       String dataRowValue = (String) dataRow.getValue();
       System.Assert.isTrue(expectedFieldSets.containsKey(dataRowValue));
       Schema.FieldSet matchingFieldSet = expectedFieldSets.get(dataRowValue);
-      String matchingFieldSetNamespacePrefix = String.isBlank(matchingFieldSet.getNameSpace()) ? '' : matchingFieldSet.getNameSpace() + '__';
+      String matchingFieldSetNamespacePrefix = String.isBlank(matchingFieldSet.getNamespace()) ? '' : matchingFieldSet.getNamespace() + '__';
       System.Assert.areEqual(matchingFieldSet.getLabel(), dataRowLabel);
       System.Assert.areEqual(matchingFieldSetNamespacePrefix + matchingFieldSet.getName(), dataRowValue);
     }

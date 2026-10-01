@@ -7,6 +7,12 @@
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
+                            <value>Edit</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Delete</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Account.loggerLWCGetLoggerImportDemo</value>
                         </valueListItems>
                         <valueListItems>
@@ -17,12 +23,6 @@
                         </valueListItems>
                         <valueListItems>
                             <value>Account.loggerAuraEmbedDemo</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Edit</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Delete</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -44,7 +44,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>numVisibleActions</name>
-                    <value>10</value>
+                    <value>2</value>
                 </componentInstanceProperties>
                 <componentName>force:highlightsPanel</componentName>
                 <identifier>force_highlightsPanel</identifier>
@@ -283,7 +283,7 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>active</name>
-                    <value>true</value>
+                    <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>body</name>
@@ -291,7 +291,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>title</name>
-                    <value>Log Lightning Components</value>
+                    <value>Logger Components Demo</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
                 <identifier>flexipage_tab</identifier>
@@ -318,6 +318,10 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>active</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>body</name>
                     <value>detailTabContent</value>
                 </componentInstanceProperties>
@@ -336,6 +340,10 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Tabs</value>
+                </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>tabs</name>
                     <value>maintabs</value>
@@ -389,6 +397,10 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Tabs</value>
+                </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>tabs</name>
                     <value>sidebartabs</value>

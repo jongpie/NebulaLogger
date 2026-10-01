@@ -56,27 +56,23 @@ The Slack integration should now be setup & working - any new logs that meet the
 _Note: these instructions are for setting up the improved Named Credentials, as legacy credentials are deprecated as of Winter '23. For more info, see [Salesforce's documentation](https://help.salesforce.com/s/articleView?id=sf.named_credentials_about.htm&type=5)._
 
 1. **Create a new External Credential.** This will define how Salesforce should authenticate with the Slack webhook (which in this case is no authentication).
-
    - Go to the Named Credentials page in setup, click `New` under the External Credentials tab.
    - Enter a name (for example, `Nebula Slack Webhook (No Auth)`)
    - Select `No Authentication` for the Authentication Protocol.
 
 2. **Create a Principle for the External Credential.** This will define the credentials that should be used when calling out to the Slack webhook (again, in this case, no credentials are needed, but we will still need to grant access to the principal).
-
    - In the Principals section of the External Credential you just created, click `New`.
    - Enter a parameter name (for example: `Default` or `Standard`, as there will only ever be one principal for this credential).
 
    ![Slack plugin: external credential](./.images/slack-plugin-external-credential.png)
 
 3. **Create a new Named Credential.** This is where the webhook URL will be stored.
-
    - Go back to the main Named Credentials page and click `New` in the Named Credentials tab.
    - Enter a name for the Named Credential (for example: `Nebula Slack Webhook`).
    - Paste the Slack webhook URL into the URL field.
    - In the External Credential dropdown, select the one you created in step 1.
 
 4. **Grant the Platform Integration User access to the External Credential.** This will allow the Platform Integration user (the running user listening for Log Platform Events) to make callouts to the Slack webhook.
-
    - Create a new permission set or open an existing one
    - Go to the External Credential Principal Access section of the permissions set and grant access to the External Credential you created in step 1.
    - Assign the permission set to the Platform Integration User handles Log Platform events.

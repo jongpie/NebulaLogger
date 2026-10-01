@@ -25,6 +25,28 @@ private class CMDT_LoggerParameter_Tests {
   }
 
   @IsTest
+  static void it_has_correct_record_for_data_mask_regex_chunk_size() {
+    LoggerParameter__mdt bundledRecord = LoggerParameter__mdt.getInstance('DataMaskRegExChunkSize');
+
+    System.Assert.isNotNull(bundledRecord, 'Record is missing');
+    System.Assert.isNull(bundledRecord.Comments__c, 'Comments should be null/blank');
+    System.Assert.isNotNull(bundledRecord.Description__c, 'Description is missing');
+    System.Assert.areEqual('Data Mask RegEx: Chunk Size', bundledRecord.Label);
+    System.Assert.areEqual('4000', bundledRecord.Value__c);
+  }
+
+  @IsTest
+  static void it_has_correct_record_for_data_mask_regex_overlap_size() {
+    LoggerParameter__mdt bundledRecord = LoggerParameter__mdt.getInstance('DataMaskRegExOverlapSize');
+
+    System.Assert.isNotNull(bundledRecord, 'Record is missing');
+    System.Assert.isNull(bundledRecord.Comments__c, 'Comments should be null/blank');
+    System.Assert.isNotNull(bundledRecord.Description__c, 'Description is missing');
+    System.Assert.areEqual('Data Mask RegEx: Overlap Size', bundledRecord.Label);
+    System.Assert.areEqual('20', bundledRecord.Value__c);
+  }
+
+  @IsTest
   static void it_has_correct_record_for_default_log_entry_related_list_field_set() {
     LoggerParameter__mdt bundledRecord = LoggerParameter__mdt.getInstance('DefaultLogEntryRelatedListFieldSet');
 
@@ -77,6 +99,17 @@ private class CMDT_LoggerParameter_Tests {
     System.Assert.isNotNull(bundledRecord.Description__c, 'Description is missing');
     System.Assert.areEqual('Enable Tagging', bundledRecord.Label);
     System.Assert.areEqual('true', bundledRecord.Value__c);
+  }
+
+  @IsTest
+  static void it_has_correct_record_for_log_batch_purger_default_batch_size() {
+    LoggerParameter__mdt bundledRecord = LoggerParameter__mdt.getInstance('LogBatchPurgerDefaultBatchSize');
+
+    System.Assert.isNotNull(bundledRecord, 'Record is missing');
+    System.Assert.isNull(bundledRecord.Comments__c, 'Comments should be null/blank');
+    System.Assert.isNotNull(bundledRecord.Description__c, 'Description is missing');
+    System.Assert.areEqual('Log Batch Purger: Default Batch Size', bundledRecord.Label);
+    System.Assert.areEqual('500', bundledRecord.Value__c);
   }
 
   @IsTest
@@ -396,6 +429,17 @@ private class CMDT_LoggerParameter_Tests {
     System.Assert.isNotNull(bundledRecord.Description__c, 'Description is missing');
     System.Assert.areEqual('Use Topics for Tags', bundledRecord.Label);
     System.Assert.areEqual('false', bundledRecord.Value__c);
+  }
+
+  @IsTest
+  static void it_has_correct_record_for_ignored_apex_origins() {
+    LoggerParameter__mdt bundledRecord = LoggerParameter__mdt.getInstance('IgnoredApexOrigins');
+
+    System.Assert.isNotNull(bundledRecord, 'Record is missing');
+    System.Assert.isNull(bundledRecord.Comments__c, 'Comments should be null/blank');
+    System.Assert.isNotNull(bundledRecord.Description__c, 'Description is missing');
+    System.Assert.areEqual('Ignored Apex Origins', bundledRecord.Label);
+    System.Assert.areEqual('[]', bundledRecord.Value__c);
   }
 
   /*

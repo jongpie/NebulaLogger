@@ -30,13 +30,13 @@ private class LogBatchPurger_Tests {
 
     Date scheduledDeletionDate = System.today().addDays(-7);
     Log__c log = new Log__c(LogRetentionDate__c = scheduledDeletionDate);
-    LoggerMockDataCreator.createDataBuilder(log).populateRequiredFields().getRecord();
+    LoggerMockDataCreator.createDataBuilder(log).populateRequiredFields();
     insert log;
 
     List<LogEntry__c> logEntries = new List<LogEntry__c>();
     for (Integer i = 0; i < NUMBER_OF_LOG_ENTRIES_TO_CREATE; i++) {
       LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.INFO.name());
-      LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
+      LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields();
       logEntries.add(logEntry);
     }
     insert logEntries;
@@ -47,15 +47,24 @@ private class LogBatchPurger_Tests {
     List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
     for (LogEntry__c logEntry : logEntries) {
       LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
-      LoggerMockDataCreator.createDataBuilder(logEntryTag).populateRequiredFields().getRecord();
+      LoggerMockDataCreator.createDataBuilder(logEntryTag).populateRequiredFields();
       logEntryTags.add(logEntryTag);
     }
     insert logEntryTags;
   }
 
   @IsTest
-  static void it_returns_2000_for_the_default_batch_size() {
-    System.Assert.areEqual(2000, LogBatchPurger.getDefaultBatchSize());
+  static void it_returns_configured_logger_parameter_value_for_the_default_batch_size() {
+    Integer mockValue = 1234;
+    LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+      DeveloperName = 'LogBatchPurgerDefaultBatchSize',
+      Value__c = System.JSON.serialize(mockValue)
+    );
+    LoggerParameter.setMock(mockParameter);
+
+    Integer returnedValue = LogBatchPurger.getDefaultBatchSize();
+
+    System.Assert.areEqual(mockValue, returnedValue);
   }
 
   @IsTest

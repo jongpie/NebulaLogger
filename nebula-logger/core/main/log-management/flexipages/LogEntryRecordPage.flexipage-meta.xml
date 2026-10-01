@@ -860,6 +860,56 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.LimitsApexCursors__c</fieldItem>
+                <identifier>RecordLimitsApexCursors__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.LimitsApexCursorFetchCalls__c</fieldItem>
+                <identifier>RecordLimitsApexCursorFetchCalls__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.LimitsApexCursorRows__c</fieldItem>
+                <identifier>RecordLimitsApexCursorRows__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.LimitsApexPaginationCursors__c</fieldItem>
+                <identifier>RecordLimitsApexPaginationCursors__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.LimitsApexPaginationCursorRows__c</fieldItem>
+                <identifier>RecordLimitsApexPaginationCursorRows__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.LimitsAsyncCalls__c</fieldItem>
                 <identifier>RecordLimitsAsyncCalls__cField</identifier>
             </fieldInstance>
@@ -904,6 +954,10 @@
                 <identifier>RecordLimitsDmlStatements__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <name>Facet-8e5572ea-8a8e-4426-8154-004cbbcb1314</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -924,10 +978,6 @@
                 <identifier>RecordLimitsFutureCalls__cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-8e5572ea-8a8e-4426-8154-004cbbcb1314</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -1905,7 +1955,7 @@
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection13</identifier>
                 <visibilityRule>
-                    <booleanFilter>1 OR 2 OR 3</booleanFilter>
+                    <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.HasRestResponseBody__c}</leftValue>
                         <operator>EQUAL</operator>
@@ -1920,6 +1970,11 @@
                         <leftValue>{!Record.HasRestResponseHeaders__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.RestResponseStatusCode__c}</leftValue>
+                        <operator>GE</operator>
+                        <rightValue>0</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
@@ -2050,7 +2105,7 @@
                 <componentName>flexipage:tab</componentName>
                 <identifier>flexipage_tab6</identifier>
                 <visibilityRule>
-                    <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
+                    <booleanFilter>1 OR 2 OR 3 OR 4 OR 5</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.RestRequestResourcePath__c}</leftValue>
                         <operator>NE</operator>
@@ -2070,6 +2125,11 @@
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>
+                    <criteria>
+                        <leftValue>{!Record.RestResponseStatusCode__c}</leftValue>
+                        <operator>GE</operator>
+                        <rightValue>0</rightValue>
+                    </criteria>
                 </visibilityRule>
             </componentInstance>
         </itemInstances>
@@ -2079,6 +2139,10 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Tabs</value>
+                </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>tabs</name>
                     <value>Facet-ec9d7630-d727-4e4a-9a1a-3ebabfc68c45</value>

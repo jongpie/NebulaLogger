@@ -56,10 +56,9 @@ private class LoggerScenarioHandler_Tests {
       .populateRequiredFields()
       .getRecord();
     loggerScenario.Name = 'Some log scenario name';
+    loggerScenario.UniqueId__c = loggerScenario.Name;
     LoggerDataStore.getDatabase().insertRecord(loggerScenario);
-    LoggerScenario__c duplicateScenario = (LoggerScenario__c) LoggerMockDataCreator.createDataBuilder(new LoggerScenario__c(Name = loggerScenario.Name))
-      .populateRequiredFields()
-      .getRecord();
+    LoggerScenario__c duplicateScenario = loggerScenario.clone(false, true, false, false);
     System.Exception thrownException;
 
     try {

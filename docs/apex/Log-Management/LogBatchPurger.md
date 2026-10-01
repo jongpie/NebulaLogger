@@ -64,7 +64,7 @@ Integer
 
 **Description**
 
-The default `Integer` value of `2000`
+The `Integer` value configured in the custom metadata record `LoggerParameter.LogBatchPurgerDefaultBatchSize`, or `500` as the default
 
 #### `setChainedBatchSize(Integer chainedBatchSize)` → `LogBatchPurger`
 

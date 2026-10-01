@@ -1,0 +1,28 @@
+# Composite action that restores the node_modules cache and installs
+# npm dependencies on a cache miss. Used by every job in build.yml.
+name: 'Setup npm'
+description: 'Restore the node_modules cache and run npm ci on a cache miss'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Restore node_modules cache'
+      id: cache-npm
+      uses: actions/cache@v5
+      with:
+        path: node_modules
+        key: npm-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          npm-${{ env.cache-name }}-
+          npm-
+
+    - name: 'Install npm dependencies'
+      if: steps.cache-npm.outputs.cache-hit != 'true'
+      shell: bash
+      run: npm ci
+
+    - name: 'Link sf CLI plugins from node_modules'
+      shell: bash
+      run: |
+        npm run sf:plugins:link:bummer
+        npm run sf:plugins:link:dotenv

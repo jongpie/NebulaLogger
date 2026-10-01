@@ -88,7 +88,7 @@ public with sharing class LogBatchPurgeController {
   }
 
   /**
-   * @description execute the logBatchPurger batch with batch size 2000
+   * @description Executes the LogBatchPurger batch job with the default batch size
    * @return Returns the ID of the Schema.AsyncApexJob object associated with the LogBatchPurger job as a string
    */
   @AuraEnabled

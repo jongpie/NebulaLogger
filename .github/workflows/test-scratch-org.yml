@@ -1,0 +1,146 @@
+# Reusable workflow that creates a scratch org, deploys Nebula Logger, runs the
+# Apex tests sync + async, and tears the scratch org down. Variations across the
+# different scratch org definitions are controlled via inputs.
+name: Test Scratch Org
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'GitHub environment used for secret scoping (e.g. "Base Scratch Org").'
+        required: true
+        type: string
+      definition-file:
+        description: 'Path to the scratch org definition file passed to `sf org create scratch`.'
+        required: true
+        type: string
+      install-omnistudio:
+        description: 'When true, install the OmniStudio managed package after creating the scratch org.'
+        required: false
+        type: boolean
+        default: false
+      extra-metadata-directory:
+        description: 'Optional source directory to deploy after the main metadata deploy. Empty string skips this step.'
+        required: false
+        type: string
+        default: ''
+      run-core-test-suite:
+        description: 'When true, run the LoggerCore Apex test suite for code coverage reporting.'
+        required: false
+        type: boolean
+        default: false
+      upload-apex-coverage:
+        description: 'When true, upload Apex test coverage to Codecov.io. Requires `run-core-test-suite: true`.'
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      DEV_HUB_AUTH_URL:
+        required: true
+      DEV_HUB_BOT_USERNAME:
+        required: true
+      DEV_HUB_CONSUMER_KEY:
+        required: true
+      DEV_HUB_JWT_SERVER_KEY:
+        required: true
+      CODECOV_TOKEN:
+        required: false
+
+env:
+  SF_DISABLE_AUTOUPDATE: true
+  SF_LOG_LEVEL: debug
+  SF_SKIP_NEW_VERSION_CHECK: true
+
+jobs:
+  scratch-org-tests:
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: 'Checkout source code'
+        uses: actions/checkout@v6
+
+      - name: 'Setup npm'
+        uses: ./.github/actions/setup-npm
+
+      - name: 'Authorize Dev Hub'
+        uses: ./.github/actions/authorize-dev-hub
+        with:
+          auth-url: ${{ secrets.DEV_HUB_AUTH_URL }}
+          bot-username: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+          consumer-key: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+          jwt-server-key: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+
+      # Pipeline scratch orgs are tagged with the alias `pipeline-scratch-org` and a description
+      # that includes the GitHub run ID. The alias makes the delete step targeted (so it cannot
+      # accidentally delete a different default org), and the description marker is what the
+      # scheduled cleanup workflow (.github/workflows/delete-stale-scratch-orgs.yml) uses to
+      # identify orphaned scratch orgs that escaped the in-job cleanup.
+      - name: 'Create Scratch Org'
+        env:
+          DEFINITION_FILE: ${{ inputs.definition-file }}
+          SCRATCH_ORG_DESCRIPTION: 'Nebula Logger pipeline run ${{ github.run_id }} attempt ${{ github.run_attempt }}'
+        run: npx sf org create scratch --no-namespace --no-track-source --duration-days 1 --definition-file "$DEFINITION_FILE" --description "$SCRATCH_ORG_DESCRIPTION" --alias pipeline-scratch-org --wait 20 --set-default --json
+
+      # The replacements block in sfdx-project.json swaps {{EMAIL_SERVICE_RUN_AS_USER}} in
+      # ExampleInboundEmailService.xml-meta.xml with the value of this env var at deploy time.
+      - name: 'Set EMAIL_SERVICE_RUN_AS_USER for the scratch org'
+        run: npm run env:set:email-service-run-as-user
+
+      # https://help.salesforce.com/s/articleView?id=000394906&type=1
+      - name: "Install OmniStudio managed package v258.6 (Winter '26 release)"
+        if: ${{ inputs.install-omnistudio }}
+        run: npx sf package install --package 04tKb000000tAtyIAE --security-type AdminsOnly --wait 30 --no-prompt
+
+      # To ensure that all of the Apex classes in the core directory have 75+ code coverage,
+      # deploy only the core directory & run all of its tests as part of the deployment, using `--test-level RunLocalTests`
+      - name: 'Validate Core Source in Scratch Org'
+        run: npx sf project deploy validate --concise --source-dir ./nebula-logger/core/ --test-level RunLocalTests
+
+      # Now that the core directory has been deployed & tests have passed, deploy all of the metadata
+      - name: 'Deploy All Source to Scratch Org'
+        run: npx sf project deploy start --source-dir ./nebula-logger/
+
+      - name: 'Deploy Extra Metadata'
+        if: ${{ inputs.extra-metadata-directory != '' }}
+        env:
+          EXTRA_METADATA_DIRECTORY: ${{ inputs.extra-metadata-directory }}
+        run: npx sf project deploy start --source-dir "$EXTRA_METADATA_DIRECTORY"
+
+      - name: 'Assign Logger Admin Permission Set'
+        run: npm run permset:assign:admin
+
+      # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
+      # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
+      # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
+      # This data is also mocked during tests, but running the Apex tests sync & async serves within the pipeline acts as an extra level of
+      # integration testing to ensure that everything works with or without an active session.
+      - name: 'Run Apex Tests Asynchronously'
+        run: npm run test:apex:nocoverage
+
+      - name: 'Run Apex Tests Synchronously'
+        run: npm run test:apex:nocoverage -- --synchronous
+
+      # This step only runs in the base scratch org. The `LoggerCore` test suite's results are sent to Codecov.io
+      # specifically from a base scratch org so the reported code coverage reflects the metadata that teams who
+      # cannot install the 2GP packages will deploy directly. See the long-form rationale in the prior history of build.yml.
+      - name: 'Get Core Test Suite Code Coverage'
+        if: ${{ inputs.run-core-test-suite }}
+        run: npm run test:apex:suite:core
+
+      - name: 'Upload Apex test code coverage to Codecov.io'
+        if: ${{ inputs.upload-apex-coverage }}
+        uses: codecov/codecov-action@v6
+        with:
+          fail_ci_if_error: true
+          flags: Apex
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      # `if: always()` runs this on success, failure, and most cancellations. It cannot run if
+      # the runner VM dies or if the cancellation grace period expires mid-step - the scheduled
+      # cleanup workflow (delete-stale-scratch-orgs.yml) is the safety net for those cases.
+      # `continue-on-error: true` means a transient delete failure (rate-limit, API blip) does
+      # not mask a real test failure earlier in the job. The cleanup workflow will mop up if it happens.
+      - name: 'Delete Scratch Org'
+        if: ${{ always() }}
+        continue-on-error: true
+        run: npx sf org delete scratch --target-org pipeline-scratch-org --no-prompt

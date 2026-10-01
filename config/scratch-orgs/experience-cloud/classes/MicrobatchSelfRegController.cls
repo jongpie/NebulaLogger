@@ -12,7 +12,7 @@ public class MicrobatchSelfRegController {
   public MicrobatchSelfRegController() {
     String expid = ApexPages.currentPage().getParameters().get('expid');
     if (expId != null) {
-      Site.setExperienceId(expId);
+      System.Site.setExperienceId(expId);
     }
   }
 

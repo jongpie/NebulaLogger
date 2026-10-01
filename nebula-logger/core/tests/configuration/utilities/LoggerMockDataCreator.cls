@@ -11,7 +11,9 @@
  * @see LoggerMockDataStore
  * @see LoggerTestConfigurator
  */
-@SuppressWarnings('PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessivePublicCount, PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
+@SuppressWarnings(
+  'PMD.AvoidBooleanMethodParameters, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessivePublicCount, PMD.MethodNamingConventions, PMD.PropertyNamingConventions'
+)
 @IsTest
 public class LoggerMockDataCreator {
   private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_ALL_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
@@ -768,7 +770,7 @@ public class LoggerMockDataCreator {
 
       SOBJECT_TYPE_TO_ALL_FIELDS.put(this.sobjectType, new List<Schema.SObjectField>());
       SOBJECT_TYPE_TO_REQUIRED_FIELDS.put(this.sobjectType, new List<Schema.SObjectField>());
-      for (Schema.SObjectField field : this.sobjectType.getDescribe().fields.getMap().values()) {
+      for (Schema.SObjectField field : this.SObjectType.getDescribe().fields.getMap().values()) {
         if (field.getDescribe().isCreateable() == false) {
           continue;
         }
@@ -820,6 +822,7 @@ public class LoggerMockDataCreator {
       }
     }
 
+    @SuppressWarnings('PMD.NcssCount')
     private Object getTestValue(Schema.DescribeFieldResult fieldDescribe) {
       // Since Apex does not support case statements, we use several ugly IF-ELSE statements
       // Some more complex data types, like ID & Reference, require other objects to be created

@@ -275,13 +275,13 @@ public without sharing class LoggerSettingsController {
     for (Schema.PicklistEntry picklistEntry : Schema.Log__Share.AccessLevel.getDescribe().getPicklistValues()) {
       // The 'All' access level is an internal value and can't be granted
       // Source: https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_bulk_sharing_creating_with_apex.htm
-      if (picklistEntry.value == 'All') {
+      if (picklistEntry.getValue() == 'All') {
         continue;
       }
 
       PicklistOption picklistOption = new PicklistOption();
-      picklistOption.label = picklistEntry.value;
-      picklistOption.value = picklistEntry.value;
+      picklistOption.label = picklistEntry.getValue();
+      picklistOption.value = picklistEntry.getValue();
 
       picklistOptions.add(picklistOption);
     }

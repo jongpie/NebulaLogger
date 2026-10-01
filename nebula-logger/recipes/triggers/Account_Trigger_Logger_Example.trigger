@@ -16,6 +16,11 @@ trigger Account_Trigger_Logger_Example on Account(before insert, before update, 
     Logger.fine('Here\'s an entry for a specific Account record', account);
   }
 
+  // Example of starting an async job
+  if (System.Test.isRunningTest() == false) {
+    System.enqueueJob(new Account_Queueable_Logger_Example());
+  }
+
   // Save any pending log entries
   Logger.saveLog();
 }

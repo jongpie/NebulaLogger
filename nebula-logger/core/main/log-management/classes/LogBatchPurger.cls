@@ -10,7 +10,6 @@
  */
 @SuppressWarnings('PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList')
 global with sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
-  private static final Integer DEFAULT_BATCH_SIZE = 2000;
   private static final Date LOG_RETENTION_END_DATE = System.today();
   @TestVisible
   private static final String NO_DELETE_ACCESS_EXCEPTION_MESSAGE = 'User does not have access to delete logs';
@@ -36,10 +35,10 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
   /**
    * @description Returns the default batch size used when running `LogBatchPurger`
-   * @return   The default `Integer` value of `2000`
+   * @return   The `Integer` value configured in the custom metadata record `LoggerParameter.LogBatchPurgerDefaultBatchSize`, or `500` as the default
    */
   public static Integer getDefaultBatchSize() {
-    return DEFAULT_BATCH_SIZE;
+    return LoggerParameter.LOG_BATCH_PURGER_DEFAULT_BATCH_SIZE;
   }
 
   /**
@@ -86,7 +85,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     this.currentSObjectType = input.sobjectType;
 
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-      Logger.info('Logger - Starting LogBatchPurger job for SObject type: ' + this.currentSObjectType);
+      Logger.info('Nebula Logger - Starting LogBatchPurger job for SObject type: ' + this.currentSObjectType);
     }
     Logger.saveLog();
 
@@ -124,7 +123,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
       Logger.saveLog();
     } catch (System.Exception apexException) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
-        Logger.error('Logger - Error deleting logs', apexException);
+        Logger.error('Nebula Logger - Error deleting logs', apexException);
       }
       Logger.saveLog();
       throw apexException;
@@ -149,10 +148,14 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
     if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
       Logger.info(
-        new LogMessage('Logger - Finished LogBatchPurger job for {0}, {1} total log records processed', this.currentSObjectType, this.totalProcessedRecords)
+        new LogMessage(
+          'Nebula Logger - Finished LogBatchPurger job for {0}, {1} total log records processed',
+          this.currentSObjectType,
+          this.totalProcessedRecords
+        )
       );
       if (nextBatchJobId != null) {
-        Logger.info(new LogMessage('Logger - Starting a new instance of LogBatchPurger job, job ID is: {0}', nextBatchJobId));
+        Logger.info(new LogMessage('Nebula Logger - Starting a new instance of LogBatchPurger job, job ID is: {0}', nextBatchJobId));
       }
       Logger.saveLog();
     }
@@ -166,11 +169,8 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
    * @return                  The same instance of `LogBatchPurger`, useful for chaining methods
    */
   public LogBatchPurger setChainedBatchSize(Integer chainedBatchSize) {
-    if (chainedBatchSize != null) {
-      this.chainedBatchSize = chainedBatchSize;
-    } else {
-      this.chainedBatchSize = getDefaultBatchSize();
-    }
+    this.chainedBatchSize = chainedBatchSize ?? LogBatchPurger.getDefaultBatchSize();
+
     return this;
   }
 

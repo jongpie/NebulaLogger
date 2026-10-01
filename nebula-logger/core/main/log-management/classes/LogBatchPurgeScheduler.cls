@@ -11,7 +11,7 @@
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class LogBatchPurgeScheduler implements System.Schedulable {
   @TestVisible
-  private static final String SCHEDULER_SYSTEM_MESSAGE_TEMPLATE = 'Logger - Scheduling LogBatchPurgeScheduler job, schedulableContext=={0}';
+  private static final String SCHEDULER_SYSTEM_MESSAGE_TEMPLATE = 'Nebula Logger - Scheduling LogBatchPurgeScheduler job, schedulableContext=={0}';
 
   @TestVisible
   private Integer batchSize;

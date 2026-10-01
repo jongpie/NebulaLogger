@@ -6,7 +6,7 @@
     <inlineHelpText>An external ID field used to ensure that Logger Scenario records are unique</inlineHelpText>
     <label>Unique ID</label>
     <length>255</length>
-    <required>true</required>
+    <required>false</required>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>

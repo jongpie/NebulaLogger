@@ -26,6 +26,45 @@ public class LoggerParameter {
   }
 
   /**
+   * @description The max number of characters fed to a single `replaceAll`/`Matcher` evaluation
+   *              when applying data masking rules. The default value `4000` is a deliberately conservative
+   *              fixed value, trading a higher chunk count for a wide safety margin below the measured
+   *              failure point. Lower it if a custom rule's regex still throws `RegEx too complicated` at the default;
+   *              raise it (carefully) to reduce chunk count.
+   *              Controlled by the custom metadata record `LoggerParameter.DataMaskRegExChunkSize`,
+   *              or `4000` as the default
+   */
+  public static final Integer DATA_MASK_REGEX_CHUNK_SIZE {
+    get {
+      if (DATA_MASK_REGEX_CHUNK_SIZE == null) {
+        DATA_MASK_REGEX_CHUNK_SIZE = getInteger('DataMaskRegExChunkSize', 4000);
+      }
+      return DATA_MASK_REGEX_CHUNK_SIZE;
+    }
+    private set;
+  }
+
+  /**
+   * @description The number of characters checked in adjacent chunks for overlap during data masking
+   *              so a sensitive value that straddles a chunk boundary is still fully contained within
+   *              at least one chunk. This value MUST be >= the longest sensitive value any data-mask rule
+   *              can match; 20 covers the built-in rules (SSN ~11 chars, credit card ~19 chars with
+   *              separators). It cannot be derived from the rule regexes (a pattern's max match length
+   *              is not generally computable), so it is configurable for orgs whose custom rules match longer values.
+   *              Controlled by the custom metadata record `LoggerParameter.DataMaskRegExOverlapSize`,
+   *              or `20` as the default
+   */
+  public static final Integer DATA_MASK_REGEX_OVERLAP_SIZE {
+    get {
+      if (DATA_MASK_REGEX_OVERLAP_SIZE == null) {
+        DATA_MASK_REGEX_OVERLAP_SIZE = getInteger('DataMaskRegExOverlapSize', 20);
+      }
+      return DATA_MASK_REGEX_OVERLAP_SIZE;
+    }
+    private set;
+  }
+
+  /**
    * @description The name of the `LogEntry__c` field set to use as the default field set when configuring
    *              the LWC `<c-related-log-entries>` within App Builder.
    *              Controlled by the custom metadata record `LoggerParameter.DefaultLogEntryRelatedListFieldSet`,
@@ -75,6 +114,22 @@ public class LoggerParameter {
   }
 
   /**
+   * @description A list of Apex class names that should be ignored when parsing stack traces.
+   *              Any stack trace lines containing these class names will be removed from the parsed stack trace.
+   *              This is useful for filtering out utility or framework classes from stack traces.
+   *              Controlled by the custom metadata record `LoggerParameter.IgnoredApexOrigins`, or an empty list as the default
+   */
+  public static final List<String> IGNORED_APEX_ORIGINS {
+    get {
+      if (IGNORED_APEX_ORIGINS == null) {
+        IGNORED_APEX_ORIGINS = getStringList('IgnoredApexOrigins', new List<String>());
+      }
+      return IGNORED_APEX_ORIGINS;
+    }
+    private set;
+  }
+
+  /**
    * @description Indicates if Nebula Logger will append its own log entries about the logging system.
    *              Controlled by the custom metadata record `LoggerParameter.EnableLoggerSystemMessages`, or `false` as the default
    */
@@ -98,6 +153,20 @@ public class LoggerParameter {
         ENABLE_TAGGING = getBoolean('EnableTagging', true);
       }
       return ENABLE_TAGGING;
+    }
+    private set;
+  }
+
+  /**
+   * @description Controls the default batch size used by the batchable class `LogBatchPurger` when purging old logging data.
+   *              Controlled by the custom metadata record `LoggerParameter.LogBatchPurgerDefaultBatchSize`, or `500` as the default
+   */
+  public static final Integer LOG_BATCH_PURGER_DEFAULT_BATCH_SIZE {
+    get {
+      if (LOG_BATCH_PURGER_DEFAULT_BATCH_SIZE == null) {
+        LOG_BATCH_PURGER_DEFAULT_BATCH_SIZE = getInteger('LogBatchPurgerDefaultBatchSize', 500);
+      }
+      return LOG_BATCH_PURGER_DEFAULT_BATCH_SIZE;
     }
     private set;
   }
@@ -560,6 +629,7 @@ public class LoggerParameter {
    * @return                        The `Boolean` value configured in the matching instance of `LoggerParameter__mdt`
    *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
    */
+  @SuppressWarnings('PMD.AvoidBooleanMethodParameters')
   public static Boolean getBoolean(String parameterDeveloperName, Boolean defaultValue) {
     Boolean parameterValue = (Boolean) castParameterValue(parameterDeveloperName, Boolean.class);
     return parameterValue ?? defaultValue;
@@ -825,11 +895,7 @@ public class LoggerParameter {
 
   private static Object castParameterValue(String parameterDeveloperName, System.Type dataType) {
     String parameterValue = loadParameterValue(parameterDeveloperName);
-    if (parameterValue == null) {
-      return null;
-    } else {
-      return System.JSON.deserialize(parameterValue, dataType);
-    }
+    return parameterValue == null ? null : System.JSON.deserialize(parameterValue, dataType);
   }
 
   private static String loadParameterValue(String parameterDeveloperName) {

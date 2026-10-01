@@ -97,6 +97,7 @@ private class FlowLogger_Tests {
   }
 
   @IsTest
+  @SuppressWarnings('PMD.NcssCount')
   static void it_should_auto_save_entry_with_save_method_when_saveMethodName_specified() {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
     LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
@@ -144,6 +145,7 @@ private class FlowLogger_Tests {
   }
 
   @IsTest
+  @SuppressWarnings('PMD.NcssCount')
   static void it_should_throw_exception_with_fault_error_message_when_shouldThrowFaultMessageException_is_set_to_true() {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
     System.LoggingLevel entryLoggingLevel = System.LoggingLevel.ERROR;
@@ -195,6 +197,7 @@ private class FlowLogger_Tests {
   }
 
   @IsTest
+  @SuppressWarnings('PMD.NcssCount')
   static void it_should_throw_exception_with_generic_message_when_shouldThrowFaultMessageException_is_set_to_true_and_faultMessage_is_null() {
     LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
     System.LoggingLevel entryLoggingLevel = System.LoggingLevel.ERROR;
@@ -244,6 +247,54 @@ private class FlowLogger_Tests {
     System.Assert.areEqual(FlowLogger.FLOW_SOURCE_METADATA_TYPE, publishedLogEntryEvent.OriginType__c);
     System.Assert.isNull(publishedLogEntryEvent.StackTrace__c, 'Flow does not have a stack trace, so expect null');
     System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+  }
+
+  @IsTest
+  static void it_should_treat_null_saveLog_as_false() {
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    System.LoggingLevel entryLoggingLevel = System.LoggingLevel.DEBUG;
+    Logger.getUserSettings().LoggingLevel__c = entryLoggingLevel.name();
+    LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+    FlowLogger.LogEntry flowEntry = new FlowLogger.LogEntry();
+    flowEntry.flowName = 'MyFlow';
+    flowEntry.message = 'hello from Flow';
+    flowEntry.loggingLevelName = entryLoggingLevel.name();
+    flowEntry.saveLog = null;
+    flowEntry.shouldThrowFaultMessageException = null;
+    flowEntry.timestamp = System.now();
+
+    FlowLogger.addEntries(new List<FlowLogger.LogEntry>{ flowEntry });
+
+    System.Assert.areEqual(1, Logger.getBufferSize(), 'Entry should have been buffered without saving');
+    System.Assert.areEqual(0, Logger.saveLogCallCount, 'A null saveLog should not trigger an auto-save');
+    System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+  }
+
+  @IsTest
+  static void it_should_treat_null_shouldThrowFaultMessageException_as_false_when_faultMessage_is_provided() {
+    LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+    System.LoggingLevel entryLoggingLevel = System.LoggingLevel.ERROR;
+    Logger.getUserSettings().LoggingLevel__c = entryLoggingLevel.name();
+    LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+    FlowLogger.LogEntry flowEntry = new FlowLogger.LogEntry();
+    flowEntry.flowName = 'MyFlow';
+    flowEntry.message = 'hello from Flow';
+    flowEntry.loggingLevelName = entryLoggingLevel.name();
+    flowEntry.saveLog = null;
+    flowEntry.faultMessage = 'Something went wrong';
+    flowEntry.shouldThrowFaultMessageException = null;
+    flowEntry.timestamp = System.now();
+
+    Exception thrownException;
+    try {
+      FlowLogger.addEntries(new List<FlowLogger.LogEntry>{ flowEntry });
+    } catch (Exception ex) {
+      thrownException = ex;
+    }
+
+    System.Assert.isNull(thrownException, 'A null shouldThrowFaultMessageException should not throw');
+    System.Assert.areEqual(1, Logger.getBufferSize(), 'Entry should still be buffered with a fault message');
+    System.Assert.areEqual(0, Logger.saveLogCallCount, 'A null saveLog should not trigger an auto-save');
   }
 
   @IsTest

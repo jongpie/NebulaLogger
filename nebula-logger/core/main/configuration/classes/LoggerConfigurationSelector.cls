@@ -97,7 +97,14 @@ public without sharing class LoggerConfigurationSelector {
    * @return   `List<LogEntryDataMaskRule__mdt>` containing records in the org
    */
   public List<LogEntryDataMaskRule__mdt> getLogEntryDataMaskRules() {
-    return mockLogEntryDataMaskRules ?? LogEntryDataMaskRule__mdt.getAll().values().deepClone();
+    List<LogEntryDataMaskRule__mdt> enabledDataMaskRules = new List<LogEntryDataMaskRule__mdt>();
+    for (LogEntryDataMaskRule__mdt dataMaskRule : mockLogEntryDataMaskRules ?? LogEntryDataMaskRule__mdt.getAll().values()) {
+      if (dataMaskRule.IsEnabled__c) {
+        enabledDataMaskRules.add(dataMaskRule);
+      }
+    }
+
+    return enabledDataMaskRules;
   }
 
   /**
@@ -186,11 +193,13 @@ public without sharing class LoggerConfigurationSelector {
     // TODO eventually update this method to handle mapping relationship fields to lookup fields,
     // Example: handler.SObjectType__c = handler.SObjectType__r.QualifiedApiName;
     // Right now, this is handled in LoggerSObjectHandler
+    // Disabled records are still returned - LoggerSObjectHandler.execute() gates on IsEnabled__c per
+    // handler at runtime, so filtering the query on IsEnabled__c = TRUE would hide disabled records
+    // from the runtime and let the trigger's default-implementation fallback run them anyway.
     return mockLoggerSObjectHandlers ??
       [
         SELECT IsEnabled__c, SObjectHandlerApexClass__c, SObjectType__r.QualifiedApiName, SObjectTypeOverride__c
         FROM LoggerSObjectHandler__mdt
-        WHERE IsEnabled__c = TRUE
       ];
   }
 

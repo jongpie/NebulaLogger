@@ -175,6 +175,16 @@
         <members>LogEntryEvent__e.LimitsAggregateQueriesMax__c</members>
         <members>LogEntryEvent__e.LimitsAggregateQueriesUsed__c</members>
         <members>LogEntryEvent__e.LimitsAggregateQueryMax__c</members>
+        <members>LogEntryEvent__e.LimitsApexCursorFetchCallsMax__c</members>
+        <members>LogEntryEvent__e.LimitsApexCursorFetchCallsUsed__c</members>
+        <members>LogEntryEvent__e.LimitsApexCursorRowsMax__c</members>
+        <members>LogEntryEvent__e.LimitsApexCursorRowsUsed__c</members>
+        <members>LogEntryEvent__e.LimitsApexCursorsMax__c</members>
+        <members>LogEntryEvent__e.LimitsApexCursorsUsed__c</members>
+        <members>LogEntryEvent__e.LimitsApexPaginationCursorRowsMax__c</members>
+        <members>LogEntryEvent__e.LimitsApexPaginationCursorRowsUsed__c</members>
+        <members>LogEntryEvent__e.LimitsApexPaginationCursorsMax__c</members>
+        <members>LogEntryEvent__e.LimitsApexPaginationCursorsUsed__c</members>
         <members>LogEntryEvent__e.LimitsAsyncCallsMax__c</members>
         <members>LogEntryEvent__e.LimitsAsyncCallsUsed__c</members>
         <members>LogEntryEvent__e.LimitsCalloutsMax__c</members>
@@ -418,6 +428,21 @@
         <members>LogEntry__c.LimitsAggregateQueriesMax__c</members>
         <members>LogEntry__c.LimitsAggregateQueriesUsed__c</members>
         <members>LogEntry__c.LimitsAggregateQueries__c</members>
+        <members>LogEntry__c.LimitsApexCursorFetchCallsMax__c</members>
+        <members>LogEntry__c.LimitsApexCursorFetchCallsUsed__c</members>
+        <members>LogEntry__c.LimitsApexCursorFetchCalls__c</members>
+        <members>LogEntry__c.LimitsApexCursorRowsMax__c</members>
+        <members>LogEntry__c.LimitsApexCursorRowsUsed__c</members>
+        <members>LogEntry__c.LimitsApexCursorRows__c</members>
+        <members>LogEntry__c.LimitsApexCursorsMax__c</members>
+        <members>LogEntry__c.LimitsApexCursorsUsed__c</members>
+        <members>LogEntry__c.LimitsApexCursors__c</members>
+        <members>LogEntry__c.LimitsApexPaginationCursorRowsMax__c</members>
+        <members>LogEntry__c.LimitsApexPaginationCursorRowsUsed__c</members>
+        <members>LogEntry__c.LimitsApexPaginationCursorRows__c</members>
+        <members>LogEntry__c.LimitsApexPaginationCursorsMax__c</members>
+        <members>LogEntry__c.LimitsApexPaginationCursorsUsed__c</members>
+        <members>LogEntry__c.LimitsApexPaginationCursors__c</members>
         <members>LogEntry__c.LimitsAsyncCallsMax__c</members>
         <members>LogEntry__c.LimitsAsyncCallsUsed__c</members>
         <members>LogEntry__c.LimitsAsyncCalls__c</members>
@@ -529,6 +554,7 @@
         <members>LogEntry__c.TriggerSObjectType__c</members>
         <members>LogEntry__c.Trigger__c</members>
         <members>LogEntry__c.UniqueId__c</members>
+        <members>LogEntry__c.WasLoggedByCurrentUser__c</members>
         <members>LogStatus__mdt.IsActive__c</members>
         <members>LogStatus__mdt.IsClosed__c</members>
         <members>LogStatus__mdt.IsResolved__c</members>
@@ -705,6 +731,7 @@
     <types>
         <members>LogEntry__c.ExceptionLocation__c</members>
         <members>LogEntry__c.OriginLocation__c</members>
+        <members>LogEntry__c.Timestamp__c</members>
         <members>Log__c.LogRetentionDate__c</members>
         <members>Log__c.ParentLogTransactionId__c</members>
         <name>CustomIndex</name>
@@ -720,11 +747,15 @@
         <members>LogStatus.New</members>
         <members>LogStatus.On_Hold</members>
         <members>LoggerParameter.CallStatusApi</members>
+        <members>LoggerParameter.DataMaskRegExChunkSize</members>
+        <members>LoggerParameter.DataMaskRegExOverlapSize</members>
         <members>LoggerParameter.DefaultLogEntryRelatedListFieldSet</members>
         <members>LoggerParameter.EnableLogEntryEventStream</members>
         <members>LoggerParameter.EnableLoggerSystemMessages</members>
         <members>LoggerParameter.EnableStackTraceParsing</members>
         <members>LoggerParameter.EnableTagging</members>
+        <members>LoggerParameter.IgnoredApexOrigins</members>
+        <members>LoggerParameter.LogBatchPurgerDefaultBatchSize</members>
         <members>LoggerParameter.LogEntryEventStreamDisplayFields</members>
         <members>LoggerParameter.NormalizeScenarioData</members>
         <members>LoggerParameter.NormalizeTagData</members>
@@ -870,6 +901,7 @@
         <members>LogEntry__c.AllOmniStudioLogEntries</members>
         <members>LogEntry__c.AllRestRequestLogEntries</members>
         <members>LogEntry__c.AllRestResponseLogEntries</members>
+        <members>LogEntry__c.MyGeneratedLogEntries</members>
         <members>LogStatus__mdt.All</members>
         <members>Log__c.AllAsynchronousLogs</members>
         <members>Log__c.AllBatchLogs</members>
@@ -952,5 +984,5 @@
         <members>Log__c.MassDelete</members>
         <name>WebLink</name>
     </types>
-    <version>63.0</version>
+    <version>66.0</version>
 </Package>

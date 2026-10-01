@@ -3,12 +3,19 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount')
+@SuppressWarnings(
+  'PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssCount, PMD.NcssMethodCount, PMD.NcssTypeCount'
+)
 @IsTest(IsParallel=false)
 private class LogEntryEventHandler_Tests {
   private static final String MOCK_TRANSACTION_ID = System.UUID.randomUUID().toString();
 
   private static Integer currentLogEntryNumber = 1;
+
+  static {
+    // Don't use the org's actual custom metadata records when running tests
+    LoggerConfigurationSelector.useMocks();
+  }
 
   @IsTest
   static void it_should_return_the_logEntryEvent_sobjectType() {
@@ -650,16 +657,19 @@ private class LogEntryEventHandler_Tests {
     Schema.User loggerScenarioOwner = LoggerMockDataCreator.createUser();
     insert loggerScenarioOwner;
     LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = 'Some Scenario', OwnerId = loggerScenarioOwner.Id, UniqueId__c = 'Some Scenario');
-    insert loggerScenario;
-    LogEntryEvent__e logEntryEvent = createLogEntryEvent();
-    logEntryEvent.TransactionScenario__c = loggerScenario.UniqueId__c;
-    LoggerScenarioRule.setMock(
-      new LoggerScenarioRule__mdt(IsEnabled__c = true, IsLogAssignmentEnabled__c = String.valueOf(true), Scenario__c = logEntryEvent.TransactionScenario__c)
-    );
 
-    LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
-    LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+    Schema.User currentUser = new Schema.User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
+    System.runAs(currentUser) {
+      insert loggerScenario;
+      LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+      logEntryEvent.TransactionScenario__c = loggerScenario.UniqueId__c;
+      LoggerScenarioRule.setMock(
+        new LoggerScenarioRule__mdt(IsEnabled__c = true, IsLogAssignmentEnabled__c = String.valueOf(true), Scenario__c = logEntryEvent.TransactionScenario__c)
+      );
 
+      LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+      LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+    }
     Log__c log = getLog();
     System.Assert.areEqual(loggerScenario.OwnerId, log.OwnerId);
   }
@@ -1503,8 +1513,19 @@ private class LogEntryEventHandler_Tests {
             HttpResponseHeaders__c,
             HttpResponseStatus__c,
             HttpResponseStatusCode__c,
+            Id,
             LimitsAggregateQueriesMax__c,
             LimitsAggregateQueriesUsed__c,
+            LimitsApexCursorFetchCallsMax__c,
+            LimitsApexCursorFetchCallsUsed__c,
+            LimitsApexCursorRowsMax__c,
+            LimitsApexCursorRowsUsed__c,
+            LimitsApexCursorsMax__c,
+            LimitsApexCursorsUsed__c,
+            LimitsApexPaginationCursorRowsMax__c,
+            LimitsApexPaginationCursorRowsUsed__c,
+            LimitsApexPaginationCursorsMax__c,
+            LimitsApexPaginationCursorsUsed__c,
             LimitsAsyncCallsMax__c,
             LimitsAsyncCallsUsed__c,
             LimitsCalloutsMax__c,
@@ -1533,14 +1554,13 @@ private class LogEntryEventHandler_Tests {
             LimitsSoqlQueryLocatorRowsUsed__c,
             LimitsSoqlQueryRowsMax__c,
             LimitsSoqlQueryRowsUsed__c,
-            LimitsSoslSearchesUsed__c,
             LimitsSoslSearchesMax__c,
+            LimitsSoslSearchesUsed__c,
             Log__c,
             LoggingLevel__c,
             LoggingLevelOrdinal__c,
             Message__c,
             MessageTruncated__c,
-            Id,
             Name,
             OriginLocation__c,
             OriginSourceActionName__c,
@@ -1773,6 +1793,48 @@ private class LogEntryEventHandler_Tests {
       logEntryEvent.LimitsAggregateQueriesUsed__c,
       logEntry.LimitsAggregateQueriesUsed__c,
       'logEntry.LimitsAggregateQueriesUsed__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexCursorFetchCallsMax__c,
+      logEntry.LimitsApexCursorFetchCallsMax__c,
+      'logEntry.LimitsApexCursorFetchCallsMax__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexCursorFetchCallsUsed__c,
+      logEntry.LimitsApexCursorFetchCallsUsed__c,
+      'logEntry.LimitsApexCursorFetchCallsUsed__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexCursorRowsUsed__c,
+      logEntry.LimitsApexCursorRowsUsed__c,
+      'logEntry.LimitsApexCursorRowsUsed__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexCursorRowsMax__c,
+      logEntry.LimitsApexCursorRowsMax__c,
+      'logEntry.LimitsApexCursorRowsMax__c was not properly set'
+    );
+    System.Assert.areEqual(logEntryEvent.LimitsApexCursorsMax__c, logEntry.LimitsApexCursorsMax__c, 'logEntry.LimitsApexCursorsMax__c was not properly set');
+    System.Assert.areEqual(logEntryEvent.LimitsApexCursorsUsed__c, logEntry.LimitsApexCursorsUsed__c, 'logEntry.LimitsApexCursorsUsed__c was not properly set');
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexPaginationCursorRowsMax__c,
+      logEntry.LimitsApexPaginationCursorRowsMax__c,
+      'logEntry.LimitsApexPaginationCursorRowsMax__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexPaginationCursorRowsUsed__c,
+      logEntry.LimitsApexPaginationCursorRowsUsed__c,
+      'logEntry.LimitsApexPaginationCursorRowsUsed__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexPaginationCursorsMax__c,
+      logEntry.LimitsApexPaginationCursorsMax__c,
+      'logEntry.LimitsApexPaginationCursorsMax__c was not properly set'
+    );
+    System.Assert.areEqual(
+      logEntryEvent.LimitsApexPaginationCursorsUsed__c,
+      logEntry.LimitsApexPaginationCursorsUsed__c,
+      'logEntry.LimitsApexPaginationCursorsUsed__c was not properly set'
     );
     System.Assert.areEqual(logEntryEvent.LimitsAsyncCallsMax__c, logEntry.LimitsAsyncCallsMax__c, 'logEntry.LimitsAsyncCallsMax__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LimitsAsyncCallsUsed__c, logEntry.LimitsAsyncCallsUsed__c, 'logEntry.LimitsAsyncCallsUsed__c was not properly set');
