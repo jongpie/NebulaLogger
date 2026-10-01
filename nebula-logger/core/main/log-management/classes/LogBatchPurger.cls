@@ -119,7 +119,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
       LoggerBatchableContext input = new LoggerBatchableContext(batchableContext, this.currentSObjectType);
       this.executePlugins(BatchableMethod.EXECUTE, input, scopeRecords);
 
-      LoggerDataStore.getDatabase().hardDeleteRecords(scopeRecords);
+      this.hardDeleteRecords(scopeRecords);
       Logger.saveLog();
     } catch (System.Exception apexException) {
       if (LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
@@ -244,6 +244,42 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     }
 
     return queryLocator;
+  }
+
+  private void hardDeleteRecords(List<SObject> scopeRecords) {
+    try {
+      LoggerDataStore.getDatabase().hardDeleteRecords(scopeRecords);
+    } catch (System.DmlException dmlException) {
+      this.hardDeleteRecordsWithPartialDeletes(scopeRecords);
+    }
+  }
+
+  private void hardDeleteRecordsWithPartialDeletes(List<SObject> scopeRecords) {
+    // A batch delete can fail when the DML cascades to too many related records at once
+    // (e.g., DELETE_OPERATION_TOO_LARGE on LogEntry__c or FeedItem records). Retry with partial
+    // deletes so that records that can be deleted are still purged, and log any records that fail
+    List<Database.DeleteResult> deleteResults = LoggerDataStore.getDatabase().deleteRecords(scopeRecords, false);
+    List<SObject> deletedRecords = new List<SObject>();
+    List<Database.DeleteResult> failedDeleteResults = new List<Database.DeleteResult>();
+    for (Integer i = 0; i < deleteResults.size(); i++) {
+      Database.DeleteResult deleteResult = deleteResults.get(i);
+      if (deleteResult.isSuccess()) {
+        deletedRecords.add(scopeRecords.get(i));
+      } else {
+        failedDeleteResults.add(deleteResult);
+      }
+    }
+
+    if (deletedRecords.isEmpty() == false) {
+      LoggerDataStore.getDatabase().emptyRecycleBin(deletedRecords);
+    }
+
+    if (failedDeleteResults.isEmpty() == false && LoggerParameter.ENABLE_SYSTEM_MESSAGES) {
+      Logger.error(
+        new LogMessage('Nebula Logger - Unable to delete {0} {1} record(s)', failedDeleteResults.size(), this.currentSObjectType),
+        failedDeleteResults
+      );
+    }
   }
 
   private void executePlugins(BatchableMethod method, LoggerBatchableContext input, List<SObject> scopeRecords) {
