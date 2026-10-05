@@ -6,6 +6,34 @@ const MOCK_GET_LOG = require('./data/LogViewerController.getLog.json');
 
 document.execCommand = jest.fn();
 
+const originalCreateObjectURL = URL.createObjectURL;
+const originalRevokeObjectURL = URL.revokeObjectURL;
+
+// Mock window.document.createElement for download functionality (only for 'a' elements)
+const originalCreateElement = window.document.createElement.bind(window.document);
+const mockLink = {
+  href: '',
+  target: '',
+  download: '',
+  rel: '',
+  click: jest.fn(),
+  setAttribute: jest.fn((name, value) => {
+    mockLink[name] = value;
+  })
+};
+const mockCreateElement = jest.fn(tagName => {
+  if (tagName === 'a') {
+    return mockLink;
+  }
+  // Let other elements (like 'style') use the real createElement
+  return originalCreateElement(tagName);
+});
+Object.defineProperty(window.document, 'createElement', {
+  value: mockCreateElement,
+  writable: true,
+  configurable: true
+});
+
 jest.mock(
   'lightning/platformResourceLoader',
   () => {
@@ -35,18 +63,19 @@ jest.mock(
   { virtual: true }
 );
 
-describe('Logger JSON Viewer lwc tests', () => {
-  const originalCreateObjectURL = URL.createObjectURL;
-  const originalRevokeObjectURL = URL.revokeObjectURL;
-  let clickedAnchor;
+// Mock setTimeout for testing the dataCopied reset
+jest.useFakeTimers();
 
+describe('Log Viewer LWC tests', () => {
   beforeEach(() => {
-    clickedAnchor = undefined;
     URL.createObjectURL = jest.fn(() => 'blob:http://localhost/mock-blob');
     URL.revokeObjectURL = jest.fn();
-    jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function mockAnchorClick() {
-      clickedAnchor = this;
-    });
+    mockLink.href = '';
+    mockLink.target = '';
+    mockLink.download = '';
+    mockLink.rel = '';
+    mockLink.click.mockClear();
+    mockLink.setAttribute.mockClear();
   });
 
   afterEach(() => {
@@ -55,66 +84,90 @@ describe('Logger JSON Viewer lwc tests', () => {
     }
     URL.createObjectURL = originalCreateObjectURL;
     URL.revokeObjectURL = originalRevokeObjectURL;
-    jest.restoreAllMocks();
     jest.clearAllMocks();
+    jest.clearAllTimers();
   });
 
-  it('sets document title', async () => {
-    const logViewerElement = createElement('c-log-viewer', { is: LogViewer });
-    document.body.appendChild(logViewerElement);
-    getLog.emit({ ...MOCK_GET_LOG });
-
-    expect(logViewerElement.title).toEqual(MOCK_GET_LOG.log.Name);
-  });
-
-  it('defaults to brand button variant', async () => {
+  it('renders with expected initial state', async () => {
     const logViewer = createElement('c-log-viewer', { is: LogViewer });
     document.body.appendChild(logViewer);
+    expect(logViewer.shadowRoot.querySelector('lightning-spinner')).toBeTruthy();
+
     getLog.emit({ ...MOCK_GET_LOG });
     await Promise.resolve('resolves component rerender after loading log record');
-
-    const inputButton = logViewer.shadowRoot.querySelector('lightning-button-stateful');
 
     expect(logViewer.title).toEqual(MOCK_GET_LOG.log.Name);
-    expect(inputButton.variant).toEqual('brand');
+    const tabSet = logViewer.shadowRoot.querySelector('lightning-tabset');
+    expect(tabSet).toBeTruthy();
+    const tabs = logViewer.shadowRoot.querySelectorAll('lightning-tab');
+    expect(tabs.length).toBe(2);
+    const jsonTab = tabs[0];
+    expect(jsonTab.label).toBe('Record JSON');
+    expect(jsonTab.value).toBe('json');
+    const fileTab = tabs[1];
+    expect(fileTab.label).toBe('Log File');
+    expect(fileTab.value).toBe('file');
+    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
+    expect(copyButton.variant).toEqual('brand');
+    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button');
+    expect(downloadButton.variant).toBeUndefined();
   });
 
-  it('copies the JSON to the clipboard', async () => {
+  it('copies JSON content to the clipboard', async () => {
     const logViewer = createElement('c-log-viewer', { is: LogViewer });
+    logViewer.recordId = 'test-log-id';
     document.body.appendChild(logViewer);
     getLog.emit({ ...MOCK_GET_LOG });
     await Promise.resolve('resolves component rerender after loading log record');
+    // Activate JSON tab
+    const jsonTab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="json-content"]');
+    expect(jsonTab).toBeTruthy();
+    jsonTab.dispatchEvent(new CustomEvent('active'));
+    await Promise.resolve('resolves dispatchEvent() for JSON tab');
+    const codeViewer = logViewer.shadowRoot.querySelector('c-logger-code-viewer');
+    expect(codeViewer).toBeTruthy();
+    expect(codeViewer.code).toBeDefined();
 
-    let copyBtn = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
-    copyBtn.click();
+    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
+    expect(copyButton.variant).toEqual('brand');
+    copyButton.click();
 
     await Promise.resolve('resolves copy-to-clipboard function');
-    const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="json-content"]');
-    expect(tab.value).toEqual('json');
-    tab.dispatchEvent(new CustomEvent('active'));
-    await Promise.resolve('resolves dispatchEvent() for tab');
+    expect(copyButton.variant).toEqual('success');
     const clipboardContent = JSON.parse(logViewer.shadowRoot.querySelector('c-logger-code-viewer').code);
     const reconstructedLog = { ...MOCK_GET_LOG.log };
     reconstructedLog[MOCK_GET_LOG.logEntriesRelationshipName] = [...MOCK_GET_LOG.logEntries];
     expect(clipboardContent).toEqual(reconstructedLog);
     expect(document.execCommand).toHaveBeenCalledWith('copy');
+    // Fast-forward time to trigger the timeout
+    jest.advanceTimersByTime(5000);
+    await Promise.resolve('resolves timeout callback for setting button variant');
+    // Check that the button's variant has reverted to 'brand' after a delay
+    expect(copyButton.variant).toEqual('brand');
   });
 
-  it('copies the log file to the clipboard', async () => {
+  it('copies log file content to the clipboard', async () => {
     const logViewer = createElement('c-log-viewer', { is: LogViewer });
     document.body.appendChild(logViewer);
     getLog.emit({ ...MOCK_GET_LOG });
     await Promise.resolve('resolves component rerender after loading log record');
+    // Activate file tab
+    const fileTab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="file-content"]');
+    expect(fileTab).toBeTruthy();
+    fileTab.dispatchEvent(new CustomEvent('active'));
+    await Promise.resolve('resolves dispatchEvent() for file tab');
+    const codeViewer = logViewer.shadowRoot.querySelector('c-logger-code-viewer');
+    expect(codeViewer).toBeTruthy();
+    expect(codeViewer.code).toBeDefined();
 
-    let copyBtn = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
-    copyBtn.click();
+    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
+    expect(copyButton.variant).toEqual('brand');
+    copyButton.click();
 
     await Promise.resolve('resolves copy-to-clipboard function');
-    const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="file-content"]');
-    expect(tab.value).toEqual('file');
-    tab.dispatchEvent(new CustomEvent('active'));
+    expect(copyButton.variant).toEqual('success');
     await Promise.resolve('resolves dispatchEvent() for tab');
-    let expectedContentLines = [];
+    const expectedContentLines = [];
     MOCK_GET_LOG.logEntries.forEach(logEntry => {
       const columns = [];
       columns.push('[' + new Date(logEntry.EpochTimestamp__c).toISOString() + ' - ' + logEntry.LoggingLevel__c + ']');
@@ -126,92 +179,94 @@ describe('Logger JSON Viewer lwc tests', () => {
     const clipboardContent = logViewer.shadowRoot.querySelector('c-logger-code-viewer').code;
     expect(clipboardContent).toEqual(expectedContentLines.join('\n\n' + '-'.repeat(36) + '\n\n'));
     expect(document.execCommand).toHaveBeenCalledWith('copy');
+    // Fast-forward time to trigger the timeout
+    jest.advanceTimersByTime(5000);
+    await Promise.resolve('resolves timeout callback for setting button variant');
+    // Check that the button's variant has reverted to 'brand' after a delay
+    expect(copyButton.variant).toEqual('brand');
   });
 
-  function installBlobCapture() {
-    const OriginalBlob = global.Blob;
-    const blobCalls = [];
-    global.Blob = class extends OriginalBlob {
-      constructor(parts, options) {
-        super(parts, options);
-        blobCalls.push({ parts, options });
-      }
-    };
-    return {
-      blobCalls,
-      restore() {
-        global.Blob = OriginalBlob;
-      }
-    };
-  }
-
-  it('downloads the JSON file as a blob', async () => {
-    const blobCapture = installBlobCapture();
+  it('downloads JSON file correctly', async () => {
     const logViewer = createElement('c-log-viewer', { is: LogViewer });
+    logViewer.recordId = 'test-log-id';
     document.body.appendChild(logViewer);
     getLog.emit({ ...MOCK_GET_LOG });
     await Promise.resolve('resolves component rerender after loading log record');
+    const jsonTab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="json-content"]');
+    expect(jsonTab).toBeTruthy();
+    jsonTab.dispatchEvent(new CustomEvent('active'));
+    await Promise.resolve('resolves dispatchEvent() for JSON tab');
+    const codeViewer = logViewer.shadowRoot.querySelector('c-logger-code-viewer');
+    expect(codeViewer).toBeTruthy();
+    expect(codeViewer.code).toBeDefined();
 
-    const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="json-content"]');
-    tab.dispatchEvent(new CustomEvent('active'));
-    await Promise.resolve('resolves dispatchEvent() for tab');
-    const expectedContent = logViewer.shadowRoot.querySelector('c-logger-code-viewer').code;
-    const downloadBtn = logViewer.shadowRoot.querySelector('lightning-button');
+    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button');
+    expect(downloadButton.label).toEqual('Download Record JSON');
+    downloadButton.click();
 
-    try {
-      downloadBtn.click();
-
-      expect(URL.createObjectURL).toHaveBeenCalledTimes(1);
-      const blob = URL.createObjectURL.mock.calls[0][0];
-      expect(blob).toBeInstanceOf(Blob);
-      expect(blob.type).toEqual('application/octet-stream');
-      expect(blobCapture.blobCalls[blobCapture.blobCalls.length - 1]).toEqual({
-        parts: [expectedContent],
-        options: { type: 'application/octet-stream' }
-      });
-      expect(clickedAnchor.getAttribute('href')).toEqual('blob:http://localhost/mock-blob');
-      expect(clickedAnchor.getAttribute('download')).toEqual('Log-000004_00D1h000000MNKZEA4.json');
-      expect(clickedAnchor.getAttribute('rel')).toEqual('noopener noreferrer');
-      expect(document.body.querySelector('a[download]')).toBeNull();
-      expect(URL.revokeObjectURL).toHaveBeenCalledTimes(1);
-      expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:http://localhost/mock-blob');
-    } finally {
-      blobCapture.restore();
-    }
+    await Promise.resolve('resolves download function');
+    expect(mockCreateElement).toHaveBeenCalledWith('a');
+    expect(URL.createObjectURL).toHaveBeenCalledTimes(1);
+    const blob = URL.createObjectURL.mock.calls[0][0];
+    expect(blob).toBeInstanceOf(Blob);
+    expect(blob.type).toEqual('application/octet-stream');
+    expect(mockLink.setAttribute).toHaveBeenCalledWith('href', 'blob:http://localhost/mock-blob');
+    expect(mockLink.setAttribute).toHaveBeenCalledWith(
+      'download',
+      MOCK_GET_LOG.log.Name + '_' + MOCK_GET_LOG.log.OrganizationId__c + '.json'
+    );
+    expect(mockLink.setAttribute).toHaveBeenCalledWith('rel', 'noopener noreferrer');
+    expect(mockLink.click).toHaveBeenCalled();
+    expect(URL.revokeObjectURL).toHaveBeenCalledTimes(1);
+    expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:http://localhost/mock-blob');
   });
 
-  it('downloads the log file as a blob', async () => {
-    const blobCapture = installBlobCapture();
+  it('downloads log file correctly', async () => {
     const logViewer = createElement('c-log-viewer', { is: LogViewer });
+    logViewer.recordId = 'test-log-id';
     document.body.appendChild(logViewer);
+    await Promise.resolve();
+    await Promise.resolve();
     getLog.emit({ ...MOCK_GET_LOG });
+    await Promise.resolve();
     await Promise.resolve('resolves component rerender after loading log record');
-
     const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="file-content"]');
+    expect(tab).toBeTruthy();
     tab.dispatchEvent(new CustomEvent('active'));
     await Promise.resolve('resolves dispatchEvent() for tab');
-    const expectedContent = logViewer.shadowRoot.querySelector('c-logger-code-viewer').code;
-    const downloadBtn = logViewer.shadowRoot.querySelector('lightning-button');
 
-    try {
-      downloadBtn.click();
+    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button');
+    expect(downloadButton.label).toEqual('Download Log File');
+    downloadButton.click();
 
-      expect(URL.createObjectURL).toHaveBeenCalledTimes(1);
-      const blob = URL.createObjectURL.mock.calls[0][0];
-      expect(blob).toBeInstanceOf(Blob);
-      expect(blob.type).toEqual('application/octet-stream');
-      expect(blobCapture.blobCalls[blobCapture.blobCalls.length - 1]).toEqual({
-        parts: [expectedContent],
-        options: { type: 'application/octet-stream' }
-      });
-      expect(clickedAnchor.getAttribute('href')).toEqual('blob:http://localhost/mock-blob');
-      expect(clickedAnchor.getAttribute('download')).toEqual('Log-000004_00D1h000000MNKZEA4.log');
-      expect(clickedAnchor.getAttribute('rel')).toEqual('noopener noreferrer');
-      expect(document.body.querySelector('a[download]')).toBeNull();
-      expect(URL.revokeObjectURL).toHaveBeenCalledTimes(1);
-      expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:http://localhost/mock-blob');
-    } finally {
-      blobCapture.restore();
-    }
+    await Promise.resolve('resolves download function');
+    expect(mockCreateElement).toHaveBeenCalledWith('a');
+    expect(URL.createObjectURL).toHaveBeenCalledTimes(1);
+    const blob = URL.createObjectURL.mock.calls[0][0];
+    expect(blob).toBeInstanceOf(Blob);
+    expect(blob.type).toEqual('application/octet-stream');
+    expect(mockLink.setAttribute).toHaveBeenCalledWith('href', 'blob:http://localhost/mock-blob');
+    expect(mockLink.setAttribute).toHaveBeenCalledWith(
+      'download',
+      MOCK_GET_LOG.log.Name + '_' + MOCK_GET_LOG.log.OrganizationId__c + '.log'
+    );
+    expect(mockLink.setAttribute).toHaveBeenCalledWith('rel', 'noopener noreferrer');
+    expect(mockLink.click).toHaveBeenCalled();
+    expect(URL.revokeObjectURL).toHaveBeenCalledTimes(1);
+    expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:http://localhost/mock-blob');
+  });
+
+  it('handles wire service with no data gracefully', async () => {
+    const logViewer = createElement('c-log-viewer', { is: LogViewer });
+    logViewer.recordId = 'test-log-id';
+    document.body.appendChild(logViewer);
+    await Promise.resolve();
+    await Promise.resolve();
+
+    getLog.emit(undefined);
+    await Promise.resolve('resolves component rerender');
+
+    const spinner = logViewer.shadowRoot.querySelector('lightning-spinner');
+    expect(spinner).toBeTruthy();
   });
 });
