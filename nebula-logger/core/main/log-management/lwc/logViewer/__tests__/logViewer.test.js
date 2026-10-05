@@ -200,7 +200,7 @@ describe('Log Viewer LWC tests', () => {
     expect(codeViewer).toBeTruthy();
     expect(codeViewer.code).toBeDefined();
 
-    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button');
+    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button[data-id="download-button"]');
     expect(downloadButton.label).toEqual('Download Record JSON');
     downloadButton.click();
 
@@ -235,7 +235,7 @@ describe('Log Viewer LWC tests', () => {
     tab.dispatchEvent(new CustomEvent('active'));
     await Promise.resolve('resolves dispatchEvent() for tab');
 
-    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button');
+    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button[data-id="download-button"]');
     expect(downloadButton.label).toEqual('Download Log File');
     downloadButton.click();
 
