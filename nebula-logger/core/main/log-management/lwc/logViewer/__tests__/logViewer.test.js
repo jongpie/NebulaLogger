@@ -1,4 +1,4 @@
-import { createElement } from '@lwc/engine-dom';
+import { createElement } from 'lwc';
 import LogViewer from 'c/logViewer';
 import getLog from '@salesforce/apex/LogViewerController.getLog';
 
@@ -40,7 +40,7 @@ jest.mock(
     return {
       loadScript() {
         return new Promise((resolve, _) => {
-          global.Prism = require('../../../staticresources/LoggerResources/Prism/prism.min.js');
+          global.Prism = require('../../../staticresources/LoggerResources/prism.js');
           resolve();
         });
       },
@@ -107,9 +107,9 @@ describe('Log Viewer LWC tests', () => {
     const fileTab = tabs[1];
     expect(fileTab.label).toBe('Log File');
     expect(fileTab.value).toBe('file');
-    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-button"]');
+    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
     expect(copyButton.variant).toEqual('brand');
-    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button[data-id="download-button"]');
+    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button');
     expect(downloadButton.variant).toBeUndefined();
   });
 
@@ -128,7 +128,7 @@ describe('Log Viewer LWC tests', () => {
     expect(codeViewer).toBeTruthy();
     expect(codeViewer.code).toBeDefined();
 
-    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-button"]');
+    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
     expect(copyButton.variant).toEqual('brand');
     copyButton.click();
 
@@ -160,7 +160,7 @@ describe('Log Viewer LWC tests', () => {
     expect(codeViewer).toBeTruthy();
     expect(codeViewer.code).toBeDefined();
 
-    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-button"]');
+    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
     expect(copyButton.variant).toEqual('brand');
     copyButton.click();
 
