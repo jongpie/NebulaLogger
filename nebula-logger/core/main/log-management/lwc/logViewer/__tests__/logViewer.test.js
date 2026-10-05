@@ -1,4 +1,4 @@
-import { createElement } from 'lwc';
+import { createElement } from '@lwc/engine-dom';
 import LogViewer from 'c/logViewer';
 import getLog from '@salesforce/apex/LogViewerController.getLog';
 
@@ -40,7 +40,7 @@ jest.mock(
     return {
       loadScript() {
         return new Promise((resolve, _) => {
-          global.Prism = require('../../../staticresources/LoggerResources/prism.js');
+          global.Prism = require(''../../../staticresources/LoggerResources/Prism/prism.min.js');
           resolve();
         });
       },
@@ -107,9 +107,9 @@ describe('Log Viewer LWC tests', () => {
     const fileTab = tabs[1];
     expect(fileTab.label).toBe('Log File');
     expect(fileTab.value).toBe('file');
-    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
+    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-button"]');
     expect(copyButton.variant).toEqual('brand');
-    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button');
+    const downloadButton = logViewer.shadowRoot.querySelector('lightning-button[data-id="download-button"]');
     expect(downloadButton.variant).toBeUndefined();
   });
 
@@ -128,7 +128,7 @@ describe('Log Viewer LWC tests', () => {
     expect(codeViewer).toBeTruthy();
     expect(codeViewer.code).toBeDefined();
 
-    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
+    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-button"]');
     expect(copyButton.variant).toEqual('brand');
     copyButton.click();
 
@@ -160,7 +160,7 @@ describe('Log Viewer LWC tests', () => {
     expect(codeViewer).toBeTruthy();
     expect(codeViewer.code).toBeDefined();
 
-    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-btn"]');
+    const copyButton = logViewer.shadowRoot.querySelector('lightning-button-stateful[data-id="copy-button"]');
     expect(copyButton.variant).toEqual('brand');
     copyButton.click();
 
@@ -192,6 +192,7 @@ describe('Log Viewer LWC tests', () => {
     document.body.appendChild(logViewer);
     getLog.emit({ ...MOCK_GET_LOG });
     await Promise.resolve('resolves component rerender after loading log record');
+    // Activate JSON tab
     const jsonTab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="json-content"]');
     expect(jsonTab).toBeTruthy();
     jsonTab.dispatchEvent(new CustomEvent('active'));
@@ -199,7 +200,8 @@ describe('Log Viewer LWC tests', () => {
     const codeViewer = logViewer.shadowRoot.querySelector('c-logger-code-viewer');
     expect(codeViewer).toBeTruthy();
     expect(codeViewer.code).toBeDefined();
-
+    
+    // Click download button
     const downloadButton = logViewer.shadowRoot.querySelector('lightning-button[data-id="download-button"]');
     expect(downloadButton.label).toEqual('Download Record JSON');
     downloadButton.click();
@@ -225,16 +227,18 @@ describe('Log Viewer LWC tests', () => {
     const logViewer = createElement('c-log-viewer', { is: LogViewer });
     logViewer.recordId = 'test-log-id';
     document.body.appendChild(logViewer);
-    await Promise.resolve();
-    await Promise.resolve();
+    await Promise.resolve(); // Wait for component to connect
+    await Promise.resolve(); // Wait for wire service to initialize
     getLog.emit({ ...MOCK_GET_LOG });
-    await Promise.resolve();
+    await Promise.resolve(); // Wait for wire service callback
     await Promise.resolve('resolves component rerender after loading log record');
+    // Activate file tab
     const tab = logViewer.shadowRoot.querySelector('lightning-tab[data-id="file-content"]');
     expect(tab).toBeTruthy();
     tab.dispatchEvent(new CustomEvent('active'));
     await Promise.resolve('resolves dispatchEvent() for tab');
 
+    // Click download button
     const downloadButton = logViewer.shadowRoot.querySelector('lightning-button[data-id="download-button"]');
     expect(downloadButton.label).toEqual('Download Log File');
     downloadButton.click();
@@ -260,13 +264,15 @@ describe('Log Viewer LWC tests', () => {
     const logViewer = createElement('c-log-viewer', { is: LogViewer });
     logViewer.recordId = 'test-log-id';
     document.body.appendChild(logViewer);
-    await Promise.resolve();
-    await Promise.resolve();
+    await Promise.resolve(); // Wait for component to connect
+    await Promise.resolve(); // Wait for wire service to initialize
 
+    // Emit undefined data
     getLog.emit(undefined);
     await Promise.resolve('resolves component rerender');
 
+    // Test isLoaded indirectly through DOM (isLoaded is not @api)
     const spinner = logViewer.shadowRoot.querySelector('lightning-spinner');
-    expect(spinner).toBeTruthy();
+    expect(spinner).toBeTruthy(); // Spinner should be visible when not loaded
   });
 });
