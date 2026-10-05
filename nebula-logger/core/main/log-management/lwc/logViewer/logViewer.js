@@ -101,14 +101,15 @@ export default class LogViewer extends LightningElement {
   }
 
   async downloadFile() {
-    const exportedFilename = this.log.Name + '_' + this.log[LOG_ORGANIZATION_ID_FIELD.fieldApiName] + '.' + this.currentMode.extension;
-    const encodedValue = encodeURIComponent(this.currentMode.data);
-
+       const exportedFilename = this.log.Name + '_' + this.log[LOG_ORGANIZATION_ID_FIELD.fieldApiName] + '.' + this.currentMode.extension;
+    const blob = new Blob([this.currentMode.data], { type: 'application/octet-stream' });
+    const blobUrl = URL.createObjectURL(blob);
     const link = window.document.createElement('a');
-    link.href = 'data:text;charset=utf-8,' + encodedValue;
-    link.target = '_blank';
-    link.download = exportedFilename;
+    link.setAttribute('href', blobUrl);
+    link.setAttribute('download', exportedFilename);
+    link.setAttribute('rel', 'noopener noreferrer');
     link.click();
+    URL.revokeObjectURL(blobUrl);
   }
 
   _loadLogFileContent() {
