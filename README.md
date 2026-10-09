@@ -206,7 +206,7 @@ This results in a `Log__c` record with related `LogEntry__c` records.
 
 ### Logger for OmniStudio: Quick Start
 
-For OmniStudio builders, the included Apex class `CallableLogger` provides access to Nebula Logger's core features, directly in omniscripts and omni integration procedures. Simply use the `CallableLogger` class as a remote action within OmniStudio, and provide any inputs needed for the logging action. For more details (including what actions are available, and their required inputs), see [the section on the `CallableLogger` Apex class](https://github.com/jongpie/NebulaLogger/wiki/Dynamically-Call-Logger). For more details on logging in OmniStudio, [see the OmniStudio wiki page](https://github.com/jongpie/NebulaLogger/wiki/Logging-in-OmniStudio)
+For OmniStudio builders, the included Apex class `CallableLogger` provides access to Nebula Logger's core features, directly in omniscripts and omni integration procedures. Simply use the `CallableLogger` class as a remote action within OmniStudio, and provide any inputs needed for the logging action. For more details (including what actions are available, and their required inputs), see [the section on the `CallableLogger` Apex class](https://github.com/jongpie/NebulaLogger/wiki/Dynamically-Call-Nebula-Logger). For more details on logging in OmniStudio, [see the OmniStudio wiki page](https://github.com/jongpie/NebulaLogger/wiki/Logging-in-OmniStudio)
 
 ---
 
