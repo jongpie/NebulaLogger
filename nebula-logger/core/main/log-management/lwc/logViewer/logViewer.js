@@ -29,7 +29,11 @@ export default class LogViewer extends LightningElement {
   _logFileContent;
   _logJSONContent;
 
-  @wire(getLog, { logId: '$recordId' })
+  get effectiveLogId() {
+    return this.recordId || this.logId;
+  }
+
+  @wire(getLog, { logId: '$effectiveLogId' })
   wiredGetLog(result) {
     if (result.data) {
       const reconstructedLog = JSON.parse(JSON.stringify(result.data.log));

@@ -105,6 +105,21 @@ private class Logger_Tests {
   }
 
   @IsTest
+  static void it_should_use_org_default_settings_when_user_is_null() {
+    LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
+    expectedSettings.LoggingLevel__c = System.LoggingLevel.FINE.name();
+    insert expectedSettings;
+    expectedSettings = LoggerSettings__c.getOrgDefaults();
+
+    Schema.User anonymousUser = new Schema.User();
+    LoggerSettings__c returnedSettings = Logger.getUserSettings(anonymousUser);
+
+    List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+    System.Assert.areEqual(1, existingSettings.size(), 'LoggerSettings__c org defaults should have been saved');
+    System.Assert.areEqual(expectedSettings, returnedSettings);
+  }
+
+  @IsTest
   static void it_should_not_use_org_default_settings_when_start_time_is_in_the_future() {
     LoggerSettings__c expectedSettings = Logger.createSettings();
     expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
