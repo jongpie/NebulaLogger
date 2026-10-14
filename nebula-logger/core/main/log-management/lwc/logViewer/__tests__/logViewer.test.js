@@ -104,6 +104,16 @@ describe('Log Viewer LWC tests', () => {
     expect(downloadButton.variant).toBeUndefined();
   });
 
+  it('uses deprecated logId when recordId is not set', async () => {
+    const logViewer = createElement('c-log-viewer', { is: LogViewer });
+    logViewer.logId = 'a0A000000000123';
+    document.body.appendChild(logViewer);
+
+    await Promise.resolve('resolves wire config update');
+
+    expect(getLog.getLastConfig()).toEqual({ logId: 'a0A000000000123' });
+  });
+
   it('copies JSON content to the clipboard', async () => {
     const logViewer = createElement('c-log-viewer', { is: LogViewer });
     logViewer.recordId = 'test-log-id';
