@@ -987,6 +987,21 @@ private class CallableLogger_Tests {
       .call('newEntry', new Map<String, Object>{ 'loggingLevel' => System.LoggingLevel.FINE, 'message' => 'some message', 'databaseResultList' => saveResult });
 
     System.Assert.areEqual(false, returnedOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + returnedOutput);
+    System.Assert.areEqual(System.TypeException.class.getName(), returnedOutput.get('exceptionType'));
+  }
+
+  @IsTest
+  static void it_returns_exception_message_for_unsupported_database_result_list_type_when_using_standard_approach() {
+    List<String> unsupportedResults = new List<String>{ 'not a result' };
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{ 'loggingLevel' => System.LoggingLevel.FINE, 'message' => 'some message', 'databaseResultList' => unsupportedResults }
+      );
+
+    System.Assert.areEqual(false, returnedOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + returnedOutput);
     System.Assert.areEqual('Unsupported type for argument databaseResultList', returnedOutput.get('exceptionMessage'));
     System.Assert.areEqual(System.IllegalArgumentException.class.getName(), returnedOutput.get('exceptionType'));
   }

@@ -157,7 +157,7 @@ global without sharing class CallableLogger implements System.Callable {
         this.setDatabaseResult(logEntryEventBuilder, input.get(ARGUMENT_DATABASE_RESULT));
       }
       if (input.containsKey(ARGUMENT_DATABASE_RESULT_LIST)) {
-        this.setDatabaseResultList(logEntryEventBuilder, input.get(ARGUMENT_DATABASE_RESULT_LIST));
+        this.setDatabaseResultList(logEntryEventBuilder, (List<Object>) input.get(ARGUMENT_DATABASE_RESULT_LIST));
       }
       if (input.containsKey(ARGUMENT_RECORD_ID)) {
         logEntryEventBuilder.setRecord((String) input.get(ARGUMENT_RECORD_ID));
@@ -224,7 +224,7 @@ global without sharing class CallableLogger implements System.Callable {
      * @param  databaseResults      A `List` of a supported `Database` result type
      * @throws System.IllegalArgumentException When `databaseResults` is not a supported type
      */
-    private void setDatabaseResultList(LogEntryEventBuilder logEntryEventBuilder, Object databaseResults) {
+    private void setDatabaseResultList(LogEntryEventBuilder logEntryEventBuilder, List<Object> databaseResults) {
       if (databaseResults instanceof List<Database.DeleteResult>) {
         logEntryEventBuilder.setDatabaseResult((List<Database.DeleteResult>) databaseResults);
       } else if (databaseResults instanceof List<Database.EmptyRecycleBinResult>) {
