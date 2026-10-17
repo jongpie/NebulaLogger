@@ -823,9 +823,10 @@ private class CallableLogger_Tests {
   // Stands in for a calling package's logging adapter, so its stack trace line can be ignored
   private class LoggingWrapper {
     public LogEntryEvent__e newEntry(System.Callable callableLoggerInstance) {
-      Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
-        .call('newEntry', new Map<String, Object>{ 'loggingLevel' => System.LoggingLevel.FINE, 'message' => 'some message' });
-      return ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+      Map<String, Object> inputs = new Map<String, Object>{ 'loggingLevel' => System.LoggingLevel.FINE, 'message' => 'some message' };
+      Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance.call('newEntry', inputs);
+      LogEntryEventBuilder eventBuilder = (LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder');
+      return eventBuilder?.getLogEntryEvent();
     }
   }
 }
