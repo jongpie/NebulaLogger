@@ -14,6 +14,9 @@
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global without sharing class CallableLogger implements System.Callable {
   // Names of arguments used for both input & output (depending on which action is called)
+  private static final String ARGUMENT_APEX_TYPE = 'apexType';
+  private static final String ARGUMENT_DATABASE_RESULT = 'databaseResult';
+  private static final String ARGUMENT_DATABASE_RESULT_LIST = 'databaseResultList';
   private static final String ARGUMENT_EXCEPTION = 'exception';
   private static final String ARGUMENT_LOG_ENTRY_EVENT_BUILDER = 'logEntryEventBuilder';
   private static final String ARGUMENT_LOGGING_LEVEL = 'loggingLevel';
@@ -99,6 +102,10 @@ global without sharing class CallableLogger implements System.Callable {
         when 'endScenario' {
           Logger.endScenario((String) input.get(ARGUMENT_SCENARIO));
         }
+        // Methods for stack trace origins
+        when 'ignoreOrigin' {
+          Logger.ignoreOrigin((System.Type) input.get(ARGUMENT_APEX_TYPE));
+        }
         // Methods for adding & saving log entries
         when 'newEntry' {
           if (input.containsKey(ARGUMENT_PARENT_LOG_TRANSACTION_ID)) {
@@ -146,6 +153,12 @@ global without sharing class CallableLogger implements System.Callable {
       if (input.containsKey(ARGUMENT_EXCEPTION)) {
         logEntryEventBuilder.setExceptionDetails((System.Exception) input.get(ARGUMENT_EXCEPTION));
       }
+      if (input.containsKey(ARGUMENT_DATABASE_RESULT)) {
+        this.setDatabaseResult(logEntryEventBuilder, input.get(ARGUMENT_DATABASE_RESULT));
+      }
+      if (input.containsKey(ARGUMENT_DATABASE_RESULT_LIST)) {
+        this.setDatabaseResultList(logEntryEventBuilder, (List<Object>) input.get(ARGUMENT_DATABASE_RESULT_LIST));
+      }
       if (input.containsKey(ARGUMENT_RECORD_ID)) {
         logEntryEventBuilder.setRecord((String) input.get(ARGUMENT_RECORD_ID));
       }
@@ -177,6 +190,58 @@ global without sharing class CallableLogger implements System.Callable {
       }
 
       return logEntryEventBuilder;
+    }
+
+    /**
+     * @description Casts to the matching `setDatabaseResult` overload, since `Database` result types share no interface
+     * @param  logEntryEventBuilder The builder to set the result on
+     * @param  databaseResult       A single instance of a supported `Database` result type
+     * @throws System.IllegalArgumentException When `databaseResult` is not a supported type
+     */
+    private void setDatabaseResult(LogEntryEventBuilder logEntryEventBuilder, Object databaseResult) {
+      if (databaseResult instanceof Database.DeleteResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.DeleteResult) databaseResult);
+      } else if (databaseResult instanceof Database.EmptyRecycleBinResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.EmptyRecycleBinResult) databaseResult);
+      } else if (databaseResult instanceof Database.LeadConvertResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.LeadConvertResult) databaseResult);
+      } else if (databaseResult instanceof Database.MergeResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.MergeResult) databaseResult);
+      } else if (databaseResult instanceof Database.SaveResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.SaveResult) databaseResult);
+      } else if (databaseResult instanceof Database.UndeleteResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.UndeleteResult) databaseResult);
+      } else if (databaseResult instanceof Database.UpsertResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.UpsertResult) databaseResult);
+      } else {
+        throw new System.IllegalArgumentException('Unsupported type for argument ' + ARGUMENT_DATABASE_RESULT);
+      }
+    }
+
+    /**
+     * @description Casts to the matching `setDatabaseResult` overload, since `Database` result types share no interface
+     * @param  logEntryEventBuilder The builder to set the results on
+     * @param  databaseResults      A `List` of a supported `Database` result type
+     * @throws System.IllegalArgumentException When `databaseResults` is not a supported type
+     */
+    private void setDatabaseResultList(LogEntryEventBuilder logEntryEventBuilder, List<Object> databaseResults) {
+      if (databaseResults instanceof List<Database.DeleteResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.DeleteResult>) databaseResults);
+      } else if (databaseResults instanceof List<Database.EmptyRecycleBinResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.EmptyRecycleBinResult>) databaseResults);
+      } else if (databaseResults instanceof List<Database.LeadConvertResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.LeadConvertResult>) databaseResults);
+      } else if (databaseResults instanceof List<Database.MergeResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.MergeResult>) databaseResults);
+      } else if (databaseResults instanceof List<Database.SaveResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.SaveResult>) databaseResults);
+      } else if (databaseResults instanceof List<Database.UndeleteResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.UndeleteResult>) databaseResults);
+      } else if (databaseResults instanceof List<Database.UpsertResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.UpsertResult>) databaseResults);
+      } else {
+        throw new System.IllegalArgumentException('Unsupported type for argument ' + ARGUMENT_DATABASE_RESULT_LIST);
+      }
     }
 
     private void saveLog(Map<String, Object> input) {
