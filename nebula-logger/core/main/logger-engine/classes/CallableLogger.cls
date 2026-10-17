@@ -152,10 +152,8 @@ global without sharing class CallableLogger implements System.Callable {
       if (input.containsKey(ARGUMENT_EXCEPTION)) {
         logEntryEventBuilder.setExceptionDetails((System.Exception) input.get(ARGUMENT_EXCEPTION));
       }
-      // Set before the record arguments: a single result sets the record ID, so an explicit record or recordId wins
-      Object databaseResult = input.get(ARGUMENT_DATABASE_RESULT);
-      if (databaseResult != null) {
-        this.setDatabaseResult(logEntryEventBuilder, databaseResult);
+      if (input.containsKey(ARGUMENT_DATABASE_RESULT)) {
+        this.setDatabaseResult(logEntryEventBuilder, input.get(ARGUMENT_DATABASE_RESULT));
       }
       if (input.containsKey(ARGUMENT_RECORD_ID)) {
         logEntryEventBuilder.setRecord((String) input.get(ARGUMENT_RECORD_ID));
@@ -191,7 +189,8 @@ global without sharing class CallableLogger implements System.Callable {
     }
 
     /**
-     * @description Apex does not resolve overloads from an `Object`, so each supported type is cast to its
+     * @description Casts an untyped Object to its matching Database.*Result object
+     * Necessary since these objects to do not implement a common interface
      *              matching `setDatabaseResult` overload
      * @param  logEntryEventBuilder The builder to set the database result on
      * @param  databaseResult       A single or list of any `Database` result type that `setDatabaseResult` accepts
@@ -233,8 +232,8 @@ global without sharing class CallableLogger implements System.Callable {
 
     /**
      * @description Takes class names as strings instead of `System.Type`, so callers without a compile-time
-     *              reference (such as OmniStudio) can use it. Skips blank names, since a null ignored origin
-     *              would break stack trace parsing for every later entry in the transaction
+     * reference (such as OmniStudio) can use it. Skips blank names, since a null ignored origin
+     * would break stack trace parsing for every later entry in the transaction
      * @param  input The action's input
      */
     private void ignoreOrigin(Map<String, Object> input) {
