@@ -566,7 +566,8 @@ private class CallableLogger_Tests {
       Database.MergeResult.class.getName() => LoggerMockDataCreator.createDatabaseMergeResult(true),
       Database.SaveResult.class.getName() => LoggerMockDataCreator.createDatabaseSaveResult(true),
       Database.UndeleteResult.class.getName() => LoggerMockDataCreator.createDatabaseUndeleteResult(true),
-      Database.UpsertResult.class.getName() => LoggerMockDataCreator.createDatabaseUpsertResult(true, true)
+      // LogEntryEventBuilder appends the upsert's subtype to single results
+      Database.UpsertResult.class.getName() + '.Insert' => LoggerMockDataCreator.createDatabaseUpsertResult(true, true)
     };
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
 
