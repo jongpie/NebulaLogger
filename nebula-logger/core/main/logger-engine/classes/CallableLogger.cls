@@ -14,6 +14,7 @@
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global without sharing class CallableLogger implements System.Callable {
   // Names of arguments used for both input & output (depending on which action is called)
+  private static final String ARGUMENT_DATABASE_RESULT = 'databaseResult';
   private static final String ARGUMENT_EXCEPTION = 'exception';
   private static final String ARGUMENT_LOG_ENTRY_EVENT_BUILDER = 'logEntryEventBuilder';
   private static final String ARGUMENT_LOGGING_LEVEL = 'loggingLevel';
@@ -146,6 +147,10 @@ global without sharing class CallableLogger implements System.Callable {
       if (input.containsKey(ARGUMENT_EXCEPTION)) {
         logEntryEventBuilder.setExceptionDetails((System.Exception) input.get(ARGUMENT_EXCEPTION));
       }
+      // Set before the record arguments: a single result sets the record ID, which an explicit record argument should override
+      if (input.get(ARGUMENT_DATABASE_RESULT) != null) {
+        this.setDatabaseResult(logEntryEventBuilder, input.get(ARGUMENT_DATABASE_RESULT));
+      }
       if (input.containsKey(ARGUMENT_RECORD_ID)) {
         logEntryEventBuilder.setRecord((String) input.get(ARGUMENT_RECORD_ID));
       }
@@ -177,6 +182,46 @@ global without sharing class CallableLogger implements System.Callable {
       }
 
       return logEntryEventBuilder;
+    }
+
+    /**
+     * @description Apex does not resolve overloads from an `Object`, so each supported type is cast to its matching `setDatabaseResult` overload
+     * @param  logEntryEventBuilder The builder to set the database result on
+     * @param  databaseResult       A single or list of `Database.DeleteResult`, `EmptyRecycleBinResult`, `LeadConvertResult`, `MergeResult`, `SaveResult`, `UndeleteResult`, or `UpsertResult`
+     */
+    @SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
+    private void setDatabaseResult(LogEntryEventBuilder logEntryEventBuilder, Object databaseResult) {
+      if (databaseResult instanceof Database.DeleteResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.DeleteResult) databaseResult);
+      } else if (databaseResult instanceof Database.EmptyRecycleBinResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.EmptyRecycleBinResult) databaseResult);
+      } else if (databaseResult instanceof Database.LeadConvertResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.LeadConvertResult) databaseResult);
+      } else if (databaseResult instanceof Database.MergeResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.MergeResult) databaseResult);
+      } else if (databaseResult instanceof Database.SaveResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.SaveResult) databaseResult);
+      } else if (databaseResult instanceof Database.UndeleteResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.UndeleteResult) databaseResult);
+      } else if (databaseResult instanceof Database.UpsertResult) {
+        logEntryEventBuilder.setDatabaseResult((Database.UpsertResult) databaseResult);
+      } else if (databaseResult instanceof List<Database.DeleteResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.DeleteResult>) databaseResult);
+      } else if (databaseResult instanceof List<Database.EmptyRecycleBinResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.EmptyRecycleBinResult>) databaseResult);
+      } else if (databaseResult instanceof List<Database.LeadConvertResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.LeadConvertResult>) databaseResult);
+      } else if (databaseResult instanceof List<Database.MergeResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.MergeResult>) databaseResult);
+      } else if (databaseResult instanceof List<Database.SaveResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.SaveResult>) databaseResult);
+      } else if (databaseResult instanceof List<Database.UndeleteResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.UndeleteResult>) databaseResult);
+      } else if (databaseResult instanceof List<Database.UpsertResult>) {
+        logEntryEventBuilder.setDatabaseResult((List<Database.UpsertResult>) databaseResult);
+      } else {
+        throw new System.IllegalArgumentException('Unsupported type for argument ' + ARGUMENT_DATABASE_RESULT);
+      }
     }
 
     private void saveLog(Map<String, Object> input) {

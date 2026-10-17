@@ -558,6 +558,142 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
+  static void it_adds_new_entry_with_single_database_result_when_using_standard_approach() {
+    Map<String, Object> resultTypeNameToDatabaseResult = new Map<String, Object>{
+      Database.DeleteResult.class.getName() => LoggerMockDataCreator.createDatabaseDeleteResult(true),
+      Database.EmptyRecycleBinResult.class.getName() => LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true),
+      Database.LeadConvertResult.class.getName() => LoggerMockDataCreator.createDatabaseLeadConvertResult(true),
+      Database.MergeResult.class.getName() => LoggerMockDataCreator.createDatabaseMergeResult(true),
+      Database.SaveResult.class.getName() => LoggerMockDataCreator.createDatabaseSaveResult(true),
+      Database.UndeleteResult.class.getName() => LoggerMockDataCreator.createDatabaseUndeleteResult(true),
+      Database.UpsertResult.class.getName() => LoggerMockDataCreator.createDatabaseUpsertResult(true, true)
+    };
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+
+    for (String resultTypeName : resultTypeNameToDatabaseResult.keySet()) {
+      Object databaseResult = resultTypeNameToDatabaseResult.get(resultTypeName);
+      Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+        .call(
+          'newEntry',
+          new Map<String, Object>{ 'loggingLevel' => System.LoggingLevel.FINE, 'message' => 'some message', 'databaseResult' => databaseResult }
+        );
+
+      System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+      LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+      System.Assert.areEqual(1, logEntryEvent.DatabaseResultCollectionSize__c, resultTypeName);
+      System.Assert.areEqual('Single', logEntryEvent.DatabaseResultCollectionType__c, resultTypeName);
+      System.Assert.areEqual(System.JSON.serializePretty(databaseResult), logEntryEvent.DatabaseResultJson__c, resultTypeName);
+      System.Assert.areEqual(resultTypeName, logEntryEvent.DatabaseResultType__c);
+    }
+  }
+
+  @IsTest
+  static void it_adds_new_entry_with_database_result_list_when_using_standard_approach() {
+    Map<String, List<Object>> resultTypeNameToDatabaseResults = new Map<String, List<Object>>{
+      Database.DeleteResult.class.getName() => new List<Database.DeleteResult>{
+        LoggerMockDataCreator.createDatabaseDeleteResult(true),
+        LoggerMockDataCreator.createDatabaseDeleteResult(false)
+      },
+      Database.EmptyRecycleBinResult.class.getName() => new List<Database.EmptyRecycleBinResult>{
+        LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true),
+        LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(false)
+      },
+      Database.LeadConvertResult.class.getName() => new List<Database.LeadConvertResult>{
+        LoggerMockDataCreator.createDatabaseLeadConvertResult(true),
+        LoggerMockDataCreator.createDatabaseLeadConvertResult(false)
+      },
+      Database.MergeResult.class.getName() => new List<Database.MergeResult>{
+        LoggerMockDataCreator.createDatabaseMergeResult(true),
+        LoggerMockDataCreator.createDatabaseMergeResult(false)
+      },
+      Database.SaveResult.class.getName() => new List<Database.SaveResult>{
+        LoggerMockDataCreator.createDatabaseSaveResult(true),
+        LoggerMockDataCreator.createDatabaseSaveResult(false)
+      },
+      Database.UndeleteResult.class.getName() => new List<Database.UndeleteResult>{
+        LoggerMockDataCreator.createDatabaseUndeleteResult(true),
+        LoggerMockDataCreator.createDatabaseUndeleteResult(false)
+      },
+      Database.UpsertResult.class.getName() => new List<Database.UpsertResult>{
+        LoggerMockDataCreator.createDatabaseUpsertResult(true, true),
+        LoggerMockDataCreator.createDatabaseUpsertResult(false, false)
+      }
+    };
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+
+    for (String resultTypeName : resultTypeNameToDatabaseResults.keySet()) {
+      List<Object> databaseResults = resultTypeNameToDatabaseResults.get(resultTypeName);
+      Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+        .call(
+          'newEntry',
+          new Map<String, Object>{ 'loggingLevel' => System.LoggingLevel.FINE, 'message' => 'some message', 'databaseResult' => databaseResults }
+        );
+
+      System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+      LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+      System.Assert.areEqual(databaseResults.size(), logEntryEvent.DatabaseResultCollectionSize__c, resultTypeName);
+      System.Assert.areEqual('List', logEntryEvent.DatabaseResultCollectionType__c, resultTypeName);
+      System.Assert.areEqual(System.JSON.serializePretty(databaseResults), logEntryEvent.DatabaseResultJson__c, resultTypeName);
+      System.Assert.areEqual(resultTypeName, logEntryEvent.DatabaseResultType__c);
+    }
+  }
+
+  @IsTest
+  static void it_adds_new_entry_without_database_result_when_null_when_using_standard_approach() {
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => System.LoggingLevel.FINE, 'message' => 'some message', 'databaseResult' => null });
+
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.isNull(logEntryEvent.DatabaseResultCollectionType__c);
+    System.Assert.isNull(logEntryEvent.DatabaseResultJson__c);
+    System.Assert.isNull(logEntryEvent.DatabaseResultType__c);
+  }
+
+  @IsTest
+  static void it_returns_exception_message_for_unsupported_database_result_type_when_using_standard_approach() {
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => System.LoggingLevel.FINE, 'message' => 'some message', 'databaseResult' => 'not a result' });
+
+    System.Assert.areEqual(false, returnedOutput.get('isSuccess'), 'Expected isSuccess == false. Output received: ' + returnedOutput);
+    System.Assert.areEqual('Unsupported type for argument databaseResult', returnedOutput.get('exceptionMessage'));
+    System.Assert.areEqual(System.IllegalArgumentException.class.getName(), returnedOutput.get('exceptionType'));
+  }
+
+  @IsTest
+  static void it_keeps_record_over_database_result_record_id_when_using_standard_approach() {
+    Schema.User record = new Schema.User(Id = System.UserInfo.getUserId());
+    Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
+    System.Assert.areNotEqual(record.Id, saveResult.getId());
+
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call(
+        'newEntry',
+        new Map<String, Object>{ 'loggingLevel' => System.LoggingLevel.FINE, 'message' => 'some message', 'record' => record, 'databaseResult' => saveResult }
+      );
+
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    System.Assert.areEqual(record.Id, logEntryEvent.RecordId__c);
+    System.Assert.areEqual(System.JSON.serializePretty(record), logEntryEvent.RecordJson__c);
+  }
+
+  @IsTest
+  static void it_ignores_unknown_arguments_for_new_entry_when_using_standard_approach() {
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => System.LoggingLevel.FINE, 'message' => 'some message', 'someFutureArgument' => 'value' });
+
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    System.Assert.areEqual('some message', logEntryEvent.Message__c);
+  }
+
+  @IsTest
   static void it_adds_new_entry_with_tags_when_using_standard_approach() {
     System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
     String message = 'some log entry message';

@@ -414,6 +414,17 @@ Map<String, Object> newEntryInput = new Map<String, Object>{
 };
 nebulaLoggerInstance.call('newEntry', newEntryInput);
 
+// Example: Add a DEBUG entry with the records & results of a DML statement
+List<Account> accounts = new List<Account>{ new Account(Name = 'Some Account') };
+List<Database.SaveResult> saveResults = Database.insert(accounts, false);
+Map<String, Object> newEntryInput = new Map<String, Object>{
+  'databaseResult' => saveResults,
+  'loggingLevel' => LoggingLevel.DEBUG,
+  'message' => 'Inserted accounts',
+  'recordList' => accounts
+};
+nebulaLoggerInstance.call('newEntry', newEntryInput);
+
 // Example: Save any pending log entries
 nebulaLoggerInstance.call('saveLog', null);
 ```
