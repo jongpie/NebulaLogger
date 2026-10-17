@@ -14,6 +14,7 @@
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global without sharing class CallableLogger implements System.Callable {
   // Names of arguments used for both input & output (depending on which action is called)
+  private static final String ARGUMENT_APEX_CLASS_NAMES = 'apexClassNames';
   private static final String ARGUMENT_DATABASE_RESULT = 'databaseResult';
   private static final String ARGUMENT_EXCEPTION = 'exception';
   private static final String ARGUMENT_LOG_ENTRY_EVENT_BUILDER = 'logEntryEventBuilder';
@@ -99,6 +100,10 @@ global without sharing class CallableLogger implements System.Callable {
         }
         when 'endScenario' {
           Logger.endScenario((String) input.get(ARGUMENT_SCENARIO));
+        }
+        // Methods for stack trace origins
+        when 'ignoreOrigin' {
+          this.ignoreOrigin(input);
         }
         // Methods for adding & saving log entries
         when 'newEntry' {
@@ -221,6 +226,21 @@ global without sharing class CallableLogger implements System.Callable {
         logEntryEventBuilder.setDatabaseResult((List<Database.UpsertResult>) databaseResult);
       } else {
         throw new System.IllegalArgumentException('Unsupported type for argument ' + ARGUMENT_DATABASE_RESULT);
+      }
+    }
+
+    /**
+     * @description Takes class names as strings instead of `System.Type`, so callers without a compile-time reference (such as OmniStudio) can use it.
+     *              Blank names are skipped, since a null ignored origin would break stack trace parsing for every later entry in the transaction.
+     * @param  input The action's input, with the class names to ignore in `apexClassNames`
+     */
+    private void ignoreOrigin(Map<String, Object> input) {
+      List<Object> apexClassNames = (List<Object>) input.get(ARGUMENT_APEX_CLASS_NAMES) ?? new List<Object>();
+      for (Object apexClassNameValue : apexClassNames) {
+        String apexClassName = apexClassNameValue?.toString();
+        if (String.isNotBlank(apexClassName)) {
+          LoggerStackTrace.ignoreOrigin(LoggerStackTrace.SourceLanguage.Apex, apexClassName);
+        }
       }
     }
 

@@ -823,6 +823,37 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
+  static void it_ignores_origin_for_apex_class_names_when_using_standard_approach() {
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+
+    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+      .call('ignoreOrigin', new Map<String, Object>{ 'apexClassNames' => new List<String>{ LoggingWrapper.class.getName() } });
+    LogEntryEvent__e logEntryEvent = new LoggingWrapper().newEntry(callableLoggerInstance);
+
+    System.Assert.areEqual(4, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
+    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
+    System.Assert.areEqual(
+      CallableLogger_Tests.class.getName() + '.it_ignores_origin_for_apex_class_names_when_using_standard_approach',
+      logEntryEvent.OriginLocation__c
+    );
+    System.Assert.isFalse(logEntryEvent.StackTrace__c.contains(LoggingWrapper.class.getName()), logEntryEvent.StackTrace__c);
+  }
+
+  @IsTest
+  static void it_skips_missing_and_blank_apex_class_names_when_ignoring_origin_when_using_standard_approach() {
+    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
+
+    Map<String, Object> missingNamesOutput = (Map<String, Object>) callableLoggerInstance.call('ignoreOrigin', null);
+    Map<String, Object> blankNamesOutput = (Map<String, Object>) callableLoggerInstance
+      .call('ignoreOrigin', new Map<String, Object>{ 'apexClassNames' => new List<String>{ null, ' ' } });
+    LogEntryEvent__e logEntryEvent = new LoggingWrapper().newEntry(callableLoggerInstance);
+
+    System.Assert.areEqual(true, missingNamesOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + missingNamesOutput);
+    System.Assert.areEqual(true, blankNamesOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + blankNamesOutput);
+    System.Assert.areEqual(LoggingWrapper.class.getName() + '.newEntry', logEntryEvent.OriginLocation__c);
+  }
+
+  @IsTest
   static void it_logs_try_catch_when_passed_as_action() {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     Map<String, Object> input = new Map<String, Object>{ 'argument_1' => 'first arg', 'argument_2' => 'second arg' };
@@ -833,5 +864,14 @@ private class CallableLogger_Tests {
     LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
     System.Assert.areEqual('An unexpected error occurred:\n' + System.JSON.serializePretty(input), logEntryEvent.Message__c);
     System.Assert.areEqual(System.LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
+  }
+
+  // Stands in for a calling package's logging adapter, so its stack trace line can be ignored
+  private class LoggingWrapper {
+    public LogEntryEvent__e newEntry(System.Callable callableLoggerInstance) {
+      Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
+        .call('newEntry', new Map<String, Object>{ 'loggingLevel' => System.LoggingLevel.FINE, 'message' => 'some message' });
+      return ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
+    }
   }
 }
