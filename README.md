@@ -398,9 +398,9 @@ if (nebulaLoggerInstance == null) {
   return;
 }
 
-// Example: Exclude your package's logging wrapper classes from each entry's origin & stack trace
+// Example: Exclude your package's logging wrapper class from each entry's origin & stack trace
 Map<String, Object> ignoreOriginInput = new Map<String, Object>{
-  'apexClassNames' => new List<String>{ 'MyLoggingWrapper' }
+  'apexType' => MyLoggingWrapper.class
 };
 nebulaLoggerInstance.call('ignoreOrigin', ignoreOriginInput);
 

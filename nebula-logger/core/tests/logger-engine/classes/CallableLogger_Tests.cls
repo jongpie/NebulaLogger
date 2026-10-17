@@ -791,34 +791,20 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
-  static void it_ignores_origin_for_apex_class_names_when_using_standard_approach() {
+  static void it_ignores_origin_for_apex_type_when_using_standard_approach() {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
 
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
-      .call('ignoreOrigin', new Map<String, Object>{ 'apexClassNames' => new List<String>{ LoggingWrapper.class.getName() } });
+      .call('ignoreOrigin', new Map<String, Object>{ 'apexType' => LoggingWrapper.class });
     LogEntryEvent__e logEntryEvent = new LoggingWrapper().newEntry(callableLoggerInstance);
 
     System.Assert.areEqual(4, returnedOutput.size(), System.JSON.serializePretty(returnedOutput.keySet()));
     System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
     System.Assert.areEqual(
-      CallableLogger_Tests.class.getName() + '.it_ignores_origin_for_apex_class_names_when_using_standard_approach',
+      CallableLogger_Tests.class.getName() + '.it_ignores_origin_for_apex_type_when_using_standard_approach',
       logEntryEvent.OriginLocation__c
     );
     System.Assert.isFalse(logEntryEvent.StackTrace__c.contains(LoggingWrapper.class.getName()), logEntryEvent.StackTrace__c);
-  }
-
-  @IsTest
-  static void it_skips_missing_and_blank_apex_class_names_when_ignoring_origin_when_using_standard_approach() {
-    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-
-    Map<String, Object> missingNamesOutput = (Map<String, Object>) callableLoggerInstance.call('ignoreOrigin', null);
-    Map<String, Object> blankNamesOutput = (Map<String, Object>) callableLoggerInstance
-      .call('ignoreOrigin', new Map<String, Object>{ 'apexClassNames' => new List<String>{ null, ' ' } });
-    LogEntryEvent__e logEntryEvent = new LoggingWrapper().newEntry(callableLoggerInstance);
-
-    System.Assert.areEqual(true, missingNamesOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + missingNamesOutput);
-    System.Assert.areEqual(true, blankNamesOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + blankNamesOutput);
-    System.Assert.areEqual(LoggingWrapper.class.getName() + '.newEntry', logEntryEvent.OriginLocation__c);
   }
 
   @IsTest
