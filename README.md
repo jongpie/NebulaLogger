@@ -424,7 +424,7 @@ nebulaLoggerInstance.call('newEntry', newEntryInput);
 List<Account> accounts = new List<Account>{ new Account(Name = 'Some Account') };
 List<Database.SaveResult> saveResults = Database.insert(accounts, false);
 Map<String, Object> dmlEntryInput = new Map<String, Object>{
-  'databaseResult' => saveResults,
+  'databaseResultList' => saveResults,
   'loggingLevel' => LoggingLevel.DEBUG,
   'message' => 'Inserted accounts',
   'recordList' => accounts
