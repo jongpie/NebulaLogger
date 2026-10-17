@@ -189,10 +189,9 @@ global without sharing class CallableLogger implements System.Callable {
     }
 
     /**
-     * @description Casts an untyped `Object` to its matching `Database` result type and `setDatabaseResult` overload.
-     *              Necessary since these result types do not implement a common interface
-     * @param  logEntryEventBuilder The builder to set the database result on
-     * @param  databaseResult       A single or list of any `Database` result type that `setDatabaseResult` accepts
+     * @description Casts to the matching `setDatabaseResult` overload, since `Database` result types share no interface
+     * @param  logEntryEventBuilder The builder to set the result on
+     * @param  databaseResult       A single or `List` of a supported `Database` result type
      * @throws System.IllegalArgumentException When `databaseResult` is not a supported type
      */
     private void setDatabaseResult(LogEntryEventBuilder logEntryEventBuilder, Object databaseResult) {
