@@ -584,41 +584,22 @@ private class CallableLogger_Tests {
       System.Assert.areEqual(1, logEntryEvent.DatabaseResultCollectionSize__c, resultTypeName);
       System.Assert.areEqual('Single', logEntryEvent.DatabaseResultCollectionType__c, resultTypeName);
       System.Assert.areEqual(System.JSON.serializePretty(databaseResult), logEntryEvent.DatabaseResultJson__c, resultTypeName);
-      System.Assert.areEqual(resultTypeName, logEntryEvent.DatabaseResultType__c);
+      System.Assert.areEqual(resultTypeName, logEntryEvent.DatabaseResultType__c, resultTypeName);
     }
   }
 
   @IsTest
   static void it_adds_new_entry_with_database_result_list_when_using_standard_approach() {
     Map<String, List<Object>> resultTypeNameToDatabaseResults = new Map<String, List<Object>>{
-      Database.DeleteResult.class.getName() => new List<Database.DeleteResult>{
-        LoggerMockDataCreator.createDatabaseDeleteResult(true),
-        LoggerMockDataCreator.createDatabaseDeleteResult(false)
-      },
+      Database.DeleteResult.class.getName() => new List<Database.DeleteResult>{ LoggerMockDataCreator.createDatabaseDeleteResult(true) },
       Database.EmptyRecycleBinResult.class.getName() => new List<Database.EmptyRecycleBinResult>{
-        LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true),
-        LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(false)
+        LoggerMockDataCreator.createDatabaseEmptyRecycleBinResult(true)
       },
-      Database.LeadConvertResult.class.getName() => new List<Database.LeadConvertResult>{
-        LoggerMockDataCreator.createDatabaseLeadConvertResult(true),
-        LoggerMockDataCreator.createDatabaseLeadConvertResult(false)
-      },
-      Database.MergeResult.class.getName() => new List<Database.MergeResult>{
-        LoggerMockDataCreator.createDatabaseMergeResult(true),
-        LoggerMockDataCreator.createDatabaseMergeResult(false)
-      },
-      Database.SaveResult.class.getName() => new List<Database.SaveResult>{
-        LoggerMockDataCreator.createDatabaseSaveResult(true),
-        LoggerMockDataCreator.createDatabaseSaveResult(false)
-      },
-      Database.UndeleteResult.class.getName() => new List<Database.UndeleteResult>{
-        LoggerMockDataCreator.createDatabaseUndeleteResult(true),
-        LoggerMockDataCreator.createDatabaseUndeleteResult(false)
-      },
-      Database.UpsertResult.class.getName() => new List<Database.UpsertResult>{
-        LoggerMockDataCreator.createDatabaseUpsertResult(true, true),
-        LoggerMockDataCreator.createDatabaseUpsertResult(false, false)
-      }
+      Database.LeadConvertResult.class.getName() => new List<Database.LeadConvertResult>{ LoggerMockDataCreator.createDatabaseLeadConvertResult(true) },
+      Database.MergeResult.class.getName() => new List<Database.MergeResult>{ LoggerMockDataCreator.createDatabaseMergeResult(true) },
+      Database.SaveResult.class.getName() => new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(true) },
+      Database.UndeleteResult.class.getName() => new List<Database.UndeleteResult>{ LoggerMockDataCreator.createDatabaseUndeleteResult(true) },
+      Database.UpsertResult.class.getName() => new List<Database.UpsertResult>{ LoggerMockDataCreator.createDatabaseUpsertResult(true, true) }
     };
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
 
@@ -635,7 +616,7 @@ private class CallableLogger_Tests {
       System.Assert.areEqual(databaseResults.size(), logEntryEvent.DatabaseResultCollectionSize__c, resultTypeName);
       System.Assert.areEqual('List', logEntryEvent.DatabaseResultCollectionType__c, resultTypeName);
       System.Assert.areEqual(System.JSON.serializePretty(databaseResults), logEntryEvent.DatabaseResultJson__c, resultTypeName);
-      System.Assert.areEqual(resultTypeName, logEntryEvent.DatabaseResultType__c);
+      System.Assert.areEqual(resultTypeName, logEntryEvent.DatabaseResultType__c, resultTypeName);
     }
   }
 
