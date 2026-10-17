@@ -189,9 +189,8 @@ global without sharing class CallableLogger implements System.Callable {
     }
 
     /**
-     * @description Casts an untyped Object to its matching Database.*Result object
-     * Necessary since these objects to do not implement a common interface
-     *              matching `setDatabaseResult` overload
+     * @description Casts an untyped `Object` to its matching `Database` result type and `setDatabaseResult` overload.
+     *              Necessary since these result types do not implement a common interface
      * @param  logEntryEventBuilder The builder to set the database result on
      * @param  databaseResult       A single or list of any `Database` result type that `setDatabaseResult` accepts
      * @throws System.IllegalArgumentException When `databaseResult` is not a supported type
@@ -232,8 +231,8 @@ global without sharing class CallableLogger implements System.Callable {
 
     /**
      * @description Takes class names as strings instead of `System.Type`, so callers without a compile-time
-     * reference (such as OmniStudio) can use it. Skips blank names, since a null ignored origin
-     * would break stack trace parsing for every later entry in the transaction
+     *              reference (such as OmniStudio) can use it. Skips blank names, since a null ignored origin
+     *              would break stack trace parsing for every later entry in the transaction
      * @param  input The action's input
      */
     private void ignoreOrigin(Map<String, Object> input) {

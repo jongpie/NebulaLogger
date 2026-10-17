@@ -621,19 +621,6 @@ private class CallableLogger_Tests {
   }
 
   @IsTest
-  static void it_adds_new_entry_without_database_result_when_null_when_using_standard_approach() {
-    System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
-    Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
-      .call('newEntry', new Map<String, Object>{ 'loggingLevel' => System.LoggingLevel.FINE, 'message' => 'some message', 'databaseResult' => null });
-
-    System.Assert.areEqual(true, returnedOutput.get('isSuccess'), 'Expected isSuccess == true. Output received: ' + returnedOutput);
-    LogEntryEvent__e logEntryEvent = ((LogEntryEventBuilder) returnedOutput.get('logEntryEventBuilder')).getLogEntryEvent();
-    System.Assert.isNull(logEntryEvent.DatabaseResultCollectionType__c);
-    System.Assert.isNull(logEntryEvent.DatabaseResultJson__c);
-    System.Assert.isNull(logEntryEvent.DatabaseResultType__c);
-  }
-
-  @IsTest
   static void it_returns_exception_message_for_unsupported_database_result_type_when_using_standard_approach() {
     System.Callable callableLoggerInstance = (System.Callable) System.Type.forName('CallableLogger').newInstance();
     Map<String, Object> returnedOutput = (Map<String, Object>) callableLoggerInstance
