@@ -90,7 +90,9 @@ export default class LoggerCodeViewer extends LightningElement {
     codeElement.classList.add(`language-${this.language}`);
     codeElement.textContent = this.code ?? '';
     preElement.appendChild(codeElement);
-    container.replaceChildren(preElement);
+    // Locker's SecureElement proxy does not implement replaceChildren(), so clear and append instead
+    container.innerHTML = '';
+    container.appendChild(preElement);
   }
 
   _serializeLoadFailure(failure) {

@@ -94,6 +94,28 @@ describe('c-logger-code-viewer', () => {
     expect(renderedCode.textContent).toBe(codeWithAngleBrackets);
   });
 
+  it('renders the code when Element.replaceChildren is unavailable (Lightning Locker)', async () => {
+    // Lightning Locker's SecureElement proxy does not implement replaceChildren()
+    const originalReplaceChildren = Element.prototype.replaceChildren;
+    Element.prototype.replaceChildren = undefined;
+    try {
+      const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
+      element.language = 'apex';
+      element.startingLineNumber = '1';
+      element.targetLineNumber = '1';
+      element.code = 'System.debug(1);';
+
+      document.body.appendChild(element);
+      await flushPromises();
+
+      const renderedCode = element.shadowRoot.querySelector('div.prism-viewer pre code');
+      expect(renderedCode).toBeTruthy();
+      expect(renderedCode.textContent).toBe('System.debug(1);');
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
+    } finally {
+      Element.prototype.replaceChildren = originalReplaceChildren;
+    }
+  });
   it('renders code and logs an aggregated error when loadScript rejects', async () => {
     mockLoadScriptImpl = jest.fn(() => Promise.reject(new Error('script-load-failed')));
     const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
