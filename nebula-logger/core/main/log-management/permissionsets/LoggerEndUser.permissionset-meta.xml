@@ -904,6 +904,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.LoggedByUvid__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.LoggedByUsernameLink__c</field>
         <readable>true</readable>
     </fieldPermissions>

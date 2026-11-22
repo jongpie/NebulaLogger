@@ -2688,6 +2688,7 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.areEqual(System.UserInfo.getUserId(), builder.getLogEntryEvent().LoggedById__c);
     System.Assert.areEqual(System.UserInfo.getLocale(), builder.getLogEntryEvent().Locale__c);
     System.Assert.areEqual(System.UserInfo.getUserId(), builder.getLogEntryEvent().LoggedById__c);
+    System.Assert.areEqual(System.UserInfo.getCurrentUvid(), builder.getLogEntryEvent().LoggedByUvid__c);
     System.Assert.areEqual(System.UserInfo.getUsername(), builder.getLogEntryEvent().LoggedByUsername__c);
     System.Assert.areEqual(System.UserInfo.getProfileId(), builder.getLogEntryEvent().ProfileId__c);
     System.Assert.areEqual(System.UserInfo.getUiThemeDisplayed(), builder.getLogEntryEvent().ThemeDisplayed__c);
@@ -2714,6 +2715,7 @@ private class LogEntryEventBuilder_Tests {
     System.Assert.isNull(builder.getLogEntryEvent().Locale__c);
     System.Assert.isNull(builder.getLogEntryEvent().LoggedByFederationIdentifier__c);
     System.Assert.isNull(builder.getLogEntryEvent().LoggedById__c);
+    System.Assert.isNull(builder.getLogEntryEvent().LoggedByUvid__c);
     System.Assert.isNull(builder.getLogEntryEvent().LoggedByUsername__c);
     System.Assert.isNull(builder.getLogEntryEvent().LoginApplication__c);
     System.Assert.isNull(builder.getLogEntryEvent().LoginBrowser__c);
