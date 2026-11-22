@@ -1383,6 +1383,7 @@ private class LogEntryEventHandler_Tests {
       .getRecord();
     logEntryEvent.ImpersonatedById__c = null;
     logEntryEvent.LoggedById__c = System.UserInfo.getUserId();
+    logEntryEvent.LoggedByUvid__c = 'some-user-uvid';
     logEntryEvent.LoggingLevel__c = System.LoggingLevel.INFO.name();
     logEntryEvent.LoggingLevelOrdinal__c = System.LoggingLevel.INFO.ordinal();
     logEntryEvent.ProfileId__c = System.UserInfo.getProfileId();
@@ -1421,6 +1422,7 @@ private class LogEntryEventHandler_Tests {
         Locale__c,
         LoggedBy__c,
         LoggedByFederationIdentifier__c,
+        LoggedByUvid__c,
         LoggedByUsername__c,
         LoggerVersionNumber__c,
         LoginApplication__c,
@@ -1632,6 +1634,7 @@ private class LogEntryEventHandler_Tests {
       log.LoggedByFederationIdentifier__c,
       'log.LoggedByFederationIdentifier__c was not properly set'
     );
+    System.Assert.areEqual(logEntryEvent.LoggedByUvid__c, log.LoggedByUvid__c, 'log.LoggedByUvid__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LoggedById__c, log.LoggedBy__c, 'log.LoggedBy__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c, 'log.LoggedByUsername__c was not properly set');
     System.Assert.areEqual(logEntryEvent.LoggerVersionNumber__c, log.LoggerVersionNumber__c, 'log.LoggerVersionNumber__c was not properly set');

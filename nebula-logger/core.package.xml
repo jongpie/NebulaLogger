@@ -218,6 +218,7 @@
         <members>LogEntryEvent__e.Locale__c</members>
         <members>LogEntryEvent__e.LoggedByFederationIdentifier__c</members>
         <members>LogEntryEvent__e.LoggedById__c</members>
+        <members>LogEntryEvent__e.LoggedByUvid__c</members>
         <members>LogEntryEvent__e.LoggedByUsername__c</members>
         <members>LogEntryEvent__e.LoggerVersionNumber__c</members>
         <members>LogEntryEvent__e.LoggingLevelOrdinal__c</members>
@@ -582,6 +583,7 @@
         <members>Log__c.LogPurgeAction__c</members>
         <members>Log__c.LogRetentionDate__c</members>
         <members>Log__c.LoggedByFederationIdentifier__c</members>
+        <members>Log__c.LoggedByUvid__c</members>
         <members>Log__c.LoggedByUsernameLink__c</members>
         <members>Log__c.LoggedByUsernameText__c</members>
         <members>Log__c.LoggedByUsername__c</members>
