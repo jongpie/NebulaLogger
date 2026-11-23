@@ -331,7 +331,7 @@ Each of the logging methods in `Logger` (such as `Logger.error()`, `Logger.debug
 - Log a message and a save result - `Logger.error(String message, Database.SaveResult saveResult)`
 - ...
 
-To see the full list of overloads, check out the `Logger` class [documentation](https://jongpie.github.io/NebulaLogger/apex/Logger-Engine/Logger).
+To see the full list of overloads, check out the `Logger` class [documentation](https://github.com/jongpie/NebulaLogger/wiki/Dynamically-Call-Nebula-Logger#available-actions).
 
 ### Using the Fluent Interface
 
@@ -439,7 +439,7 @@ Each `LogEntry__c` record automatically stores the component's type ('Aura' or '
 For lightning component developers, the `logger` LWC provides very similar functionality that is offered in Apex. Simply import the `getLogger` function in your component, use it to initialize an instance once per component, and call the desired logging methods within your code.
 
 ```javascript
-// For LWC, import logger's createLogger() function into your component
+// For LWC, import logger's getLogger() function into your component
 import { getLogger } from 'c/logger';
 import callSomeApexMethod from '@salesforce/apex/LoggerLWCDemoController.callSomeApexMethod';
 
