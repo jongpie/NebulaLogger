@@ -331,7 +331,7 @@ Each of the logging methods in `Logger` (such as `Logger.error()`, `Logger.debug
 - Log a message and a save result - `Logger.error(String message, Database.SaveResult saveResult)`
 - ...
 
-To see the full list of overloads, check out the `Logger` class [documentation](https://jongpie.github.io/NebulaLogger/apex/Logger-Engine/Logger).
+To see the full list of overloads, check out the `Logger` class [documentation](https://github.com/jongpie/NebulaLogger/wiki/Dynamically-Call-Nebula-Logger#available-actions).
 
 ### Using the Fluent Interface
 
