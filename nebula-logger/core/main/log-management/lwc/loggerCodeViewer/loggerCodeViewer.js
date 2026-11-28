@@ -90,7 +90,8 @@ export default class LoggerCodeViewer extends LightningElement {
     codeElement.classList.add(`language-${this.language}`);
     codeElement.textContent = this.code ?? '';
     preElement.appendChild(codeElement);
-    container.replaceChildren(preElement);
+    container.textContent = '';
+    container.appendChild(preElement);
   }
 
   _serializeLoadFailure(failure) {

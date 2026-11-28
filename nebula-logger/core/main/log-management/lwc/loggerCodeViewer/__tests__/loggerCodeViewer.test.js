@@ -75,6 +75,29 @@ describe('c-logger-code-viewer', () => {
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
+  it('renders code when replaceChildren is unavailable under Lightning Locker', async () => {
+    const originalReplaceChildren = Element.prototype.replaceChildren;
+    Element.prototype.replaceChildren = undefined;
+
+    try {
+      const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
+      element.code = 'locker-safe code';
+      element.language = 'apex';
+      element.startingLineNumber = '1';
+      element.targetLineNumber = '1';
+      document.body.appendChild(element);
+      await flushPromises();
+
+      const renderedCode = element.shadowRoot.querySelector('div.prism-viewer pre code');
+      expect(renderedCode).toBeTruthy();
+      expect(renderedCode.textContent).toBe('locker-safe code');
+      expect(global.Prism.highlightAll).toHaveBeenCalled();
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
+    } finally {
+      Element.prototype.replaceChildren = originalReplaceChildren;
+    }
+  });
+
   it('preserves angle-bracketed generics and other HTML-significant characters in the rendered code', async () => {
     const element = createElement('c-logger-code-viewer', { is: LoggerCodeViewer });
     element.language = 'apex';

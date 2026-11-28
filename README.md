@@ -398,6 +398,12 @@ if (nebulaLoggerInstance == null) {
   return;
 }
 
+// Example: Exclude your package's logging wrapper class from each entry's origin & stack trace
+Map<String, Object> ignoreOriginInput = new Map<String, Object>{
+  'apexType' => MyLoggingWrapper.class
+};
+nebulaLoggerInstance.call('ignoreOrigin', ignoreOriginInput);
+
 // Example: Add a basic "hello, world!" INFO extry
 Map<String, Object> newEntryInput = new Map<String, Object>{
   'loggingLevel' => System.LoggingLevel.INFO,
@@ -413,6 +419,17 @@ Map<String, Object> newEntryInput = new Map<String, Object>{
   'message' => 'An unexpected exception was thrown'
 };
 nebulaLoggerInstance.call('newEntry', newEntryInput);
+
+// Example: Add a DEBUG entry with the records & results of a DML statement
+List<Account> accounts = new List<Account>{ new Account(Name = 'Some Account') };
+List<Database.SaveResult> saveResults = Database.insert(accounts, false);
+Map<String, Object> dmlEntryInput = new Map<String, Object>{
+  'databaseResultList' => saveResults,
+  'loggingLevel' => LoggingLevel.DEBUG,
+  'message' => 'Inserted accounts',
+  'recordList' => accounts
+};
+nebulaLoggerInstance.call('newEntry', dmlEntryInput);
 
 // Example: Save any pending log entries
 nebulaLoggerInstance.call('saveLog', null);
