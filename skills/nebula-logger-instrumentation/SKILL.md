@@ -193,23 +193,25 @@ Every action accepts a `Map<String, Object>` and returns a `Map<String, Object>`
 | `getTransactionId`                                        | Return the current transaction ID (for async parent/child linking).                                                  |
 | `getParentLogTransactionId` / `setParentLogTransactionId` | Read / set the parent transaction ID.                                                                                |
 | `getScenario` / `setScenario` / `endScenario`             | Read / set / end the transaction's scenario.                                                                         |
+| `ignoreOrigin`                                            | Exclude an Apex class from each entry's origin and stack trace. Takes `apexType` (a `System.Type`); Apex only.       |
 | `tryCatch`                                                | Shorthand for `newEntry` with `loggingLevel=ERROR` and a serialized-input message; useful in generic `catch` blocks. |
 
 #### Supported input keys for `newEntry`
 
 The same input keys are used by both the ISV pattern above and OmniStudio's Remote Action steps.
 
-| Key                                                | Purpose                                                                                       |
-| -------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `loggingLevel`                                     | Level name (`INFO`, `ERROR`, `WARN`, `DEBUG`, `FINE`, `FINER`, `FINEST`).                     |
-| `message`                                          | Entry message.                                                                                |
-| `saveLog`                                          | Set to `true` to persist immediately after adding the entry.                                  |
-| `saveMethodName`                                   | Override the save method for this call (`EVENT_BUS`, `QUEUEABLE`, `REST`, `SYNCHRONOUS_DML`). |
-| `tags`                                             | `List<String>` of tag names.                                                                  |
-| `exception`                                        | `System.Exception` instance to attach.                                                        |
-| `recordId` / `record` / `recordList` / `recordMap` | Record association, same shape as the Apex `setRecord(...)` overloads.                        |
-| `scenario`                                         | Scenario for the transaction.                                                                 |
-| `parentLogTransactionId`                           | Parent transaction ID for async linking.                                                      |
+| Key                                                | Purpose                                                                                                                 |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `loggingLevel`                                     | Level name (`INFO`, `ERROR`, `WARN`, `DEBUG`, `FINE`, `FINER`, `FINEST`).                                               |
+| `message`                                          | Entry message.                                                                                                          |
+| `saveLog`                                          | Set to `true` to persist immediately after adding the entry.                                                            |
+| `saveMethodName`                                   | Override the save method for this call (`EVENT_BUS`, `QUEUEABLE`, `REST`, `SYNCHRONOUS_DML`).                           |
+| `tags`                                             | `List<String>` of tag names.                                                                                            |
+| `exception`                                        | `System.Exception` instance to attach.                                                                                  |
+| `recordId` / `record` / `recordList` / `recordMap` | Record association, same shape as the Apex `setRecord(...)` overloads.                                                  |
+| `databaseResult` / `databaseResultList`            | A single `Database` result / a `List` of results, same types as the Apex `setDatabaseResult(...)` overloads. Apex only. |
+| `scenario`                                         | Scenario for the transaction.                                                                                           |
+| `parentLogTransactionId`                           | Parent transaction ID for async linking.                                                                                |
 
 ## LWC
 
